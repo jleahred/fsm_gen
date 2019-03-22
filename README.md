@@ -2,11 +2,9 @@
 
 ## TODO
 
-- Modif grammar
-- Move to own repository
-- Update examples
+- Document on README.md
 - Upload to crates.io
 - Force generate files (at the moment gen files are created always)
-- Output support
-- Document on README.md
+- Support for multiple guards
+
 - Add languages

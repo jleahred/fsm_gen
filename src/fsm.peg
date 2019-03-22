@@ -14,7 +14,7 @@ status      ->  Status
             }
 
 transition      ->  Transition
-    =  _  input:id  _  guard:guard?  _ '-'  _  action:id?  _ '->'  _  new_status:id  _  endl
+    =  _  input:id  _  guard:guard?  _ '->'  _  new_status:id  _  action:action? _ endl
             {
                 Transition {
                     input,
@@ -31,6 +31,10 @@ id      ->  String
 guard           -> String
     =  '&'  _  g:id
             {  g.to_string()  }
+
+action          -> String
+    =  '/'  _  action:id
+            {  action.to_string()  }
 
 _ = #quiet<[ \t]*>
 _endls = #quiet<[ \t\n]*>

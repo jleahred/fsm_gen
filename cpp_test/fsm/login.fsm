@@ -1,32 +1,30 @@
 [init]
-    rq_key                  -   send_key        ->  w_login
-    rq_login                -   log_err         ->  logout
-    rq_logout               -   log_err         ->  logout
-    heartbeat               -   log_err         ->  logout
-    timer                   -   log_err         ->  logout
-
+    rq_key                  ->  w_login     /   send_key
+    rq_login                ->  logout      /   log_err
+    rq_logout               ->  logout      /   log_err
+    heartbeat               ->  logout      /   log_err
+    timer                   ->  init
 
 [w_login]
-    rq_key                  -   log_err         ->  logout
-    rq_login    &   valid   -   send_login      ->  login
-    rq_login                -   log_err         ->  logout
-    rq_logout               -   log_err         ->  logout
-    heartbeat               -   log_err         ->  logout
-    timer                   -                   ->  logout
-
+    rq_key                  ->  logout      /   log_err
+    rq_login    &   valid   ->  login       /   send_login
+    rq_login                ->  logout      /   log_err
+    rq_logout               ->  logout      /   log_err
+    heartbeat               ->  logout      /   log_err
+    timer       &   timeout ->  logout      /   log_err
+    timer                   ->  w_login
 
 [login]
-    rq_key                  -   log_err         ->  logout
-    rq_login                -   log_err         ->  logout
-    rq_logout               -   send_logout     ->  logout
-    heartbeat               -   log_err         ->  logout
-    timer       &   on_time -                   ->  login
-    timer                   -                   ->  logout
-
+    rq_key                  ->  logout      /   log_err
+    rq_login                ->  logout      /   log_err
+    rq_logout               ->  logout      /   send_logout
+    heartbeat               ->  logout      /   log_err
+    timer       &   on_time ->  login
+    timer                   ->  logout
 
 [logout]
-    rq_key                  -   log_err         ->  logout
-    rq_login                -   log_err         ->  logout
-    rq_logout               -   logout          ->  logout
-    heartbeat               -   log_err         ->  logout
-    timer                   -   log_err         ->  logout
+    rq_key                  ->  logout      /   log_err
+    rq_login                ->  logout      /   log_err
+    rq_logout               ->  logout      /   logout
+    heartbeat               ->  logout      /   log_err
+    timer                   ->  logout      /   log_err

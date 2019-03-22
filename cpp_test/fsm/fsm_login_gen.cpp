@@ -1,5 +1,5 @@
 
-//  generated automatically  2019-03-22 11:03:43
+//  generated automatically  2019-03-22 11:24:40
 //  do not modify it manually
 
 #include "fsm_login_gen.h"
@@ -130,7 +130,7 @@ void Fsm::in(const timer_t& in) { state ->in(in, *this); }
   SState init::in(const timer_t& in, Fsm& fsm) {
     if(false) {;
     } else {
-        return std::make_shared<logout>(fsm.in2logout(in));
+        return std::make_shared<init>(fsm.in2init(in));
     }              
 }
     
@@ -166,8 +166,10 @@ void Fsm::in(const timer_t& in) { state ->in(in, *this); }
     
   SState w_login::in(const timer_t& in, Fsm& fsm) {
     if(false) {;
-    } else {
+    } else if(fsm.timeout(in, info)) {
         return std::make_shared<logout>(fsm.in2logout(in));
+    } else {
+        return std::make_shared<w_login>(fsm.in2w_login(in));
     }              
 }
     

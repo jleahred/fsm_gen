@@ -112,10 +112,10 @@ public:
   //  implementation in fsm_"# (stem_name) r#".cpp
 
   //  status change functions
-  "# (transactions_changes_forward_decl()) r#"
+"# (transactions_changes_forward_decl()) r#"
 
   //  guards to implement
-  "# (guards2implement()) r#"
+"# (guards2implement()) r#"
 
   //      M A N U A L
   //  ----------------------------------------------------

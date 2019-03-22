@@ -1,0 +1,38 @@
+pub fsm     -> Fsm
+    =   st:status+
+            {  st  }
+
+status      ->  Status
+    =  _endls  '['  n:id  ']'  _   endl
+       tr:transition+
+       _endls
+            { 
+                Status {
+                    name: n.to_string(),
+                    transitions: tr,
+                } 
+            }
+
+transition      ->  Transition
+    =  _  input:id  _  guard:guard?  _ '-'  _  action:id?  _ '->'  _  new_status:id  _  endl
+            {
+                Transition {
+                    input,
+                    guard,
+                    action,
+                    new_status,
+                }
+            }
+
+id      ->  String
+    = id:$([a-zA-Z_] [a-zA-Z0-9_]*)
+        { id.to_string() }
+
+guard           -> String
+    =  '&'  _  g:id
+            {  g.to_string()  }
+
+_ = #quiet<[ \t]*>
+_endls = #quiet<[ \t\n]*>
+endl = #quiet<'\n'>
+endls = #quiet<endl*>

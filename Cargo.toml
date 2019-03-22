@@ -1,0 +1,17 @@
+[package]
+name = "fsm_gen"
+version = "0.1.0"
+authors = ["jleahred <jleahred@gmail.com>"]
+edition = "2018"
+build = "build.rs"
+
+[dependencies]
+peg = "0.5.7"
+idata = "0.1.0"
+clap ="*"
+structopt = "0.2"
+fomat-macros = "0.3.1"
+chrono = "0.4"
+
+[build-dependencies]
+peg = { version = "0.5.7" }

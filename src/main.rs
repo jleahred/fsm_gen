@@ -54,14 +54,14 @@ enum_str! {
 
 #[derive(Debug, StructOpt)]
 #[structopt(
-    name = "fsm",
+    name = "fsm_gen",
     about = r#"
     Generate code from a simple fsm file
     To check the supported languages  --show_langs
     "#
 )]
 struct Opt {
-    /// Set language to generate code (at the moment only cpp is supported)
+    /// Language to generate code (show available --show-langs)
     #[structopt(short = "l", long = "lang", default_value = "cpp")]
     lang: Langs,
 
@@ -70,7 +70,7 @@ struct Opt {
     force: bool,
 
     ///  Show supported languages generators
-    #[structopt(short = "s", long = "show_langs")]
+    #[structopt(short = "s", long = "show-langs")]
     show_langs: bool,
 
     /// List of fsm files

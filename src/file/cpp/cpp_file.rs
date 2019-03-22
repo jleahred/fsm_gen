@@ -28,7 +28,7 @@ pub(crate) fn generate_cpp_fsm_code(
             .iter()
             .fold("".to_string(), |r, i| {
                 format!(
-                    "{0}    {1}_info_t Fsm::in2{1}(const {2}_t& i){{}}\n",
+                    "{0}    {1}_info_t in2{1}(const {2}_t& i){{}}\n",
                     r, i.1, i.0
                 )
             })
@@ -39,7 +39,7 @@ pub(crate) fn generate_cpp_fsm_code(
             st.transitions.iter().fold("".to_string(), |acc, t| {
                 if let Some(g) = &t.guard {
                     format!(
-                        "{}    bool Fsm::{}(const {}_t& in, const  {}_info_t& st_info) {{ return true; }}\n",
+                        "{}    bool {}(const {}_t& in, const  {}_info_t& st_info) {{ return true; }}\n",
                         acc,
                         g.to_string(),
                         t.input,

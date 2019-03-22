@@ -106,6 +106,11 @@ public:
 "# (in_methods_forward_decl()) r#"
 
 
+
+private:
+  SState state;
+};
+
   //  ----------------------------------------------------
   //      M A N U A L
   
@@ -119,10 +124,6 @@ public:
 
   //      M A N U A L
   //  ----------------------------------------------------
-
-private:
-  SState state;
-};
 
 } // namespace login
 

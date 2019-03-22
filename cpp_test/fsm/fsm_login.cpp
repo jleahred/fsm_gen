@@ -8,26 +8,21 @@
 
 namespace login {
 
-    //  status change functions
-    logout_info_t Fsm::in2logout(const heartbeat_t& i){}
-    logout_info_t Fsm::in2logout(const rq_key_t& i){}
-    w_login_info_t Fsm::in2w_login(const rq_key_t& i){}
-    login_info_t Fsm::in2login(const rq_login_t& i){}
-    logout_info_t Fsm::in2logout(const rq_login_t& i){}
-    logout_info_t Fsm::in2logout(const rq_logout_t& i){}
-    init_info_t Fsm::in2init(const timer_t& i){}
-    login_info_t Fsm::in2login(const timer_t& i){}
-    logout_info_t Fsm::in2logout(const timer_t& i){}
-    w_login_info_t Fsm::in2w_login(const timer_t& i){}
+//  status change functions
+logout_info_t in2logout(const heartbeat_t &i) {}
+logout_info_t in2logout(const rq_key_t &i) {}
+w_login_info_t in2w_login(const rq_key_t &i) {}
+login_info_t in2login(const rq_login_t &i) {}
+logout_info_t in2logout(const rq_login_t &i) {}
+logout_info_t in2logout(const rq_logout_t &i) {}
+init_info_t in2init(const timer_t &i) {}
+login_info_t in2login(const timer_t &i) {}
+logout_info_t in2logout(const timer_t &i) {}
+w_login_info_t in2w_login(const timer_t &i) {}
 
-
-    //  guards
-    bool Fsm::valid(const rq_login_t& in, const  w_login_info_t& st_info) { return true; }
-    bool Fsm::timeout(const timer_t& in, const  w_login_info_t& st_info) { return true; }
-    bool Fsm::on_time(const timer_t& in, const  login_info_t& st_info) { return true; }
-
-
+//  guards
+bool valid(const rq_login_t &in, const w_login_info_t &st_info) { return true; }
+bool timeout(const timer_t &in, const w_login_info_t &st_info) { return true; }
+bool on_time(const timer_t &in, const login_info_t &st_info) { return true; }
 
 } // namespace login
-
-

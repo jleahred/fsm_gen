@@ -1,5 +1,5 @@
 
-//  generated automatically  2019-03-22 11:24:40
+//  generated automatically  2019-03-22 16:10:59
 //  do not modify it manually
 
 #ifndef FSM_FSM_LOGIN_GENERATED_H
@@ -50,6 +50,11 @@ public:
 
 
 
+
+private:
+  SState state;
+};
+
   //  ----------------------------------------------------
   //      M A N U A L
   
@@ -76,10 +81,6 @@ public:
 
   //      M A N U A L
   //  ----------------------------------------------------
-
-private:
-  SState state;
-};
 
 } // namespace login
 

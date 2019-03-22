@@ -23,23 +23,20 @@ pub(crate) fn generate_cpp_fsm_code_generated(
 
   let in_methods_forward_virtual = || {
     get_input_names(fsm).iter().fold("".to_string(), |r, i| {
-      format!(
-        "{}  virtual SState in(const {}_t& in, Fsm& fsm) = 0;\n",
-        r, i
-      )
+      format!("{}  virtual SState in(const {}_t& in) = 0;\n", r, i)
     })
   };
 
   let override_inputs = || {
     get_input_names(fsm).iter().fold("".to_string(), |r, i| {
-      format!("{}  SState in(const {}_t& in, Fsm& fsm) override;\n", r, i)
+      format!("{}  SState in(const {}_t& in) override;\n", r, i)
     })
   };
 
   let fsm_in = || {
     get_input_names(fsm).iter().fold("".to_string(), |r, i| {
       format!(
-        "{}void Fsm::in(const {}_t& in) {{ state ->in(in, *this); }}\n",
+        "{}void Fsm::in(const {}_t& in) {{ state ->in(in); }}\n",
         r, i
       )
     })
@@ -88,12 +85,12 @@ private:
         .iter()
         .fold("    if(false) {;\n".to_string(), |acc, tr| {
           if let Some(guard) = &tr.guard {
-            fomat!((acc)r#"    } else if(fsm."# (guard) r#"(in, info)) {
-        return std::make_shared<"# (tr.new_status) r#">(fsm.in2"# (tr.new_status) r#"(in));
+            fomat!((acc)r#"    } else if("# (guard) r#"(in, info)) {
+        return std::make_shared<"# (tr.new_status) r#">(in2"# (tr.new_status) r#"(in));
 "#)
           } else {
             fomat!((acc)r#"    } else {
-        return std::make_shared<"# (tr.new_status) r#">(fsm.in2"# (tr.new_status) r#"(in));
+        return std::make_shared<"# (tr.new_status) r#">(in2"# (tr.new_status) r#"(in));
     }              
 "#)
           }
@@ -104,7 +101,7 @@ private:
         .iter()
         .fold("".to_string(), |r, input| {
           fomat!((r)r#"
-  SState "# (sn) r#"::in(const "# (input) r#"_t& in, Fsm& fsm) {
+  SState "# (sn) r#"::in(const "# (input) r#"_t& in) {
 "# (impl_input_trans(sn, input)) r#"}
     "#)
         })

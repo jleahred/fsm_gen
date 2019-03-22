@@ -81,7 +81,7 @@ pub(crate) fn generate_header_fsm_code_generated(
 namespace login {
 
 //  ----------------------------------------------------
-//      M A N U A L
+//      TO FILL BY HAND
 
 //  declaration on fsm_"# (stem_name) r#".h
 //  forward_status_info
@@ -90,7 +90,7 @@ namespace login {
 //  in
 "# (forward_struct_in()) r#"
 
-//      M A N U A L
+//      TO FILL BY HAND
 //  ----------------------------------------------------
 
 class BaseState;
@@ -111,8 +111,11 @@ private:
   SState state;
 };
 
+//      F S M
+//  -------------------
+
   //  ----------------------------------------------------
-  //      M A N U A L
+  //      TO FILL BY HAND
   
   //  implementation in fsm_"# (stem_name) r#".cpp
 
@@ -122,7 +125,7 @@ private:
   //  guards to implement
 "# (guards2implement()) r#"
 
-  //      M A N U A L
+  //      TO FILL BY HAND
   //  ----------------------------------------------------
 
 } // namespace login

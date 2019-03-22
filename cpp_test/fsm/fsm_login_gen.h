@@ -1,5 +1,5 @@
 
-//  generated automatically  2019-03-22 16:10:59
+//  generated automatically  2019-03-22 16:19:16
 //  do not modify it manually
 
 #ifndef FSM_FSM_LOGIN_GENERATED_H
@@ -11,7 +11,7 @@
 namespace login {
 
 //  ----------------------------------------------------
-//      M A N U A L
+//      TO FILL BY HAND
 
 //  declaration on fsm_login.h
 //  forward_status_info
@@ -29,7 +29,7 @@ struct rq_logout_t;
 struct timer_t;
 
 
-//      M A N U A L
+//      TO FILL BY HAND
 //  ----------------------------------------------------
 
 class BaseState;
@@ -55,8 +55,11 @@ private:
   SState state;
 };
 
+//      F S M
+//  -------------------
+
   //  ----------------------------------------------------
-  //      M A N U A L
+  //      TO FILL BY HAND
   
   //  implementation in fsm_login.cpp
 
@@ -79,7 +82,7 @@ private:
   bool on_time(const timer_t& in, const  login_info_t& st_info);
 
 
-  //      M A N U A L
+  //      TO FILL BY HAND
   //  ----------------------------------------------------
 
 } // namespace login

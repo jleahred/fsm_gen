@@ -6,7 +6,7 @@ Pending to upload to crates.io
 
 ## TODO
 
-- Document on README.md
+- Complete the cpp example and update on README.md
 - Add log method (template on c++)
 - Check fsm format
   - inputs
@@ -204,7 +204,7 @@ on next files...
     fsm_login.cpp
 ```
 
-These two files will be created if don't exist
+These two files will be created if don't exist as a reference
 
 ### fsm_login_gen.h
 

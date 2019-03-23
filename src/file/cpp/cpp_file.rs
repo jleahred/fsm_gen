@@ -28,7 +28,7 @@ pub(crate) fn generate_cpp_fsm_code(
             .iter()
             .fold("".to_string(), |r, i| {
                 format!(
-                    "{0}    {1}_info_t in2{1}(const {2}_t& i){{}}\n",
+                    "{0}    {1}_info_t in2{1}(const {2}_t& i){{ return {1}_info_t{{}};}}\n",
                     r, i.1, i.0
                 )
             })
@@ -72,10 +72,7 @@ namespace "# (stem_name) r#" {
     //  guards
 "# (guards()) r#"
 
-
 } // namespace "# (stem_name) r#"
-
-
 "#
     );
 

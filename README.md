@@ -6,16 +6,16 @@ Pending to upload to crates.io
 
 ## TODO
 
-- Complete the cpp example and update on README.md
 - Add log method (template on c++)
+- parallel running
+- Consider \_ input for default behavior on not declared inputs
+- Complete the cpp example and update on README.md
 - Check fsm format
   - inputs
   - transitions without guards
-- parallel running
 - Upload to crates.io
 - Force generate files (at the moment gen files are created always)
 - Support for multiple guards
-- Consider \_ input for default behavior on not declared inputs
 - output with signals
 - generate dot files for graphviz
 
@@ -50,8 +50,6 @@ If it is OK, it will send a login confirmation.
 The diagram would look like this:
 
 ![Basic diagram](basic_diagram.png)
-
-This is a simplification.
 
 A full list of transitions could be written as:
 
@@ -94,26 +92,51 @@ And this is the input for this tool to generate code
 
 #### States
 
+```peg
+[init]
+    ...
+```
+
 **init**, **w_login**, **login** ... are the states
 
 Depending on the input and the state (with its values as will be seen later), the system will change to a new state.
 
-##### INPUT
+#### Transition
+
+```peg
+    rq_key                  ->  w_login
+```
+
+If we receive an input (in this case `rq_key`) we go to next state (`w_login`)
+
+#### INPUT
 
 The elements received by the status machine.
 
-In this example they would be **rq_key**, **rq_login**, **rq_logout**, **heartbeat** and **timer**.
+```peg
+    INPUT
+      v
+    rq_key                  ->  w_login
+```
 
-##### GUARDS
+In the example they are **rq_key**, **rq_login**, **rq_logout**, **heartbeat** and **timer**.
+
+#### GUARDS
 
 Functions that will be called depending on the status and input to decide the way forward.
 
-In this example we have **valid**, **timeout**, **ontime**.
+```peg
+                    GUARD
+                     v
+    rq_login    &   valid   ->  login       /   send_login
+```
+
+In the example we have **valid**, **timeout**, **ontime**.
 
 All transitions can be replicated with different guards, but always one of
 them has to be without guard (and the last one). Example:
 
-```
+```peg
     rq_login    &   valid   ->  login       /   send_login
     rq_login                ->  logout      /   log_err
 ```
@@ -122,11 +145,23 @@ them has to be without guard (and the last one). Example:
 
 Behind the **->** arrow is the state we will change to.
 
+```peg
+                               FINAL_STATUS
+                                   v
+    rq_key                  ->  w_login
+```
+
 #### Actions
 
 We can define an action to be performed when executing a transaction.
 
 This will be after the final state and '/'.
+
+```peg
+                                                ACTION
+                                                  v
+    rq_login                ->  logout      /   log_err
+```
 
 In this example we have **send_key**, **send_login**...
 
@@ -424,6 +459,31 @@ namespace login {
 } // namespace login
 ```
 
+### login
+
+You will have a template that will be called on every state transition.
+
+```cpp
+    //  log
+template <typename IN, typename INIT_ST, typename END_ST>
+void log(const std::string &context, const IN &, const INIT_ST &, const END_ST &) {
+  std::cout << context << std::endl;
+}
+
+} // namespace login
+#endif // FSM_LOGIN_H
+```
+
+You can specialize it as much as you want.
+
+The first parameter is a text with the description of the transition. Example:
+
+```cfg
+[init] rq_key -> w_login
+[w_login] rq_login(valid) -> login
+[login] rq_logout -> logout
+```
+
 ## Diagram source
 
 ```
@@ -432,9 +492,15 @@ digraph finite_state_machine {
 	rankdir=LR;
 	size="8,5"
 	node [shape = circle, width=1];
-    init                   ->  w_login  [label="rq_key"]
-    w_login       ->  login   [label="rq_login ok"]
-    w_login       ->  logout   [label="rq_login invalid"]
-    login                   ->  logout  [label="rq_logout"]
+
+    init        ->  w_login [label="rq_key"]
+    init        ->  logout  [label="_"]
+
+    w_login     ->  login   [label="rq_login ok"]
+    w_login     ->  logout  [label="rq_login invalid"]
+    w_login     ->  logout  [label="_"]
+
+    login       ->  logout  [label="rq_logout"]
+    login       ->  logout  [label="_"]
 }
 ```

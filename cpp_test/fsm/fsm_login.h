@@ -28,5 +28,12 @@ namespace login {
   struct timer_t {};
 
 
+
+    //  log
+template <typename IN, typename INIT_ST, typename END_ST>
+void log(const std::string &context, const IN &, const INIT_ST &, const END_ST &) {
+  std::cout << context << std::endl;
+}
+
 } // namespace login
 #endif // FSM_LOGIN_H

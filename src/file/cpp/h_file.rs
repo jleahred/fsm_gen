@@ -59,6 +59,13 @@ namespace "# (stem_name) r#" {
   //  input types
 "# (in_types_empty_decl()) r#"
 
+
+    //  log
+template <typename IN, typename INIT_ST, typename END_ST>
+void log(const std::string &context, const IN &, const INIT_ST &, const END_ST &) {
+  std::cout << context << std::endl;
+}
+
 } // namespace "# (stem_name) r#"
 #endif // "# (header_guard()) r#"
 "#

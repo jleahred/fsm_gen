@@ -36,7 +36,7 @@ pub(crate) fn generate_cpp_fsm_code_generated(
   let fsm_in = || {
     get_input_names(fsm).iter().fold("".to_string(), |r, i| {
       format!(
-        "{}void Fsm::in(const {}_t& in) {{ state ->in(in); }}\n",
+        "{}void Fsm::in(const {}_t& in) {{ state = state ->in(in); }}\n",
         r, i
       )
     })
@@ -81,16 +81,22 @@ private:
         })
     };
     let impl_input_trans = |sn: &str, input: &str| {
+      let change_trans = |sn, tr: &crate::parser::Transition, guard: &str| {
+        fomat!(r#"auto nw_st_info = in2"# (tr.new_status) r#"(in);
+        log("["# (sn) r#"] "# (tr.input) r#""# (guard) r#" -> "# (tr.new_status) r#"", in, info, nw_st_info);
+        return std::make_shared<"# (tr.new_status) r#">(nw_st_info);
+"#)
+      };
       transitions4input(sn, input)
         .iter()
         .fold("    if(false) {;\n".to_string(), |acc, tr| {
           if let Some(guard) = &tr.guard {
+            let guard_txt = format!("({})", guard);
             fomat!((acc)r#"    } else if("# (guard) r#"(in, info)) {
-        return std::make_shared<"# (tr.new_status) r#">(in2"# (tr.new_status) r#"(in));
-"#)
+        "# (change_trans(sn, tr, &guard_txt)) r#""#)
           } else {
             fomat!((acc)r#"    } else {
-        return std::make_shared<"# (tr.new_status) r#">(in2"# (tr.new_status) r#"(in));
+        "# (change_trans(sn, tr, "")) r#"
     }              
 "#)
           }
@@ -106,20 +112,17 @@ private:
     "#)
         })
     };
-    // let state_impl = |sn: &str, trans: &[crate::parser::Transition]| {
-    //     transitions4input(sn, &tans).fold("".to_string(), |acc, t|{
-    //         fomat!((acc)r#"
-    // SState "# (sn) r#"::in(const "# (tr.input) r#"_t& in) {
-    //   return std::make_shared<"# (tr.new_status) r#">("# (tr.new_status) r#"_info_t{});
-    // }
-    // "#)
-    //     })
-    //   )
-    // };
 
     fsm.iter().fold("".to_string(), |r, st| {
       format!("{}{}", r, state_impl(&st.name))
     })
+  };
+
+  let first_state_name = || {
+    fsm
+      .iter()
+      .take(1)
+      .fold("".to_string(), |_, st| st.name.to_string())
   };
 
   let template = fomat!(r#"
@@ -143,7 +146,7 @@ public:
 
 "# (status_clases_declaration()) r#"
 
-Fsm::Fsm() {}
+Fsm::Fsm() : state(std::make_shared<"# (first_state_name()) r#">("# (first_state_name()) r#"_info_t{})) {}
 Fsm::~Fsm() {}
 
 "# (fsm_in()) r#"

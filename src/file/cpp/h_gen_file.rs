@@ -72,8 +72,8 @@ pub(crate) fn generate_header_fsm_code_generated(
 //  generated automatically  "# (Local::now().format("%Y-%m-%d %H:%M:%S").to_string()) r#"
 //  do not modify it manually
 
-#ifndef FSM_"# (header_guard()) r#"
-#define FSM_"# (header_guard()) r#"
+#ifndef "# (header_guard()) r#"
+#define "# (header_guard()) r#"
 
 #include <iostream>
 #include <memory>
@@ -82,8 +82,9 @@ namespace login {
 
 //  ----------------------------------------------------
 //      TO FILL BY HAND
-
+//          They have to be copiable
 //  declaration on fsm_"# (stem_name) r#".h
+
 //  forward_status_info
 "# (forward_status_info()) r#"
 
@@ -117,13 +118,16 @@ private:
   //  ----------------------------------------------------
   //      TO FILL BY HAND
   
-  //  implementation in fsm_"# (stem_name) r#".cpp
+    //  implementation in fsm_"# (stem_name) r#".cpp
 
   //  status change functions
 "# (transactions_changes_forward_decl()) r#"
 
   //  guards to implement
 "# (guards2implement()) r#"
+
+template <typename IN, typename INIT_ST, typename END_ST>
+void log(const std::string &context, const IN &, const INIT_ST &, const END_ST &);
 
   //      TO FILL BY HAND
   //  ----------------------------------------------------

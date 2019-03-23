@@ -45,6 +45,7 @@ int main() {
   login::Fsm login;
   login.in(login::rq_key_t{});
   //  login.in(login::rq_login_t{"key", "login"});
-  //  login.in(login::rq_login_t{"key", "login"});
+  login.in(login::rq_login_t{});
+  login.in(login::rq_logout_t{});
   return 0;
 }

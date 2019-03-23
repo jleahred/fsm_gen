@@ -1,9 +1,9 @@
 
-//  generated automatically  2019-03-22 16:19:16
+//  generated automatically  2019-03-23 11:05:17
 //  do not modify it manually
 
-#ifndef FSM_FSM_LOGIN_GENERATED_H
-#define FSM_FSM_LOGIN_GENERATED_H
+#ifndef FSM_LOGIN_GENERATED_H
+#define FSM_LOGIN_GENERATED_H
 
 #include <iostream>
 #include <memory>
@@ -12,8 +12,9 @@ namespace login {
 
 //  ----------------------------------------------------
 //      TO FILL BY HAND
-
+//          They have to be copiable
 //  declaration on fsm_login.h
+
 //  forward_status_info
 struct init_info_t;
 struct w_login_info_t;
@@ -61,7 +62,7 @@ private:
   //  ----------------------------------------------------
   //      TO FILL BY HAND
   
-  //  implementation in fsm_login.cpp
+    //  implementation in fsm_login.cpp
 
   //  status change functions
   logout_info_t in2logout(const heartbeat_t& i);
@@ -81,6 +82,9 @@ private:
   bool timeout(const timer_t& in, const  w_login_info_t& st_info);
   bool on_time(const timer_t& in, const  login_info_t& st_info);
 
+
+template <typename IN, typename INIT_ST, typename END_ST>
+void log(const std::string &context, const IN &, const INIT_ST &, const END_ST &);
 
   //      TO FILL BY HAND
   //  ----------------------------------------------------

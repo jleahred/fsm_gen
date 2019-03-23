@@ -6,8 +6,6 @@ Pending to upload to crates.io
 
 ## TODO
 
-- Consider \_ input for default behavior on not declared inputs
-- generate dot files for graphviz
 - Upload to crates.io
 - Support for multiple guards and actions
 
@@ -33,6 +31,10 @@ In this repository I rewrite one of them, the code generator for a state machine
 
 At the moment it generates C++ code (my most immediate target in production).
 
+```
+You can have data (fields) on inputs structs, and also on each status
+```
+
 To explain the system, I will use the example in [cpp_test/fsm](cpp_test/fsm)
 
 This example is about writing a system that will handle login requests.
@@ -49,7 +51,7 @@ The diagram would look like this:
 
 ![Basic diagram](basic_diagram.png)
 
-A full list of transitions could be written as:
+A list of transitions could be written as:
 
 ```peg
 [init]
@@ -77,6 +79,8 @@ A full list of transitions could be written as:
 ```
 
 And this is the input for this tool to generate code
+
+In fact, even the previous diagram has been generated from this `DSL` (it generated a graphviz dot file)
 
 ### Elements
 
@@ -504,23 +508,6 @@ The first parameter is a text with the description of the transition. Example:
 [login] rq_logout -> logout
 ```
 
-## Diagram source
+## Diagrams source
 
-```
-basic diagram
-digraph finite_state_machine {
-	rankdir=LR;
-	size="8,5"
-	node [shape = circle, width=1];
-
-    init        ->  w_login [label="rq_key"]
-    init        ->  logout  [label="_"]
-
-    w_login     ->  login   [label="rq_login ok"]
-    w_login     ->  logout  [label="rq_login invalid"]
-    w_login     ->  logout  [label="_"]
-
-    login       ->  logout  [label="rq_logout"]
-    login       ->  logout  [label="_"]
-}
-```
+...

@@ -14,6 +14,7 @@ macro_rules! enum_str {
     (enum $name:ident {
         $($variant:ident = $val:expr),*,
     }) => {
+        #[derive(PartialEq)]
         enum $name {
             $($variant),*
         }
@@ -79,6 +80,10 @@ struct Opt {
     #[structopt(short = "s", long = "show-langs")]
     show_langs: bool,
 
+    ///  Generate graphviz dot file
+    #[structopt(short = "d", long = "dot-graphviz")]
+    dot: bool,
+
     /// List of fsm files
     #[structopt(parse(from_os_str))]
     fsm_files: Vec<PathBuf>,
@@ -107,8 +112,13 @@ fn main() {
                 .build_global()
                 .unwrap();
         }
+        let config = file::Config {
+            lang: opt.lang,
+            dot: opt.dot,
+        };
         match opt.fsm_files.par_iter().try_for_each(|f| {
-            file::process(&f).map_err(|e| format!("error processing file: {:?}\n\n{}", f, e))
+            file::process(&f, &config)
+                .map_err(|e| format!("error processing file: {:?}\n\n{}", f, e))
         }) {
             Ok(()) => (),
             Err(e) => eprintln!("{}", e),

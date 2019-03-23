@@ -60,14 +60,14 @@ pub struct Transition {
     pub(crate) new_status: String,
 }
 
-pub fn parse(input: &str) -> Result<Fsm, String> {
+pub fn parse(input: &str) -> Result<(Fsm, Fsm), String> {
     match fsm_peg::fsm(input) {
-        Ok(fsm) => Ok(complete_fsm(fsm)),
+        Ok(fsm) => Ok((complete_fsm(&fsm), fsm)),
         Err(e) => Err(format!("{:?}", e)),
     }
 }
 
-fn complete_fsm(fsm: Fsm) -> Fsm {
+fn complete_fsm(fsm: &[Status]) -> Fsm {
     let allstinputs = get_all_input_names(&fsm);
     let get_full_status_in = |st: &Status, allstinputs: &BTreeSet<String>| -> Status {
         let missing_inputs = |st: &Status, allstinputs: &BTreeSet<String>| -> Vec<String> {

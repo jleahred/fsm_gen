@@ -3,23 +3,28 @@ use std::io::prelude::*;
 use std::path::PathBuf;
 
 pub(crate) mod cpp;
+mod dot;
 
-pub(crate) fn process(path: &PathBuf) -> std::result::Result<(), String> {
+pub(crate) struct Config {
+    pub(crate) lang: crate::Langs,
+    pub(crate) dot: bool,
+}
+
+pub(crate) fn process(path: &PathBuf, config: &Config) -> std::result::Result<(), String> {
     let mut file = File::open(path).map_err(|e| format!("{}", e))?;
     let mut contents = String::new();
     file.read_to_string(&mut contents)
         .map_err(|e| format!("{}", e))?;
 
-    let fsm = crate::parser::parse(&contents)?;
-    generate_cpp_code(&fsm, &path)?;
-    Ok(())
-}
+    let (full_fsm, part_fsm) = crate::parser::parse(&contents)?;
 
-fn generate_cpp_code(
-    fsm: &[crate::parser::Status],
-    orig_path: &PathBuf,
-) -> std::result::Result<(), String> {
-    cpp::generate_cpp_files(fsm, orig_path).map_err(|e| e.to_string())?;
+    if config.lang == crate::Langs::Cpp {
+        cpp::generate_cpp_files(&full_fsm, &path).map_err(|e| e.to_string())?;
+    }
+
+    if config.dot {
+        dot::generate_file(&part_fsm, &path).map_err(|e| e.to_string())?;
+    }
     Ok(())
 }
 

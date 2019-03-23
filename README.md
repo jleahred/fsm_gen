@@ -15,6 +15,7 @@ cargo install
 
 ## TODO
 
+- Add comments support on fsm grammar
 - Support for multiple guards and actions
 - Update idata in order to use ispush with btrees and more
 
@@ -91,9 +92,9 @@ And this is the input for this tool to generate code
 
 In fact, even the previous diagram has been generated from this `DSL` (it generated a graphviz dot file)
 
-### Elements
+## Elements
 
-#### States
+### States
 
 ```peg
 [init]
@@ -104,7 +105,7 @@ In fact, even the previous diagram has been generated from this `DSL` (it genera
 
 Depending on the input and the state (with its values as will be seen later), the system will change to a new state.
 
-#### Transition
+### Transition
 
 ```peg
     rq_key                  ->  w_login
@@ -112,7 +113,7 @@ Depending on the input and the state (with its values as will be seen later), th
 
 If we receive an input (in this case `rq_key`) we go to next state (`w_login`)
 
-#### INPUT
+### Input
 
 The elements received by the status machine.
 
@@ -124,7 +125,7 @@ The elements received by the status machine.
 
 In the example they are **rq_key**, **rq_login**, **rq_logout**, **heartbeat** and **timer**.
 
-#### GUARDS
+### Guards
 
 Functions that will be called depending on the status and input to decide the way forward.
 
@@ -144,7 +145,7 @@ them has to be without guard (and the last one). Example:
     rq_login                ->  logout      /   log_err
 ```
 
-#### Final status
+### Final status
 
 Behind the **->** arrow is the state we will change to.
 
@@ -154,7 +155,7 @@ Behind the **->** arrow is the state we will change to.
     rq_key                  ->  w_login
 ```
 
-#### Actions
+### Actions
 
 We can define an action to be performed when executing a transaction.
 
@@ -168,7 +169,7 @@ This will be after the final state and '/'.
 
 In this example we have **send_key**, **send_login**...
 
-#### Special transition
+### Special transition
 
 In all states it is necessary to consider all inputs.
 
@@ -493,7 +494,7 @@ namespace login {
 } // namespace login
 ```
 
-### login
+### log
 
 You will have a template that will be called on every state transition.
 

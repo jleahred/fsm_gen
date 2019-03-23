@@ -226,7 +226,7 @@ FLAGS:
 
 OPTIONS:
     -l, --lang <lang>            Language to generate code (show available --show-langs) [default: cpp]
-    -t, --threads <n_threads>    Number of threads to use. 0 means all [default: 0]
+    -t, --threads <n_threads>    Number of threads to use. 0 means one per core [default: 0]
 
 ARGS:
     <fsm_files>...    List of fsm files

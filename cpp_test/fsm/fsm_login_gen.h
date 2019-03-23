@@ -1,5 +1,5 @@
 
-//  generated automatically  2019-03-23 14:09:20
+//  generated automatically  2019-03-23 23:14:19
 //  do not modify it manually
 
 #ifndef FSM_LOGIN_GENERATED_H
@@ -85,7 +85,7 @@ private:
 
 
 template <typename IN, typename INIT_ST, typename END_ST>
-void log(const std::string &context, const IN &, const INIT_ST &, const END_ST &);
+void log(const std::string &txt_trans, const IN &, const INIT_ST &, const END_ST &);
 
   //      TO FILL BY HAND
   //  ----------------------------------------------------

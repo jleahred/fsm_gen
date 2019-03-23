@@ -131,7 +131,7 @@ private:
 "# (guards2implement()) r#"
 
 template <typename IN, typename INIT_ST, typename END_ST>
-void log(const std::string &context, const IN &, const INIT_ST &, const END_ST &);
+void log(const std::string &txt_trans, const IN &, const INIT_ST &, const END_ST &);
 
   //      TO FILL BY HAND
   //  ----------------------------------------------------

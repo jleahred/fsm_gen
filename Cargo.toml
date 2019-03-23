@@ -12,6 +12,7 @@ clap ="*"
 structopt = "0.2"
 fomat-macros = "0.3.1"
 chrono = "0.4"
+rayon = "1.0"
 
 [build-dependencies]
 peg = { version = "0.5.7" }

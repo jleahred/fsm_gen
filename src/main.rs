@@ -2,7 +2,10 @@ mod file;
 mod parser;
 
 extern crate chrono;
+extern crate rayon;
+
 extern crate structopt;
+use rayon::prelude::*;
 
 use std::path::PathBuf;
 use structopt::StructOpt;
@@ -65,9 +68,12 @@ struct Opt {
     #[structopt(short = "l", long = "lang", default_value = "cpp")]
     lang: Langs,
 
-    /// Generate all files regardless of change date
-    #[structopt(short = "f", long = "force")]
-    force: bool,
+    // /// Generate all files regardless of change date
+    // #[structopt(short = "f", long = "force")]
+    // force: bool,
+    /// Number of threads to use. 0 means all
+    #[structopt(short = "t", long = "threads", default_value = "0")]
+    n_threads: usize,
 
     ///  Show supported languages generators
     #[structopt(short = "s", long = "show-langs")]
@@ -95,12 +101,18 @@ fn main() {
     } else if opt.fsm_files.is_empty() {
         eprintln!("No files provied!!! If doubt,  --help");
     } else {
-        for f in opt.fsm_files {
-            match file::process(&f) {
-                Ok(()) => (),
-                Err(e) => eprintln!("error processing file: {:?}\n\n{}", f, e),
-            }
+        if opt.n_threads != 0 {
+            rayon::ThreadPoolBuilder::new()
+                .num_threads(opt.n_threads)
+                .build_global()
+                .unwrap();
         }
+        match opt.fsm_files.par_iter().try_for_each(|f| {
+            file::process(&f).map_err(|e| format!("error processing file: {:?}\n\n{}", f, e))
+        }) {
+            Ok(()) => (),
+            Err(e) => eprintln!("{}", e),
+        };
         println!("File generation finished.");
     }
 }

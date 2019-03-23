@@ -6,8 +6,6 @@ Pending to upload to crates.io
 
 ## TODO
 
-- Add log method (template on c++)
-- parallel running
 - Consider \_ input for default behavior on not declared inputs
 - Complete the cpp example and update on README.md
 - Check fsm format
@@ -185,14 +183,14 @@ USAGE:
     fsm_gen [FLAGS] [OPTIONS] [fsm_files]...
 
 FLAGS:
-    -f, --force         Generate all files regardless of change date
     -h, --help          Prints help information
         --help-cpp      Give me some information about generating cpp files
     -s, --show-langs    Show supported languages generators
     -V, --version       Prints version information
 
 OPTIONS:
-    -l, --lang <lang>    Language to generate code (show available --show-langs) [default: cpp]
+    -l, --lang <lang>            Language to generate code (show available --show-langs) [default: cpp]
+    -t, --threads <n_threads>    Number of threads to use. 0 means all [default: 0]
 
 ARGS:
     <fsm_files>...    List of fsm files

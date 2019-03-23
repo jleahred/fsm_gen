@@ -24,7 +24,7 @@ pub(crate) fn generate_cpp_fsm_code(
     let mut f = File::create(file_name).map_err(|e| format!("{}", e))?;
 
     let transactions_changes = || {
-        get_transchange_in_to(fsm)
+        crate::parser::get_transchange_in_to(fsm)
             .iter()
             .fold("".to_string(), |r, i| {
                 format!(

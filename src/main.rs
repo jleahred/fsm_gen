@@ -97,7 +97,7 @@ fn main() {
             Langs::get_options_as_string()
         );
     } else if opt.help_cpp {
-        print_cpp_help_message();
+        file::cpp::print_cpp_help_message();
     } else if opt.fsm_files.is_empty() {
         eprintln!("No files provied!!! If doubt,  --help");
     } else {
@@ -115,26 +115,6 @@ fn main() {
         };
         println!("File generation finished.");
     }
-}
-
-fn print_cpp_help_message() {
-    println!(r#"
-Being "name.fsm" the name of the file with the definition of the machine, two files will be generated.
-
-    fsm_name_gen.cpp
-    fsm_name_gen.h
-
-In them the declarations and definitions of the state machine will be generated.
-
-In fsm_name_gen.h it is indicated with comments, the methods to overwrite manually and the file where it is convenient to do it.
-
-The manual implementation of the methods and declarations of the types, it is recommended to do it in the following files.
-
-    fsm_name_gen.cpp
-    fsm_name_gen.h
-
-If they do not exist, they will be created with an empty implementation.
-"#);
 }
 
 // fn main() {

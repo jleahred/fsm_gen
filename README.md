@@ -7,15 +7,15 @@ Pending to upload to crates.io
 ## TODO
 
 - Consider \_ input for default behavior on not declared inputs
+- generate dot files for graphviz
+- Upload to crates.io
+- Support for multiple guards and actions
+
 - Complete the cpp example and update on README.md
 - Check fsm format
   - inputs
-  - transitions without guards
-- Upload to crates.io
-- Force generate files (at the moment gen files are created always)
-- Support for multiple guards
+  - all input per state, has to have a transition without guards
 - output with signals
-- generate dot files for graphviz
 
 - Add languages
 
@@ -53,35 +53,27 @@ A full list of transitions could be written as:
 
 ```peg
 [init]
-    rq_key                  ->  w_login     /   send_key
-    rq_login                ->  logout      /   log_err
-    rq_logout               ->  logout      /   log_err
-    heartbeat               ->  logout      /   log_err
-    timer                   ->  init
+    rq_key                      ->  w_login     /   send_key
+    timer                       ->  init
+    _                           ->  logout      /   log_err
 
 [w_login]
-    rq_key                  ->  logout      /   log_err
-    rq_login    &   valid   ->  login       /   send_login
-    rq_login                ->  logout      /   log_err
-    rq_logout               ->  logout      /   log_err
-    heartbeat               ->  logout      /   log_err
-    timer       &   timeout ->  logout      /   log_err
-    timer                   ->  w_login
+    rq_login    &   valid       ->  login       /   send_login
+    rq_login                    ->  logout      /   log_err
+    timer       &   timeout_wl  ->  logout      /   log_err
+    timer                       ->  w_login
+    _                           ->  logout      /   log_err
 
 [login]
-    rq_key                  ->  logout      /   log_err
-    rq_login                ->  logout      /   log_err
-    rq_logout               ->  logout      /   send_logout
-    heartbeat               ->  logout      /   log_err
-    timer       &   on_time ->  login
-    timer                   ->  logout
+    rq_logout                   ->  logout      /   send_logout
+    heartbeat                   ->  login       /   update_hb
+    timer       &   timeout_l   ->  logout
+    timer                       ->  login
+    _                           ->  logout      /   log_err
 
 [logout]
-    rq_key                  ->  logout      /   log_err
-    rq_login                ->  logout      /   log_err
-    rq_logout               ->  logout      /   logout
-    heartbeat               ->  logout      /   log_err
-    timer                   ->  logout      /   log_err
+    timer                       ->  logout
+    _                           ->  logout      /   log_err
 ```
 
 And this is the input for this tool to generate code
@@ -162,6 +154,36 @@ This will be after the final state and '/'.
 ```
 
 In this example we have **send_key**, **send_login**...
+
+#### Special transition
+
+In all states it is necessary to consider all inputs.
+
+But it is very common that many transitions are the same (generally error cases).
+
+This is marked with the input \_
+
+Consider the `init` status:
+
+```peg
+[init]
+    rq_key                      ->  w_login     /   send_key
+    timer                       ->  init
+    _                           ->  logout      /   log_err
+```
+
+\_ will be expanded to produce...
+
+```peg
+[init]
+    rq_key                      ->  w_login     /   send_key
+    timer                       ->  init
+    rq_login                    ->  logout      /   log_err
+    heartbeat                   ->  logout      /   log_err
+    rq_logout                   ->  logout      /   log_err
+```
+
+Therefore considering all possible inputs in this state
 
 ## Usage
 

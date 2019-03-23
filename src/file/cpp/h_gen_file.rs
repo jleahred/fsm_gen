@@ -22,19 +22,21 @@ pub(crate) fn generate_header_fsm_code_generated(
     let header_guard = || fomat!("FSM_" (stem_name.to_uppercase()) "_GENERATED_H");
 
     let forward_status_info = || {
-        get_status_names(fsm).iter().fold("".to_string(), |r, i| {
-            format!("{}struct {}_info_t;\n", r, i)
-        })
+        crate::parser::get_status_names(fsm)
+            .iter()
+            .fold("".to_string(), |r, i| {
+                format!("{}struct {}_info_t;\n", r, i)
+            })
     };
 
     let forward_struct_in = || {
-        get_input_names(fsm)
+        crate::parser::get_all_input_names(fsm)
             .iter()
             .fold("".to_string(), |r, i| format!("{}struct {}_t;\n", r, i))
     };
 
     let transactions_changes_forward_decl = || {
-        get_transchange_in_to(fsm)
+        crate::parser::get_transchange_in_to(fsm)
             .iter()
             .fold("".to_string(), |r, i| {
                 format!("{0}  {1}_info_t in2{1}(const {2}_t& i);\n", r, i.1, i.0)
@@ -63,9 +65,11 @@ pub(crate) fn generate_header_fsm_code_generated(
     };
 
     let in_methods_forward_decl = || {
-        get_input_names(fsm).iter().fold("".to_string(), |r, i| {
-            format!("{}  void in(const {}_t& in);\n", r, i)
-        })
+        crate::parser::get_all_input_names(fsm)
+            .iter()
+            .fold("".to_string(), |r, i| {
+                format!("{}  void in(const {}_t& in);\n", r, i)
+            })
     };
 
     let template = fomat!(r#"

@@ -1,5 +1,5 @@
 
-//  generated automatically  2019-03-23 11:31:36
+//  generated automatically  2019-03-23 14:09:20
 //  do not modify it manually
 
 #ifndef FSM_LOGIN_GENERATED_H
@@ -65,6 +65,7 @@ private:
     //  implementation in fsm_login.cpp
 
   //  status change functions
+  login_info_t in2login(const heartbeat_t& i);
   logout_info_t in2logout(const heartbeat_t& i);
   logout_info_t in2logout(const rq_key_t& i);
   w_login_info_t in2w_login(const rq_key_t& i);
@@ -79,8 +80,8 @@ private:
 
   //  guards to implement
   bool valid(const rq_login_t& in, const  w_login_info_t& st_info);
-  bool timeout(const timer_t& in, const  w_login_info_t& st_info);
-  bool on_time(const timer_t& in, const  login_info_t& st_info);
+  bool timeout_wl(const timer_t& in, const  w_login_info_t& st_info);
+  bool timeout_l(const timer_t& in, const  login_info_t& st_info);
 
 
 template <typename IN, typename INIT_ST, typename END_ST>

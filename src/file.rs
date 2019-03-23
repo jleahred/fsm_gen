@@ -1,10 +1,8 @@
-use idata::cont::IVec;
-use std::collections::BTreeSet;
 use std::fs::File;
 use std::io::prelude::*;
 use std::path::PathBuf;
 
-mod cpp;
+pub(crate) mod cpp;
 
 pub(crate) fn process(path: &PathBuf) -> std::result::Result<(), String> {
     let mut file = File::open(path).map_err(|e| format!("{}", e))?;
@@ -47,26 +45,4 @@ fn get_dir_stem_name(orig_path: &PathBuf) -> Result<(String, String), String> {
         to_string(&dir.to_str())?,
         to_string(&orig_path.file_stem().and_then(|fname| fname.to_str()))?,
     ))
-}
-
-fn get_status_names(fsm: &[crate::parser::Status]) -> Vec<String> {
-    fsm.iter().fold(vec![], |r, i| r.ipush(i.name.clone()))
-}
-
-fn get_input_names(fsm: &[crate::parser::Status]) -> BTreeSet<String> {
-    fsm.iter().fold(BTreeSet::new(), |r, s| {
-        s.transitions.iter().fold(r, |mut r, t| {
-            r.insert(t.input.clone());
-            r
-        })
-    })
-}
-
-fn get_transchange_in_to(fsm: &[crate::parser::Status]) -> BTreeSet<(String, String)> {
-    fsm.iter().fold(BTreeSet::new(), |r, s| {
-        s.transitions.iter().fold(r, |mut r, t| {
-            r.insert((t.input.clone(), t.new_status.clone()));
-            r
-        })
-    })
 }

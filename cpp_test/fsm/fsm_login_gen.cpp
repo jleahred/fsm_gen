@@ -1,5 +1,5 @@
 
-//  generated automatically  2019-03-23 11:31:36
+//  generated automatically  2019-03-23 14:09:20
 //  do not modify it manually
 
 #include "fsm_login_gen.h"
@@ -195,9 +195,9 @@ void Fsm::in(const timer_t& in) { state = state ->in(in); }
     
   SState w_login::in(const timer_t& in) {
     if(false) {;
-    } else if(timeout(in, info)) {
+    } else if(timeout_wl(in, info)) {
         auto nw_st_info = in2logout(in);
-        log("[w_login] timer(timeout) -> logout", in, info, nw_st_info);
+        log("[w_login] timer(timeout_wl) -> logout", in, info, nw_st_info);
         return std::make_shared<logout>(nw_st_info);
     } else {
         auto nw_st_info = in2w_login(in);
@@ -210,9 +210,9 @@ void Fsm::in(const timer_t& in) { state = state ->in(in); }
   SState login::in(const heartbeat_t& in) {
     if(false) {;
     } else {
-        auto nw_st_info = in2logout(in);
-        log("[login] heartbeat -> logout", in, info, nw_st_info);
-        return std::make_shared<logout>(nw_st_info);
+        auto nw_st_info = in2login(in);
+        log("[login] heartbeat -> login", in, info, nw_st_info);
+        return std::make_shared<login>(nw_st_info);
 
     }              
 }
@@ -249,14 +249,14 @@ void Fsm::in(const timer_t& in) { state = state ->in(in); }
     
   SState login::in(const timer_t& in) {
     if(false) {;
-    } else if(on_time(in, info)) {
-        auto nw_st_info = in2login(in);
-        log("[login] timer(on_time) -> login", in, info, nw_st_info);
-        return std::make_shared<login>(nw_st_info);
-    } else {
+    } else if(timeout_l(in, info)) {
         auto nw_st_info = in2logout(in);
-        log("[login] timer -> logout", in, info, nw_st_info);
+        log("[login] timer(timeout_l) -> logout", in, info, nw_st_info);
         return std::make_shared<logout>(nw_st_info);
+    } else {
+        auto nw_st_info = in2login(in);
+        log("[login] timer -> login", in, info, nw_st_info);
+        return std::make_shared<login>(nw_st_info);
 
     }              
 }

@@ -26,15 +26,19 @@ pub(crate) fn generate_header_fsm_code(
     let header_guard = || fomat!("FSM_" (stem_name.to_uppercase()) "_H");
 
     let status_info_empty = || {
-        get_status_names(fsm).iter().fold("".to_string(), |r, i| {
-            format!("{}  struct {}_info_t{{}};\n", r, i)
-        })
+        crate::parser::get_status_names(fsm)
+            .iter()
+            .fold("".to_string(), |r, i| {
+                format!("{}  struct {}_info_t{{}};\n", r, i)
+            })
     };
 
     let in_types_empty_decl = || {
-        get_input_names(fsm).iter().fold("".to_string(), |r, i| {
-            format!("{}  struct {}_t {{}};\n", r, i)
-        })
+        crate::parser::get_all_input_names(fsm)
+            .iter()
+            .fold("".to_string(), |r, i| {
+                format!("{}  struct {}_t {{}};\n", r, i)
+            })
     };
 
     let template = fomat!(

@@ -22,30 +22,38 @@ pub(crate) fn generate_cpp_fsm_code_generated(
   let mut f = File::create(file_name).map_err(|e| format!("{}", e))?;
 
   let in_methods_forward_virtual = || {
-    get_input_names(fsm).iter().fold("".to_string(), |r, i| {
-      format!("{}  virtual SState in(const {}_t& in) = 0;\n", r, i)
-    })
+    crate::parser::get_all_input_names(fsm)
+      .iter()
+      .fold("".to_string(), |r, i| {
+        format!("{}  virtual SState in(const {}_t& in) = 0;\n", r, i)
+      })
   };
 
   let override_inputs = || {
-    get_input_names(fsm).iter().fold("".to_string(), |r, i| {
-      format!("{}  SState in(const {}_t& in) override;\n", r, i)
-    })
+    crate::parser::get_all_input_names(fsm)
+      .iter()
+      .fold("".to_string(), |r, i| {
+        format!("{}  SState in(const {}_t& in) override;\n", r, i)
+      })
   };
 
   let fsm_in = || {
-    get_input_names(fsm).iter().fold("".to_string(), |r, i| {
-      format!(
-        "{}void Fsm::in(const {}_t& in) {{ state = state ->in(in); }}\n",
-        r, i
-      )
-    })
+    crate::parser::get_all_input_names(fsm)
+      .iter()
+      .fold("".to_string(), |r, i| {
+        format!(
+          "{}void Fsm::in(const {}_t& in) {{ state = state ->in(in); }}\n",
+          r, i
+        )
+      })
   };
 
   let status_clases_declaration = || {
-    get_status_names(fsm).iter().fold("".to_string(), |r, i| {
-      format!(
-        r#"{}class {1} : public BaseState {{
+    crate::parser::get_status_names(fsm)
+      .iter()
+      .fold("".to_string(), |r, i| {
+        format!(
+          r#"{}class {1} : public BaseState {{
 public:
     {1}(const {1}_info_t& i) : info(i) {{}}
     virtual ~{1}(){{}}
@@ -57,11 +65,11 @@ private:
 }};
 
 "#,
-        r,
-        i,
-        override_inputs()
-      )
-    })
+          r,
+          i,
+          override_inputs()
+        )
+      })
   };
 
   let all_states_in = || {
@@ -103,7 +111,7 @@ private:
         })
     };
     let state_impl = |sn: &str| {
-      get_input_names(fsm)
+      crate::parser::get_all_input_names(fsm)
         .iter()
         .fold("".to_string(), |r, input| {
           fomat!((r)r#"

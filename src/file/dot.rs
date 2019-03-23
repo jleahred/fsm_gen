@@ -38,6 +38,7 @@ pub(crate) fn generate_file(
             st.transitions
                 .iter()
                 .filter(|t| t.input != "_")
+                .filter(|t| !(t.action.is_none() && t.guard.is_none() && st.name == t.new_status))
                 .fold("".to_string(), |acc, t| {
                     format!(
                         "{}\n{} -> {} [label=\"{}{}{}\"]",

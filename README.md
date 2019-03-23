@@ -207,7 +207,7 @@ fsm_gen --help
 ```
 
 ```
-fsm_gen 0.1.0
+fsm_gen 0.1.1
 jleahred <jleahred@gmail.com>
 
     Generate code from a simple fsm file
@@ -218,10 +218,11 @@ USAGE:
     fsm_gen [FLAGS] [OPTIONS] [fsm_files]...
 
 FLAGS:
-    -h, --help          Prints help information
-        --help-cpp      Give me some information about generating cpp files
-    -s, --show-langs    Show supported languages generators
-    -V, --version       Prints version information
+    -d, --dot-graphviz    Generate graphviz dot file
+    -h, --help            Prints help information
+        --help-cpp        Give me some information about generating cpp files
+    -s, --show-langs      Show supported languages generators
+    -V, --version         Prints version information
 
 OPTIONS:
     -l, --lang <lang>            Language to generate code (show available --show-langs) [default: cpp]

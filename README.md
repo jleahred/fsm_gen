@@ -6,8 +6,8 @@ Pending to upload to crates.io
 
 ## TODO
 
-- Upload to crates.io
 - Support for multiple guards and actions
+- Update idata in order to use ispush with btrees and more
 
 - Complete the cpp example and update on README.md
 - Check fsm format

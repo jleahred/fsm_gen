@@ -2,7 +2,16 @@
 
 ## Installation
 
-Pending to upload to crates.io
+```bash
+cargo install -f fsm_gen
+```
+
+You can download from repository and build and install as usual
+
+```bash
+cargo build --release
+cargo install
+```
 
 ## TODO
 

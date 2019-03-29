@@ -126,10 +126,12 @@ pub(crate) fn get_all_input_names(fsm: &[crate::parser::Status]) -> BTreeSet<Str
     })
 }
 
-pub(crate) fn get_transchange_in_to(fsm: &[crate::parser::Status]) -> BTreeSet<(String, String)> {
+pub(crate) fn get_transchange_in_to(
+    fsm: &[crate::parser::Status],
+) -> BTreeSet<(String, String, String)> {
     fsm.iter().fold(BTreeSet::new(), |r, s| {
         s.transitions.iter().fold(r, |mut r, t| {
-            r.insert((t.input.clone(), t.new_status.clone()));
+            r.insert((s.name.clone(), t.input.clone(), t.new_status.clone()));
             r
         })
     })

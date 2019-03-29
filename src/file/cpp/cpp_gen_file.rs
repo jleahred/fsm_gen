@@ -90,7 +90,7 @@ private:
     };
     let impl_input_trans = |sn: &str, input: &str| {
       let change_trans = |sn, tr: &crate::parser::Transition, guard: &str| {
-        fomat!(r#"auto nw_st_info = in2"# (tr.new_status) r#"(in);
+        fomat!(r#"auto nw_st_info = from_in2"# (tr.new_status) r#"(this->info, in);
         log("["# (sn) r#"] "# (tr.input) r#""# (guard) r#" -> "# (tr.new_status) r#"", in, info, nw_st_info);
         return std::make_shared<"# (tr.new_status) r#">(nw_st_info);
 "#)

@@ -39,7 +39,10 @@ pub(crate) fn generate_header_fsm_code_generated(
         crate::parser::get_transchange_in_to(fsm)
             .iter()
             .fold("".to_string(), |r, i| {
-                format!("{0}  {1}_info_t in2{1}(const {2}_t& i);\n", r, i.1, i.0)
+                format!(
+                    "{0}  {3}_info_t from_in2{3}(const {1}_info_t& from, const {2}_t& in);\n",
+                    r, i.0, i.1, i.2
+                )
             })
     };
 

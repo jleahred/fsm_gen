@@ -1,5 +1,5 @@
 
-//  generated automatically  2019-03-23 23:14:19
+//  generated automatically  2019-03-29 19:38:10
 //  do not modify it manually
 
 #ifndef FSM_LOGIN_GENERATED_H
@@ -65,17 +65,29 @@ private:
     //  implementation in fsm_login.cpp
 
   //  status change functions
-  login_info_t in2login(const heartbeat_t& i);
-  logout_info_t in2logout(const heartbeat_t& i);
-  logout_info_t in2logout(const rq_key_t& i);
-  w_login_info_t in2w_login(const rq_key_t& i);
-  login_info_t in2login(const rq_login_t& i);
-  logout_info_t in2logout(const rq_login_t& i);
-  logout_info_t in2logout(const rq_logout_t& i);
-  init_info_t in2init(const timer_t& i);
-  login_info_t in2login(const timer_t& i);
-  logout_info_t in2logout(const timer_t& i);
-  w_login_info_t in2w_login(const timer_t& i);
+  logout_info_t from_in2logout(const init_info_t& from, const heartbeat_t& in);
+  w_login_info_t from_in2w_login(const init_info_t& from, const rq_key_t& in);
+  logout_info_t from_in2logout(const init_info_t& from, const rq_login_t& in);
+  logout_info_t from_in2logout(const init_info_t& from, const rq_logout_t& in);
+  init_info_t from_in2init(const init_info_t& from, const timer_t& in);
+  login_info_t from_in2login(const login_info_t& from, const heartbeat_t& in);
+  logout_info_t from_in2logout(const login_info_t& from, const rq_key_t& in);
+  logout_info_t from_in2logout(const login_info_t& from, const rq_login_t& in);
+  logout_info_t from_in2logout(const login_info_t& from, const rq_logout_t& in);
+  login_info_t from_in2login(const login_info_t& from, const timer_t& in);
+  logout_info_t from_in2logout(const login_info_t& from, const timer_t& in);
+  logout_info_t from_in2logout(const logout_info_t& from, const heartbeat_t& in);
+  logout_info_t from_in2logout(const logout_info_t& from, const rq_key_t& in);
+  logout_info_t from_in2logout(const logout_info_t& from, const rq_login_t& in);
+  logout_info_t from_in2logout(const logout_info_t& from, const rq_logout_t& in);
+  logout_info_t from_in2logout(const logout_info_t& from, const timer_t& in);
+  logout_info_t from_in2logout(const w_login_info_t& from, const heartbeat_t& in);
+  logout_info_t from_in2logout(const w_login_info_t& from, const rq_key_t& in);
+  login_info_t from_in2login(const w_login_info_t& from, const rq_login_t& in);
+  logout_info_t from_in2logout(const w_login_info_t& from, const rq_login_t& in);
+  logout_info_t from_in2logout(const w_login_info_t& from, const rq_logout_t& in);
+  logout_info_t from_in2logout(const w_login_info_t& from, const timer_t& in);
+  w_login_info_t from_in2w_login(const w_login_info_t& from, const timer_t& in);
 
 
   //  guards to implement

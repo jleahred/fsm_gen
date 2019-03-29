@@ -15,6 +15,10 @@ cargo install
 
 ## TODO
 
+- Avoid expand '\_' inputs
+  instead, use the base status (parent of all status)
+- Add actions
+- Add full proposed file for hand written .h and .cpp on generated one
 - Add comments support on fsm grammar
 - Support for multiple guards and actions
 - Update idata in order to use ispush with btrees and more

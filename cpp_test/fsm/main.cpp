@@ -1,6 +1,6 @@
 /*
  *
- *  look into .fsm
+ *  look into login.fsm
  *
  */
 

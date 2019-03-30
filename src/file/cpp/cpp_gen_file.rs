@@ -143,7 +143,6 @@ private:
 //  do not modify it manually
 
 #include "fsm_"# (stem_name) r#"_gen.h"
-#include "fsm_"# (stem_name) r#"_types.h"
 
 #include "fsm_"# (stem_name) r#"_private.hpp"
 

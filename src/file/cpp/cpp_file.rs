@@ -17,9 +17,9 @@ pub(crate) fn generate_cpp_fsm_code(
     let file_name = format!("{}/fsm_{}.cpp", dir, stem_name);
     println!("Generating file... {}", file_name);
 
-    if std::path::Path::new(&file_name).exists() {
-        return Ok(());
-    }
+    // if std::path::Path::new(&file_name).exists() {
+    //     return Ok(());
+    // }
 
     let mut f = File::create(file_name).map_err(|e| format!("{}", e))?;
 
@@ -28,7 +28,7 @@ pub(crate) fn generate_cpp_fsm_code(
             .iter()
             .fold("".to_string(), |r, i| {
                 format!(
-                    "{0}    {3}_info_t from_in2{3}(const {1}_info_t& /*from*/, const {2}_t& /*in*/){{ return {3}_info_t{{}};}}\n",
+                    "{0}    st_{3}_info_t from_in2{3}(const st_{1}_info_t& /*from*/, const in_{2}_t& /*in*/){{ return st_{3}_info_t{{}};}}\n",
                     r, i.0, i.1, i.2
                 )
             })
@@ -39,7 +39,7 @@ pub(crate) fn generate_cpp_fsm_code(
             st.transitions.iter().fold("".to_string(), |acc, t| {
                 if let Some(g) = &t.guard {
                     format!(
-                        "{}    bool {}(const {}_t& /*in*/, const  {}_info_t& /*st_info*/) {{ return true; }}\n",
+                        "{}    bool {}(const in_{}_t& /*in*/, const  st_{}_info_t& /*st_info*/) {{ return true; }}\n",
                         acc,
                         g.to_string(),
                         t.input,
@@ -52,6 +52,28 @@ pub(crate) fn generate_cpp_fsm_code(
         };
         fsm.iter().fold("".to_string(), |acc, st| {
             format!("{}{}", acc, st_gen_guards(st))
+        })
+    };
+
+    let actions = || {
+        let st_gen_actions = |st: &crate::parser::Status| {
+            st.transitions.iter().fold("".to_string(), |acc, t| {
+                if let Some(a) = &t.action {
+                    format!(
+                        "{}    void act_{}(const st_{}_info_t& /*st_orig*/, const in_{}_t& /*in*/, const  st_{}_info_t& /*st_dest*/) {{}}\n",
+                        acc,
+                        a.to_string(),
+                        st.name,
+                        t.input,
+                        t.new_status,
+                    )
+                } else {
+                    acc
+                }
+            })
+        };
+        fsm.iter().fold("".to_string(), |acc, st| {
+            format!("{}{}", acc, st_gen_actions(st))
         })
     };
 
@@ -71,6 +93,9 @@ namespace "# (stem_name) r#" {
 
     //  guards
 "# (guards()) r#"
+
+    //  actions
+"# (actions()) r#"
 
 } // namespace "# (stem_name) r#"
 "#

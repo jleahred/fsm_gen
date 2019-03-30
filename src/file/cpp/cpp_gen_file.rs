@@ -25,7 +25,7 @@ pub(crate) fn generate_cpp_fsm_code_generated(
     crate::parser::get_all_input_names(fsm)
       .iter()
       .fold("".to_string(), |r, i| {
-        format!("{}  virtual SState in(const {}_t& in) = 0;\n", r, i)
+        format!("{}  virtual SState in(const in_{}_t& in) = 0;\n", r, i)
       })
   };
 
@@ -33,7 +33,7 @@ pub(crate) fn generate_cpp_fsm_code_generated(
     crate::parser::get_all_input_names(fsm)
       .iter()
       .fold("".to_string(), |r, i| {
-        format!("{}  SState in(const {}_t& in) override;\n", r, i)
+        format!("{}  SState in(const in_{}_t& in) override;\n", r, i)
       })
   };
 
@@ -42,7 +42,7 @@ pub(crate) fn generate_cpp_fsm_code_generated(
       .iter()
       .fold("".to_string(), |r, i| {
         format!(
-          "{}void Fsm::in(const {}_t& in) {{ state = state ->in(in); }}\n",
+          "{}void Fsm::in(const in_{}_t& in) {{ state = state ->in(in); }}\n",
           r, i
         )
       })
@@ -55,11 +55,11 @@ pub(crate) fn generate_cpp_fsm_code_generated(
         format!(
           r#"{}class {1} : public BaseState {{
 public:
-    {1}(const {1}_info_t& i) : info(i) {{}}
+    {1}(const st_{1}_info_t& i) : info(i) {{}}
     virtual ~{1}(){{}}
 
 private:
-    {1}_info_t info;
+    st_{1}_info_t info;
 
 {2}
 }};
@@ -89,10 +89,15 @@ private:
         })
     };
     let impl_input_trans = |sn: &str, input: &str| {
-      let change_trans = |sn, tr: &crate::parser::Transition, guard: &str| {
+      let change_trans = |sn, tr: &crate::parser::Transition, guard_txt: &str| {
+        let action_code = if let Some(action) = &tr.action {
+          format!("act_{}(this->info, in, nw_st_info);\n", action)
+        } else {
+          "".to_string()
+        };
         fomat!(r#"auto nw_st_info = from_in2"# (tr.new_status) r#"(this->info, in);
-        log("["# (sn) r#"] "# (tr.input) r#""# (guard) r#" -> "# (tr.new_status) r#"", in, info, nw_st_info);
-        return std::make_shared<"# (tr.new_status) r#">(nw_st_info);
+        log("["# (sn) r#"] "# (tr.input) r#""# (guard_txt) r#" -> "# (tr.new_status) r#"", in, info, nw_st_info);
+        "# (action_code) r#"        return std::make_shared<"# (tr.new_status) r#">(nw_st_info);
 "#)
       };
       transitions4input(sn, input)
@@ -115,7 +120,7 @@ private:
         .iter()
         .fold("".to_string(), |r, input| {
           fomat!((r)r#"
-  SState "# (sn) r#"::in(const "# (input) r#"_t& in) {
+  SState "# (sn) r#"::in(const in_"# (input) r#"_t& in) {
 "# (impl_input_trans(sn, input)) r#"}
     "#)
         })
@@ -154,7 +159,7 @@ public:
 
 "# (status_clases_declaration()) r#"
 
-Fsm::Fsm() : state(std::make_shared<"# (first_state_name()) r#">("# (first_state_name()) r#"_info_t{})) {}
+Fsm::Fsm() : state(std::make_shared<"# (first_state_name()) r#">(st_"# (first_state_name()) r#"_info_t{})) {}
 Fsm::~Fsm() {}
 
 "# (fsm_in()) r#"

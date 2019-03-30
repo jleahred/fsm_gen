@@ -17,9 +17,9 @@ pub(crate) fn generate_header_fsm_code(
     let file_name = format!("{}/fsm_{}.h", dir, stem_name);
     println!("Generating file... {}", file_name);
 
-    if std::path::Path::new(&file_name).exists() {
-        return Ok(());
-    }
+    // if std::path::Path::new(&file_name).exists() {
+    //     return Ok(());
+    // }
 
     let mut f = File::create(file_name).map_err(|e| format!("{}", e))?;
 
@@ -29,7 +29,7 @@ pub(crate) fn generate_header_fsm_code(
         crate::parser::get_status_names(fsm)
             .iter()
             .fold("".to_string(), |r, i| {
-                format!("{}  struct {}_info_t{{}};\n", r, i)
+                format!("{}  struct st_{}_info_t{{}};\n", r, i)
             })
     };
 
@@ -37,7 +37,7 @@ pub(crate) fn generate_header_fsm_code(
         crate::parser::get_all_input_names(fsm)
             .iter()
             .fold("".to_string(), |r, i| {
-                format!("{}  struct {}_t {{}};\n", r, i)
+                format!("{}  struct in_{}_t {{}};\n", r, i)
             })
     };
 

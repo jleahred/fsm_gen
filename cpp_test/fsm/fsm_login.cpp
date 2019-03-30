@@ -9,35 +9,56 @@
 namespace login {
 
     //  status change functions
-    logout_info_t from_in2logout(const init_info_t& /*from*/, const heartbeat_t& /*in*/){ return logout_info_t{};}
-    w_login_info_t from_in2w_login(const init_info_t& /*from*/, const rq_key_t& /*in*/){ return w_login_info_t{};}
-    logout_info_t from_in2logout(const init_info_t& /*from*/, const rq_login_t& /*in*/){ return logout_info_t{};}
-    logout_info_t from_in2logout(const init_info_t& /*from*/, const rq_logout_t& /*in*/){ return logout_info_t{};}
-    init_info_t from_in2init(const init_info_t& /*from*/, const timer_t& /*in*/){ return init_info_t{};}
-    login_info_t from_in2login(const login_info_t& /*from*/, const heartbeat_t& /*in*/){ return login_info_t{};}
-    logout_info_t from_in2logout(const login_info_t& /*from*/, const rq_key_t& /*in*/){ return logout_info_t{};}
-    logout_info_t from_in2logout(const login_info_t& /*from*/, const rq_login_t& /*in*/){ return logout_info_t{};}
-    logout_info_t from_in2logout(const login_info_t& /*from*/, const rq_logout_t& /*in*/){ return logout_info_t{};}
-    login_info_t from_in2login(const login_info_t& /*from*/, const timer_t& /*in*/){ return login_info_t{};}
-    logout_info_t from_in2logout(const login_info_t& /*from*/, const timer_t& /*in*/){ return logout_info_t{};}
-    logout_info_t from_in2logout(const logout_info_t& /*from*/, const heartbeat_t& /*in*/){ return logout_info_t{};}
-    logout_info_t from_in2logout(const logout_info_t& /*from*/, const rq_key_t& /*in*/){ return logout_info_t{};}
-    logout_info_t from_in2logout(const logout_info_t& /*from*/, const rq_login_t& /*in*/){ return logout_info_t{};}
-    logout_info_t from_in2logout(const logout_info_t& /*from*/, const rq_logout_t& /*in*/){ return logout_info_t{};}
-    logout_info_t from_in2logout(const logout_info_t& /*from*/, const timer_t& /*in*/){ return logout_info_t{};}
-    logout_info_t from_in2logout(const w_login_info_t& /*from*/, const heartbeat_t& /*in*/){ return logout_info_t{};}
-    logout_info_t from_in2logout(const w_login_info_t& /*from*/, const rq_key_t& /*in*/){ return logout_info_t{};}
-    login_info_t from_in2login(const w_login_info_t& /*from*/, const rq_login_t& /*in*/){ return login_info_t{};}
-    logout_info_t from_in2logout(const w_login_info_t& /*from*/, const rq_login_t& /*in*/){ return logout_info_t{};}
-    logout_info_t from_in2logout(const w_login_info_t& /*from*/, const rq_logout_t& /*in*/){ return logout_info_t{};}
-    logout_info_t from_in2logout(const w_login_info_t& /*from*/, const timer_t& /*in*/){ return logout_info_t{};}
-    w_login_info_t from_in2w_login(const w_login_info_t& /*from*/, const timer_t& /*in*/){ return w_login_info_t{};}
+    st_logout_info_t from_in2logout(const st_init_info_t& /*from*/, const in_heartbeat_t& /*in*/){ return st_logout_info_t{};}
+    st_w_login_info_t from_in2w_login(const st_init_info_t& /*from*/, const in_rq_key_t& /*in*/){ return st_w_login_info_t{};}
+    st_logout_info_t from_in2logout(const st_init_info_t& /*from*/, const in_rq_login_t& /*in*/){ return st_logout_info_t{};}
+    st_logout_info_t from_in2logout(const st_init_info_t& /*from*/, const in_rq_logout_t& /*in*/){ return st_logout_info_t{};}
+    st_init_info_t from_in2init(const st_init_info_t& /*from*/, const in_timer_t& /*in*/){ return st_init_info_t{};}
+    st_login_info_t from_in2login(const st_login_info_t& /*from*/, const in_heartbeat_t& /*in*/){ return st_login_info_t{};}
+    st_logout_info_t from_in2logout(const st_login_info_t& /*from*/, const in_rq_key_t& /*in*/){ return st_logout_info_t{};}
+    st_logout_info_t from_in2logout(const st_login_info_t& /*from*/, const in_rq_login_t& /*in*/){ return st_logout_info_t{};}
+    st_logout_info_t from_in2logout(const st_login_info_t& /*from*/, const in_rq_logout_t& /*in*/){ return st_logout_info_t{};}
+    st_login_info_t from_in2login(const st_login_info_t& /*from*/, const in_timer_t& /*in*/){ return st_login_info_t{};}
+    st_logout_info_t from_in2logout(const st_login_info_t& /*from*/, const in_timer_t& /*in*/){ return st_logout_info_t{};}
+    st_logout_info_t from_in2logout(const st_logout_info_t& /*from*/, const in_heartbeat_t& /*in*/){ return st_logout_info_t{};}
+    st_logout_info_t from_in2logout(const st_logout_info_t& /*from*/, const in_rq_key_t& /*in*/){ return st_logout_info_t{};}
+    st_logout_info_t from_in2logout(const st_logout_info_t& /*from*/, const in_rq_login_t& /*in*/){ return st_logout_info_t{};}
+    st_logout_info_t from_in2logout(const st_logout_info_t& /*from*/, const in_rq_logout_t& /*in*/){ return st_logout_info_t{};}
+    st_logout_info_t from_in2logout(const st_logout_info_t& /*from*/, const in_timer_t& /*in*/){ return st_logout_info_t{};}
+    st_logout_info_t from_in2logout(const st_w_login_info_t& /*from*/, const in_heartbeat_t& /*in*/){ return st_logout_info_t{};}
+    st_logout_info_t from_in2logout(const st_w_login_info_t& /*from*/, const in_rq_key_t& /*in*/){ return st_logout_info_t{};}
+    st_login_info_t from_in2login(const st_w_login_info_t& /*from*/, const in_rq_login_t& /*in*/){ return st_login_info_t{};}
+    st_logout_info_t from_in2logout(const st_w_login_info_t& /*from*/, const in_rq_login_t& /*in*/){ return st_logout_info_t{};}
+    st_logout_info_t from_in2logout(const st_w_login_info_t& /*from*/, const in_rq_logout_t& /*in*/){ return st_logout_info_t{};}
+    st_logout_info_t from_in2logout(const st_w_login_info_t& /*from*/, const in_timer_t& /*in*/){ return st_logout_info_t{};}
+    st_w_login_info_t from_in2w_login(const st_w_login_info_t& /*from*/, const in_timer_t& /*in*/){ return st_w_login_info_t{};}
 
 
     //  guards
-    bool valid(const rq_login_t& /*in*/, const  w_login_info_t& /*st_info*/) { return true; }
-    bool timeout_wl(const timer_t& /*in*/, const  w_login_info_t& /*st_info*/) { return true; }
-    bool timeout_l(const timer_t& /*in*/, const  login_info_t& /*st_info*/) { return true; }
+    bool valid(const in_rq_login_t& /*in*/, const  st_w_login_info_t& /*st_info*/) { return true; }
+    bool timeout_wl(const in_timer_t& /*in*/, const  st_w_login_info_t& /*st_info*/) { return true; }
+    bool timeout_l(const in_timer_t& /*in*/, const  st_login_info_t& /*st_info*/) { return true; }
+
+
+    //  actions
+    void act_send_key(const st_init_info_t& /*st_orig*/, const in_rq_key_t& /*in*/, const  st_w_login_info_t& /*st_dest*/) {}
+    void act_log_err(const st_init_info_t& /*st_orig*/, const in_heartbeat_t& /*in*/, const  st_logout_info_t& /*st_dest*/) {}
+    void act_log_err(const st_init_info_t& /*st_orig*/, const in_rq_login_t& /*in*/, const  st_logout_info_t& /*st_dest*/) {}
+    void act_log_err(const st_init_info_t& /*st_orig*/, const in_rq_logout_t& /*in*/, const  st_logout_info_t& /*st_dest*/) {}
+    void act_send_login(const st_w_login_info_t& /*st_orig*/, const in_rq_login_t& /*in*/, const  st_login_info_t& /*st_dest*/) {}
+    void act_log_err(const st_w_login_info_t& /*st_orig*/, const in_rq_login_t& /*in*/, const  st_logout_info_t& /*st_dest*/) {}
+    void act_log_err(const st_w_login_info_t& /*st_orig*/, const in_timer_t& /*in*/, const  st_logout_info_t& /*st_dest*/) {}
+    void act_log_err(const st_w_login_info_t& /*st_orig*/, const in_heartbeat_t& /*in*/, const  st_logout_info_t& /*st_dest*/) {}
+    void act_log_err(const st_w_login_info_t& /*st_orig*/, const in_rq_key_t& /*in*/, const  st_logout_info_t& /*st_dest*/) {}
+    void act_log_err(const st_w_login_info_t& /*st_orig*/, const in_rq_logout_t& /*in*/, const  st_logout_info_t& /*st_dest*/) {}
+    void act_send_logout(const st_login_info_t& /*st_orig*/, const in_rq_logout_t& /*in*/, const  st_logout_info_t& /*st_dest*/) {}
+    void act_update_hb(const st_login_info_t& /*st_orig*/, const in_heartbeat_t& /*in*/, const  st_login_info_t& /*st_dest*/) {}
+    void act_log_err(const st_login_info_t& /*st_orig*/, const in_rq_key_t& /*in*/, const  st_logout_info_t& /*st_dest*/) {}
+    void act_log_err(const st_login_info_t& /*st_orig*/, const in_rq_login_t& /*in*/, const  st_logout_info_t& /*st_dest*/) {}
+    void act_log_err(const st_logout_info_t& /*st_orig*/, const in_heartbeat_t& /*in*/, const  st_logout_info_t& /*st_dest*/) {}
+    void act_log_err(const st_logout_info_t& /*st_orig*/, const in_rq_key_t& /*in*/, const  st_logout_info_t& /*st_dest*/) {}
+    void act_log_err(const st_logout_info_t& /*st_orig*/, const in_rq_login_t& /*in*/, const  st_logout_info_t& /*st_dest*/) {}
+    void act_log_err(const st_logout_info_t& /*st_orig*/, const in_rq_logout_t& /*in*/, const  st_logout_info_t& /*st_dest*/) {}
 
 
 } // namespace login

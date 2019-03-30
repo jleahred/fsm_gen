@@ -25,14 +25,14 @@ pub(crate) fn generate_header_fsm_code_generated(
         crate::parser::get_status_names(fsm)
             .iter()
             .fold("".to_string(), |r, i| {
-                format!("{}struct {}_info_t;\n", r, i)
+                format!("{}struct st_{}_info_t;\n", r, i)
             })
     };
 
     let forward_struct_in = || {
         crate::parser::get_all_input_names(fsm)
             .iter()
-            .fold("".to_string(), |r, i| format!("{}struct {}_t;\n", r, i))
+            .fold("".to_string(), |r, i| format!("{}struct in_{}_t;\n", r, i))
     };
 
     let transactions_changes_forward_decl = || {
@@ -40,7 +40,7 @@ pub(crate) fn generate_header_fsm_code_generated(
             .iter()
             .fold("".to_string(), |r, i| {
                 format!(
-                    "{0}  {3}_info_t from_in2{3}(const {1}_info_t& from, const {2}_t& in);\n",
+                    "{0}  st_{3}_info_t from_in2{3}(const st_{1}_info_t& from, const in_{2}_t& in);\n",
                     r, i.0, i.1, i.2
                 )
             })
@@ -51,7 +51,7 @@ pub(crate) fn generate_header_fsm_code_generated(
             st.transitions.iter().fold("".to_string(), |acc, t| {
                 if let Some(g) = &t.guard {
                     format!(
-                        "{}  bool {}(const {}_t& in, const  {}_info_t& st_info);\n",
+                        "{}  bool {}(const in_{}_t& in, const  st_{}_info_t& st_info);\n",
                         acc,
                         g.to_string(),
                         t.input,
@@ -67,11 +67,33 @@ pub(crate) fn generate_header_fsm_code_generated(
         })
     };
 
+    let actions2implement = || {
+        let st_gen_actions = |st: &crate::parser::Status| {
+            st.transitions.iter().fold("".to_string(), |acc, t| {
+                if let Some(a) = &t.action {
+                    format!(
+                        "{}  void act_{}(const st_{}_info_t& st_orig, const in_{}_t& in, const  st_{}_info_t& st_dest);\n",
+                        acc,
+                        a.to_string(),
+                        st.name,
+                        t.input,
+                        t.new_status,
+                    )
+                } else {
+                    acc
+                }
+            })
+        };
+        fsm.iter().fold("".to_string(), |acc, st| {
+            format!("{}{}", acc, st_gen_actions(st))
+        })
+    };
+
     let in_methods_forward_decl = || {
         crate::parser::get_all_input_names(fsm)
             .iter()
             .fold("".to_string(), |r, i| {
-                format!("{}  void in(const {}_t& in);\n", r, i)
+                format!("{}  void in(const in_{}_t& in);\n", r, i)
             })
     };
 
@@ -132,6 +154,9 @@ private:
 
   //  guards to implement
 "# (guards2implement()) r#"
+
+  //  actions to implement
+"# (actions2implement()) r#"
 
 template <typename IN, typename INIT_ST, typename END_ST>
 void log(const std::string &txt_trans, const IN &, const INIT_ST &, const END_ST &);

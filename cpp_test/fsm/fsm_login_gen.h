@@ -1,5 +1,5 @@
 
-//  generated automatically  2019-03-29 19:38:10
+//  generated automatically  2019-03-29 22:33:10
 //  do not modify it manually
 
 #ifndef FSM_LOGIN_GENERATED_H
@@ -16,18 +16,18 @@ namespace login {
 //  declaration on fsm_login.h
 
 //  forward_status_info
-struct init_info_t;
-struct w_login_info_t;
-struct login_info_t;
-struct logout_info_t;
+struct st_init_info_t;
+struct st_w_login_info_t;
+struct st_login_info_t;
+struct st_logout_info_t;
 
 
 //  in
-struct heartbeat_t;
-struct rq_key_t;
-struct rq_login_t;
-struct rq_logout_t;
-struct timer_t;
+struct in_heartbeat_t;
+struct in_rq_key_t;
+struct in_rq_login_t;
+struct in_rq_logout_t;
+struct in_timer_t;
 
 
 //      TO FILL BY HAND
@@ -43,11 +43,11 @@ public:
   Fsm();
   ~Fsm();
 
-  void in(const heartbeat_t& in);
-  void in(const rq_key_t& in);
-  void in(const rq_login_t& in);
-  void in(const rq_logout_t& in);
-  void in(const timer_t& in);
+  void in(const in_heartbeat_t& in);
+  void in(const in_rq_key_t& in);
+  void in(const in_rq_login_t& in);
+  void in(const in_rq_logout_t& in);
+  void in(const in_timer_t& in);
 
 
 
@@ -65,35 +65,56 @@ private:
     //  implementation in fsm_login.cpp
 
   //  status change functions
-  logout_info_t from_in2logout(const init_info_t& from, const heartbeat_t& in);
-  w_login_info_t from_in2w_login(const init_info_t& from, const rq_key_t& in);
-  logout_info_t from_in2logout(const init_info_t& from, const rq_login_t& in);
-  logout_info_t from_in2logout(const init_info_t& from, const rq_logout_t& in);
-  init_info_t from_in2init(const init_info_t& from, const timer_t& in);
-  login_info_t from_in2login(const login_info_t& from, const heartbeat_t& in);
-  logout_info_t from_in2logout(const login_info_t& from, const rq_key_t& in);
-  logout_info_t from_in2logout(const login_info_t& from, const rq_login_t& in);
-  logout_info_t from_in2logout(const login_info_t& from, const rq_logout_t& in);
-  login_info_t from_in2login(const login_info_t& from, const timer_t& in);
-  logout_info_t from_in2logout(const login_info_t& from, const timer_t& in);
-  logout_info_t from_in2logout(const logout_info_t& from, const heartbeat_t& in);
-  logout_info_t from_in2logout(const logout_info_t& from, const rq_key_t& in);
-  logout_info_t from_in2logout(const logout_info_t& from, const rq_login_t& in);
-  logout_info_t from_in2logout(const logout_info_t& from, const rq_logout_t& in);
-  logout_info_t from_in2logout(const logout_info_t& from, const timer_t& in);
-  logout_info_t from_in2logout(const w_login_info_t& from, const heartbeat_t& in);
-  logout_info_t from_in2logout(const w_login_info_t& from, const rq_key_t& in);
-  login_info_t from_in2login(const w_login_info_t& from, const rq_login_t& in);
-  logout_info_t from_in2logout(const w_login_info_t& from, const rq_login_t& in);
-  logout_info_t from_in2logout(const w_login_info_t& from, const rq_logout_t& in);
-  logout_info_t from_in2logout(const w_login_info_t& from, const timer_t& in);
-  w_login_info_t from_in2w_login(const w_login_info_t& from, const timer_t& in);
+  st_logout_info_t from_in2logout(const st_init_info_t& from, const in_heartbeat_t& in);
+  st_w_login_info_t from_in2w_login(const st_init_info_t& from, const in_rq_key_t& in);
+  st_logout_info_t from_in2logout(const st_init_info_t& from, const in_rq_login_t& in);
+  st_logout_info_t from_in2logout(const st_init_info_t& from, const in_rq_logout_t& in);
+  st_init_info_t from_in2init(const st_init_info_t& from, const in_timer_t& in);
+  st_login_info_t from_in2login(const st_login_info_t& from, const in_heartbeat_t& in);
+  st_logout_info_t from_in2logout(const st_login_info_t& from, const in_rq_key_t& in);
+  st_logout_info_t from_in2logout(const st_login_info_t& from, const in_rq_login_t& in);
+  st_logout_info_t from_in2logout(const st_login_info_t& from, const in_rq_logout_t& in);
+  st_login_info_t from_in2login(const st_login_info_t& from, const in_timer_t& in);
+  st_logout_info_t from_in2logout(const st_login_info_t& from, const in_timer_t& in);
+  st_logout_info_t from_in2logout(const st_logout_info_t& from, const in_heartbeat_t& in);
+  st_logout_info_t from_in2logout(const st_logout_info_t& from, const in_rq_key_t& in);
+  st_logout_info_t from_in2logout(const st_logout_info_t& from, const in_rq_login_t& in);
+  st_logout_info_t from_in2logout(const st_logout_info_t& from, const in_rq_logout_t& in);
+  st_logout_info_t from_in2logout(const st_logout_info_t& from, const in_timer_t& in);
+  st_logout_info_t from_in2logout(const st_w_login_info_t& from, const in_heartbeat_t& in);
+  st_logout_info_t from_in2logout(const st_w_login_info_t& from, const in_rq_key_t& in);
+  st_login_info_t from_in2login(const st_w_login_info_t& from, const in_rq_login_t& in);
+  st_logout_info_t from_in2logout(const st_w_login_info_t& from, const in_rq_login_t& in);
+  st_logout_info_t from_in2logout(const st_w_login_info_t& from, const in_rq_logout_t& in);
+  st_logout_info_t from_in2logout(const st_w_login_info_t& from, const in_timer_t& in);
+  st_w_login_info_t from_in2w_login(const st_w_login_info_t& from, const in_timer_t& in);
 
 
   //  guards to implement
-  bool valid(const rq_login_t& in, const  w_login_info_t& st_info);
-  bool timeout_wl(const timer_t& in, const  w_login_info_t& st_info);
-  bool timeout_l(const timer_t& in, const  login_info_t& st_info);
+  bool valid(const in_rq_login_t& in, const  st_w_login_info_t& st_info);
+  bool timeout_wl(const in_timer_t& in, const  st_w_login_info_t& st_info);
+  bool timeout_l(const in_timer_t& in, const  st_login_info_t& st_info);
+
+
+  //  actions to implement
+  void act_send_key(const st_init_info_t& st_orig, const in_rq_key_t& in, const  st_w_login_info_t& st_dest);
+  void act_log_err(const st_init_info_t& st_orig, const in_heartbeat_t& in, const  st_logout_info_t& st_dest);
+  void act_log_err(const st_init_info_t& st_orig, const in_rq_login_t& in, const  st_logout_info_t& st_dest);
+  void act_log_err(const st_init_info_t& st_orig, const in_rq_logout_t& in, const  st_logout_info_t& st_dest);
+  void act_send_login(const st_w_login_info_t& st_orig, const in_rq_login_t& in, const  st_login_info_t& st_dest);
+  void act_log_err(const st_w_login_info_t& st_orig, const in_rq_login_t& in, const  st_logout_info_t& st_dest);
+  void act_log_err(const st_w_login_info_t& st_orig, const in_timer_t& in, const  st_logout_info_t& st_dest);
+  void act_log_err(const st_w_login_info_t& st_orig, const in_heartbeat_t& in, const  st_logout_info_t& st_dest);
+  void act_log_err(const st_w_login_info_t& st_orig, const in_rq_key_t& in, const  st_logout_info_t& st_dest);
+  void act_log_err(const st_w_login_info_t& st_orig, const in_rq_logout_t& in, const  st_logout_info_t& st_dest);
+  void act_send_logout(const st_login_info_t& st_orig, const in_rq_logout_t& in, const  st_logout_info_t& st_dest);
+  void act_update_hb(const st_login_info_t& st_orig, const in_heartbeat_t& in, const  st_login_info_t& st_dest);
+  void act_log_err(const st_login_info_t& st_orig, const in_rq_key_t& in, const  st_logout_info_t& st_dest);
+  void act_log_err(const st_login_info_t& st_orig, const in_rq_login_t& in, const  st_logout_info_t& st_dest);
+  void act_log_err(const st_logout_info_t& st_orig, const in_heartbeat_t& in, const  st_logout_info_t& st_dest);
+  void act_log_err(const st_logout_info_t& st_orig, const in_rq_key_t& in, const  st_logout_info_t& st_dest);
+  void act_log_err(const st_logout_info_t& st_orig, const in_rq_login_t& in, const  st_logout_info_t& st_dest);
+  void act_log_err(const st_logout_info_t& st_orig, const in_rq_logout_t& in, const  st_logout_info_t& st_dest);
 
 
 template <typename IN, typename INIT_ST, typename END_ST>

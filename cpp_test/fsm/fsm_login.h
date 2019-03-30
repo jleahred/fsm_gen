@@ -14,18 +14,18 @@
 namespace login {
 
   //  status info types
-  struct init_info_t{};
-  struct w_login_info_t{};
-  struct login_info_t{};
-  struct logout_info_t{};
+  struct st_init_info_t{};
+  struct st_w_login_info_t{};
+  struct st_login_info_t{};
+  struct st_logout_info_t{};
 
 
   //  input types
-  struct heartbeat_t {};
-  struct rq_key_t {};
-  struct rq_login_t {};
-  struct rq_logout_t {};
-  struct timer_t {};
+  struct in_heartbeat_t {};
+  struct in_rq_key_t {};
+  struct in_rq_login_t {};
+  struct in_rq_logout_t {};
+  struct in_timer_t {};
 
 
 

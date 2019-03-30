@@ -21,74 +21,6 @@ pub(crate) fn generate_header_fsm_code_generated(
 
     let header_guard = || fomat!("FSM_" (stem_name.to_uppercase()) "_GENERATED_H");
 
-    let forward_status_info = || {
-        crate::parser::get_status_names(fsm)
-            .iter()
-            .fold("".to_string(), |r, i| {
-                format!("{}struct st_{}_info_t;\n", r, i)
-            })
-    };
-
-    let forward_struct_in = || {
-        crate::parser::get_all_input_names(fsm)
-            .iter()
-            .fold("".to_string(), |r, i| format!("{}struct in_{}_t;\n", r, i))
-    };
-
-    let transactions_changes_forward_decl = || {
-        crate::parser::get_transchange_in_to(fsm)
-            .iter()
-            .fold("".to_string(), |r, i| {
-                format!(
-                    "{0}  st_{3}_info_t from_in2{3}(const st_{1}_info_t& from, const in_{2}_t& in);\n",
-                    r, i.0, i.1, i.2
-                )
-            })
-    };
-
-    let guards2implement = || {
-        let st_gen_guards = |st: &crate::parser::Status| {
-            st.transitions.iter().fold("".to_string(), |acc, t| {
-                if let Some(g) = &t.guard {
-                    format!(
-                        "{}  bool {}(const in_{}_t& in, const  st_{}_info_t& st_info);\n",
-                        acc,
-                        g.to_string(),
-                        t.input,
-                        st.name
-                    )
-                } else {
-                    acc
-                }
-            })
-        };
-        fsm.iter().fold("".to_string(), |acc, st| {
-            format!("{}{}", acc, st_gen_guards(st))
-        })
-    };
-
-    let actions2implement = || {
-        let st_gen_actions = |st: &crate::parser::Status| {
-            st.transitions.iter().fold("".to_string(), |acc, t| {
-                if let Some(a) = &t.action {
-                    format!(
-                        "{}  void act_{}(const st_{}_info_t& st_orig, const in_{}_t& in, const  st_{}_info_t& st_dest);\n",
-                        acc,
-                        a.to_string(),
-                        st.name,
-                        t.input,
-                        t.new_status,
-                    )
-                } else {
-                    acc
-                }
-            })
-        };
-        fsm.iter().fold("".to_string(), |acc, st| {
-            format!("{}{}", acc, st_gen_actions(st))
-        })
-    };
-
     let in_methods_forward_decl = || {
         crate::parser::get_all_input_names(fsm)
             .iter()
@@ -107,21 +39,9 @@ pub(crate) fn generate_header_fsm_code_generated(
 #include <iostream>
 #include <memory>
 
-namespace login {
+#include "fsm_"# (stem_name) r#"_types.h"
 
-//  ----------------------------------------------------
-//      TO FILL BY HAND
-//          They have to be copiable
-//  declaration on fsm_"# (stem_name) r#".h
-
-//  forward_status_info
-"# (forward_status_info()) r#"
-
-//  in
-"# (forward_struct_in()) r#"
-
-//      TO FILL BY HAND
-//  ----------------------------------------------------
+namespace "# (stem_name) r#" {
 
 class BaseState;
 typedef std::shared_ptr<BaseState> SState;
@@ -144,30 +64,9 @@ private:
 //      F S M
 //  -------------------
 
-  //  ----------------------------------------------------
-  //      TO FILL BY HAND
-  
-    //  implementation in fsm_"# (stem_name) r#".cpp
-
-  //  status change functions
-"# (transactions_changes_forward_decl()) r#"
-
-  //  guards to implement
-"# (guards2implement()) r#"
-
-  //  actions to implement
-"# (actions2implement()) r#"
-
-template <typename IN, typename INIT_ST, typename END_ST>
-void log(const std::string &txt_trans, const IN &, const INIT_ST &, const END_ST &);
-
-  //      TO FILL BY HAND
-  //  ----------------------------------------------------
-
-} // namespace login
+} // namespace "# (stem_name) r#"
 
 #endif // "# (header_guard()) r#"
-
 "#
     );
 

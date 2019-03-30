@@ -55,11 +55,11 @@ pub(crate) fn generate_cpp_fsm_code_generated(
         format!(
           r#"{}class {1} : public BaseState {{
 public:
-    {1}(const st_{1}_info_t& i) : info(i) {{}}
+    {1}(const st_{1}_t& i) : info(i) {{}}
     virtual ~{1}(){{}}
 
 private:
-    st_{1}_info_t info;
+    st_{1}_t info;
 
 {2}
 }};
@@ -91,13 +91,13 @@ private:
     let impl_input_trans = |sn: &str, input: &str| {
       let change_trans = |sn, tr: &crate::parser::Transition, guard_txt: &str| {
         let action_code = if let Some(action) = &tr.action {
-          format!("act_{}(this->info, in, nw_st_info);\n", action)
+          format!("act_{}(this->info, in, nw_st_info);\n        ", action)
         } else {
           "".to_string()
         };
-        fomat!(r#"auto nw_st_info = from_in2"# (tr.new_status) r#"(this->info, in);
+        fomat!(r#"auto nw_st_info = from_in2"# (tr.new_status) r#"<st_"# (sn) r#"_t, in_"# (tr.input) r#"_t>(this->info, in);
         log("["# (sn) r#"] "# (tr.input) r#""# (guard_txt) r#" -> "# (tr.new_status) r#"", in, info, nw_st_info);
-        "# (action_code) r#"        return std::make_shared<"# (tr.new_status) r#">(nw_st_info);
+        "# (action_code) r#"return std::make_shared<"# (tr.new_status) r#">(nw_st_info);
 "#)
       };
       transitions4input(sn, input)
@@ -143,7 +143,9 @@ private:
 //  do not modify it manually
 
 #include "fsm_"# (stem_name) r#"_gen.h"
-#include "fsm_"# (stem_name) r#".h"
+#include "fsm_"# (stem_name) r#"_types.h"
+
+#include "fsm_"# (stem_name) r#"_private.hpp"
 
 namespace "# (stem_name) r#" {
 
@@ -159,7 +161,7 @@ public:
 
 "# (status_clases_declaration()) r#"
 
-Fsm::Fsm() : state(std::make_shared<"# (first_state_name()) r#">(st_"# (first_state_name()) r#"_info_t{})) {}
+Fsm::Fsm() : state(std::make_shared<"# (first_state_name()) r#">(st_"# (first_state_name()) r#"_t{})) {}
 Fsm::~Fsm() {}
 
 "# (fsm_in()) r#"

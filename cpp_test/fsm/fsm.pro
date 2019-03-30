@@ -5,9 +5,13 @@ CONFIG -= qt
 
 SOURCES += \
         main.cpp \
-    fsm_login.cpp \
     fsm_login_gen.cpp
 
 HEADERS += \
-    fsm_login.h \
-    fsm_login_gen.h
+    fsm_login_types.h \
+    fsm_login_gen.h \
+    fsm_login_private.hpp
+
+DISTFILES += \
+    login.dot \
+    login.fsm

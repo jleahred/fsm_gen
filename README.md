@@ -13,11 +13,18 @@ cargo build --release
 cargo install
 ```
 
+## Versions
+
+### 0.2
+
+- Actions
+- private hpp (hand file)
+- Template functions to specialize on transaction change
+
 ## TODO
 
-- Avoid expand '\_' inputs
-  instead, use the base status (parent of all status)
-- Add actions
+- Update README
+- Negative guard transition
 - Add full proposed file for hand written .h and .cpp on generated one
 - Add comments support on fsm grammar
 - Support for multiple guards and actions
@@ -71,25 +78,28 @@ A list of transitions could be written as:
 [init]
     rq_key                      ->  w_login     /   send_key
     timer                       ->  init
-    _                           ->  logout      /   log_err
+    _                           ->  error
 
 [w_login]
     rq_login    &   valid       ->  login       /   send_login
-    rq_login                    ->  logout      /   log_err
-    timer       &   timeout_wl  ->  logout      /   log_err
+    rq_login                    ->  error
+    timer       &   timeout     ->  error
     timer                       ->  w_login
-    _                           ->  logout      /   log_err
+    _                           ->  error
 
 [login]
     rq_logout                   ->  logout      /   send_logout
     heartbeat                   ->  login       /   update_hb
-    timer       &   timeout_l   ->  logout
+    timer       &   timeout     ->  logout
     timer                       ->  login
-    _                           ->  logout      /   log_err
+    _                           ->  error
 
 [logout]
     timer                       ->  logout
-    _                           ->  logout      /   log_err
+    _                           ->  error
+
+[error]
+    _                           ->  error
 ```
 
 And this is the input for this tool to generate code

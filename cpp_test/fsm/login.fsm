@@ -1,22 +1,25 @@
 [init]
     rq_key                      ->  w_login     /   send_key
     timer                       ->  init
-    _                           ->  logout      /   log_err
+    _                           ->  error
 
 [w_login]
     rq_login    &   valid       ->  login       /   send_login
-    rq_login                    ->  logout      /   log_err
-    timer       &   timeout_wl  ->  logout      /   log_err
+    rq_login                    ->  error
+    timer       &   timeout     ->  error
     timer                       ->  w_login
-    _                           ->  logout      /   log_err
+    _                           ->  error
 
 [login]
     rq_logout                   ->  logout      /   send_logout
     heartbeat                   ->  login       /   update_hb
-    timer       &   timeout_l   ->  logout
+    timer       &   timeout     ->  logout
     timer                       ->  login
-    _                           ->  logout      /   log_err
+    _                           ->  error
 
 [logout]
     timer                       ->  logout
-    _                           ->  logout      /   log_err
+    _                           ->  error
+
+[error]
+    _                           ->  error

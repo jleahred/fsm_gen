@@ -1,9 +1,9 @@
 use std::path::PathBuf;
 
-mod cpp_file;
 mod cpp_gen_file;
-mod h_file;
 mod h_gen_file;
+mod hpp_file;
+mod types_h_file;
 
 pub(super) fn generate_cpp_files(
     fsm: &[crate::parser::Status],
@@ -11,8 +11,8 @@ pub(super) fn generate_cpp_files(
 ) -> std::result::Result<(), String> {
     h_gen_file::generate_header_fsm_code_generated(fsm, orig_path).map_err(|e| e.to_string())?;
     cpp_gen_file::generate_cpp_fsm_code_generated(fsm, orig_path).map_err(|e| e.to_string())?;
-    h_file::generate_header_fsm_code(fsm, orig_path).map_err(|e| e.to_string())?;
-    cpp_file::generate_cpp_fsm_code(fsm, orig_path).map_err(|e| e.to_string())?;
+    types_h_file::generate_types_header_fsm_code(fsm, orig_path).map_err(|e| e.to_string())?;
+    hpp_file::generate_hpp_fsm_code(fsm, orig_path).map_err(|e| e.to_string())?;
     Ok(())
 }
 

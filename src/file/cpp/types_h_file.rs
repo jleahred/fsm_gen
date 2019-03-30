@@ -8,18 +8,18 @@ use crate::file::*;
 //  -------------
 //      cpp
 
-pub(crate) fn generate_header_fsm_code(
+pub(crate) fn generate_types_header_fsm_code(
     fsm: &[crate::parser::Status],
     orig_path: &PathBuf,
 ) -> Result<(), String> {
     let (dir, stem_name) = get_dir_stem_name(&orig_path)?;
 
-    let file_name = format!("{}/fsm_{}.h", dir, stem_name);
+    let file_name = format!("{}/fsm_{}_types.h", dir, stem_name);
     println!("Generating file... {}", file_name);
 
-    // if std::path::Path::new(&file_name).exists() {
-    //     return Ok(());
-    // }
+    if std::path::Path::new(&file_name).exists() {
+        return Ok(());
+    }
 
     let mut f = File::create(file_name).map_err(|e| format!("{}", e))?;
 
@@ -29,7 +29,7 @@ pub(crate) fn generate_header_fsm_code(
         crate::parser::get_status_names(fsm)
             .iter()
             .fold("".to_string(), |r, i| {
-                format!("{}  struct st_{}_info_t{{}};\n", r, i)
+                format!("{}  struct st_{}_t{{}};\n", r, i)
             })
     };
 
@@ -53,8 +53,6 @@ pub(crate) fn generate_header_fsm_code(
 
 #include <string>
 
-#include "fsm_"# (stem_name) r#"_gen.h"
-
 namespace "# (stem_name) r#" {
 
   //  status info types
@@ -62,13 +60,6 @@ namespace "# (stem_name) r#" {
 
   //  input types
 "# (in_types_empty_decl()) r#"
-
-
-    //  log
-template <typename IN, typename INIT_ST, typename END_ST>
-void log(const std::string &txt_trans, const IN &, const INIT_ST &, const END_ST &) {
-  std::cout << txt_trans << std::endl;
-}
 
 } // namespace "# (stem_name) r#"
 #endif // "# (header_guard()) r#"

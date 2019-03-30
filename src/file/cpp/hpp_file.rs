@@ -8,38 +8,27 @@ use crate::file::*;
 //  -------------
 //      cpp
 
-pub(crate) fn generate_cpp_fsm_code(
+pub(crate) fn generate_hpp_fsm_code(
     fsm: &[crate::parser::Status],
     orig_path: &PathBuf,
 ) -> Result<(), String> {
     let (dir, stem_name) = get_dir_stem_name(&orig_path)?;
 
-    let file_name = format!("{}/fsm_{}.cpp", dir, stem_name);
+    let file_name = format!("{}/fsm_{}_private.hpp", dir, stem_name);
     println!("Generating file... {}", file_name);
 
-    // if std::path::Path::new(&file_name).exists() {
-    //     return Ok(());
-    // }
+    if std::path::Path::new(&file_name).exists() {
+        return Ok(());
+    }
 
     let mut f = File::create(file_name).map_err(|e| format!("{}", e))?;
-
-    let transactions_changes = || {
-        crate::parser::get_transchange_in_to(fsm)
-            .iter()
-            .fold("".to_string(), |r, i| {
-                format!(
-                    "{0}    st_{3}_info_t from_in2{3}(const st_{1}_info_t& /*from*/, const in_{2}_t& /*in*/){{ return st_{3}_info_t{{}};}}\n",
-                    r, i.0, i.1, i.2
-                )
-            })
-    };
 
     let guards = || {
         let st_gen_guards = |st: &crate::parser::Status| {
             st.transitions.iter().fold("".to_string(), |acc, t| {
                 if let Some(g) = &t.guard {
                     format!(
-                        "{}    bool {}(const in_{}_t& /*in*/, const  st_{}_info_t& /*st_info*/) {{ return true; }}\n",
+                        "{}    bool {}(const in_{}_t& /*in*/, const  st_{}_t& /*st_info*/) {{ return true; }}\n",
                         acc,
                         g.to_string(),
                         t.input,
@@ -60,7 +49,7 @@ pub(crate) fn generate_cpp_fsm_code(
             st.transitions.iter().fold("".to_string(), |acc, t| {
                 if let Some(a) = &t.action {
                     format!(
-                        "{}    void act_{}(const st_{}_info_t& /*st_orig*/, const in_{}_t& /*in*/, const  st_{}_info_t& /*st_dest*/) {{}}\n",
+                        "{}    void act_{}(const st_{}_t& /*st_orig*/, const in_{}_t& /*in*/, const  st_{}_t& /*st_dest*/) {{}}\n",
                         acc,
                         a.to_string(),
                         st.name,
@@ -77,19 +66,37 @@ pub(crate) fn generate_cpp_fsm_code(
         })
     };
 
+    let status_change_functions = || {
+        fsm.iter().fold("".to_string(), |acc, st| {
+            format!("{0}    template <typename FROM, typename IN> st_{1}_t from_in2{1}(const FROM&, const IN&) {{ return st_{1}_t{{}}; }}\n", acc, st.name)
+        })
+    };
+
     let template = fomat!(
         r#"
 //  Code generated automatically to be filled manually
 //  This file will not be updated by generator
 //  It's created just the first time as a reference
 
-#include "fsm_"# (stem_name) r#".h"
+//  This file will be included in _gen.cpp
+//  (anywhere else)
+
+//  to make happy some IDEs
+#include "fsm_"# (stem_name) r#"_types.h"
 #include "fsm_"# (stem_name) r#"_gen.h"
 
-namespace "# (stem_name) r#" {
+namespace {
+    using namespace "# (stem_name) r#";
+
+    //  log
+    template <typename IN, typename INIT_ST, typename END_ST>
+    void log(const std::string &txt_trans, const IN &, const INIT_ST &,
+            const END_ST &) {
+        std::cout << txt_trans << std::endl;
+    }
 
     //  status change functions
-"# (transactions_changes()) r#"
+"# (status_change_functions()) r#"
 
     //  guards
 "# (guards()) r#"
@@ -97,7 +104,7 @@ namespace "# (stem_name) r#" {
     //  actions
 "# (actions()) r#"
 
-} // namespace "# (stem_name) r#"
+} // namespace anonymous
 "#
     );
 

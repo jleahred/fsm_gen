@@ -21,10 +21,10 @@ cargo install
 - private hpp (hand file)
 - Template functions to specialize on transaction change
 - Anonymous `namespace` for functions
+- Add comments support on fsm grammar
 
 ## TODO
 
-- Add comments support on fsm grammar
 - Add full proposed file for hand written .h and .cpp on generated one
 - Negative guard transition???
 - Support for multiple guards and actions
@@ -75,10 +75,13 @@ The diagram would look like this:
 A list of transitions could be written as:
 
 ```peg
+//  Example of fsm to manage login
+//  on server side
+
 [init]
     rq_key                      ->  w_login     /   send_key
     timer                       ->  init
-    _                           ->  error
+    _                           ->  error           //  any other input...
 
 [w_login]
     rq_login    &   valid       ->  login       /   send_login
@@ -213,6 +216,10 @@ Consider the `init` status:
 
 Therefore considering all possible inputs in this state
 
+### Comments
+
+Comments starts at `//` and continues to the end of line
+
 ## Usage
 
 To get help...
@@ -221,9 +228,9 @@ To get help...
 fsm_gen --help
 ```
 
-```
-fsm_gen 0.1.1
-jleahred <jleahred@gmail.com>
+```txt
+fsm_gen 0.2.0
+jleahred
 
     Generate code from a simple fsm file
     To check the supported languages  --show_langs
@@ -241,7 +248,7 @@ FLAGS:
 
 OPTIONS:
     -l, --lang <lang>            Language to generate code (show available --show-langs) [default: cpp]
-    -t, --threads <n_threads>    Number of threads to use. 0 means one per core [default: 0]
+    -t, --threads <n_threads>    Number of threads to use. 0 means all [default: 0]
 
 ARGS:
     <fsm_files>...    List of fsm files
@@ -265,7 +272,7 @@ fsm_gen login.fsm  test/seller.fsm test/test2/lift.fsm
 
 The code will be generated on same directory of original `.fsm` file
 
-If your shell supports, it you could run...
+If your shell supports it, you could run...
 
 ```bash
 fsm_gen **/*.fsm
@@ -275,7 +282,7 @@ fsm_gen **/*.fsm
 
 Starting from the example `login.fsm` the system will create...
 
-```
+```txt
     fsm_login_gen.h
     fsm_login_gen.cpp
 ```
@@ -285,7 +292,7 @@ You don't have to modify these files.
 You have to write your code
 on next files...
 
-```
+```txt
     fsm_login_types.h
     fsm_login_private.hpp
 ```

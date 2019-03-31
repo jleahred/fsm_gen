@@ -3,9 +3,9 @@ pub fsm     -> Fsm
             {  st  }
 
 status      ->  Status
-    =  _endls  '['  n:id  ']'  _   endl
+    =  __  '['  n:id  ']'  __
        tr:transition+
-       _endls
+       __
             { 
                 Status {
                     name: n.to_string(),
@@ -14,7 +14,7 @@ status      ->  Status
             }
 
 transition      ->  Transition
-    =  _  input:id  _  guard:guard?  _ '->'  _  new_status:id  _  action:action? _ endl
+    =  _  input:id  _  guard:guard?  _ '->'  _  new_status:id  _  action:action?  __
             {
                 Transition {
                     input,
@@ -37,6 +37,10 @@ action          -> String
             {  action.to_string()  }
 
 _ = #quiet<[ \t]*>
+comment = '//' (!endl .)*
+__ = ([ \t\n] / comment)*
+
+
 _endls = #quiet<[ \t\n]*>
 endl = #quiet<'\n'>
 endls = #quiet<endl*>

@@ -1,7 +1,7 @@
 [package]
 name = "fsm_gen"
-version = "0.1.2"
-authors = ["jleahred <jleahred@gmail.com>"]
+version = "0.2.0"
+authors = ["jleahred"]
 edition = "2018"
 license = "GPL-3.0"
 description = "FSM (finite state machine) DSL for code generation (c++ at the moment)"

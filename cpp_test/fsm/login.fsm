@@ -1,7 +1,10 @@
+//  Example of fsm to manage login
+//  on server side
+
 [init]
     rq_key                      ->  w_login     /   send_key
     timer                       ->  init
-    _                           ->  error
+    _                           ->  error           //  any other input...
 
 [w_login]
     rq_login    &   valid       ->  login       /   send_login

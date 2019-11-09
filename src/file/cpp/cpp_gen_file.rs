@@ -102,15 +102,17 @@ private:
       };
       transitions4input(sn, input)
         .iter()
-        .fold("    if(false) {;\n".to_string(), |acc, tr| {
+        .fold("    if(false) {;}\n".to_string(), |acc, tr| {
           if let Some(guard) = &tr.guard {
             let guard_txt = format!("({})", guard);
-            fomat!((acc)r#"    } else if("# (guard) r#"(in, info)) {
-        "# (change_trans(sn, tr, &guard_txt)) r#""#)
+            fomat!((acc)r#"    else if("# (guard) r#"(in, info)) {
+        "# (change_trans(sn, tr, &guard_txt)) r#"
+    }
+    "#)
           } else {
-            fomat!((acc)r#"    } else {
+            fomat!((acc)r#"    else {
         "# (change_trans(sn, tr, "")) r#"
-    }              
+    }
 "#)
           }
         })
@@ -170,7 +172,7 @@ Fsm::~Fsm() {}
 } // namespace "# (stem_name) r#"
 
 "#
-    );
+  );
 
   f.write_all(template.as_bytes())
     .map_err(|e| format!("{}", e))?;

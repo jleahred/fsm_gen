@@ -39,6 +39,7 @@ cargo install
 
 ## TODO
 
+- error redefinied action on cpp (watch example iceberg)
 - fix error when running on current directory
 - reactivate `.dot` files generation
 

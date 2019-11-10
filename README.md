@@ -15,6 +15,20 @@ cargo install
 
 ## Versions
 
+### 0.3
+
+- multiline guards with no status name
+- multi guard and multi actions
+- '\_' on input means any other input
+- negative guards
+- if no transition, it will generate an error
+- updated rust-peg lib and working with macros
+- if execption is throwed, we will go to error transition
+- better error information
+  - on parsing show line
+  - check orphans status
+- makefile install, test cpp
+
 ### 0.2
 
 - Actions
@@ -25,15 +39,19 @@ cargo install
 
 ## TODO
 
+- fix error when running on current directory
+- reactivate `.dot` files generation
+
+- Error transition is special
+- Inprove exceptions control
+
 - Add full proposed file for hand written .h and .cpp on generated one
-- Negative guard transition???
-- Support for multiple guards and actions
 - Update idata in order to use ispush with btrees and more
 
 - Complete the cpp example and update on README.md
 - Check fsm format
-  - inputs
-  - all input per state, has to have a transition without guards
+  - detect duplicated states
+  - detect duplicated inputs and guards
 - output with signals
 
 - Add languages
@@ -52,9 +70,7 @@ In this repository I rewrite one of them, the code generator for a state machine
 
 At the moment it generates C++ code (my most immediate target in production).
 
-```
-You can have data (fields) on inputs structs, and also on each status
-```
+> You can have data (fields) on inputs structs, and also on each status
 
 To explain the system, I will use the example in [cpp_test/fsm](cpp_test/fsm)
 
@@ -79,30 +95,26 @@ A list of transitions could be written as:
 //  on server side
 
 [init]
-    rq_key                      ->  w_login     /   send_key
-    timer                       ->  init
-    _                           ->  error           //  any other input...
+    rq_key          ->  w_login     /   send_key
+    timer           ->  init
 
 [w_login]
-    rq_login    &   valid       ->  login       /   send_login
-    rq_login                    ->  error
-    timer       &   timeout     ->  error
-    timer                       ->  w_login
-    _                           ->  error
-
+    rq_login        ->  login       /   send_login
+    timer
+        & timeout   ->  error
+                    ->  w_login
 [login]
-    rq_logout                   ->  logout      /   send_logout
-    heartbeat                   ->  login       /   update_hb
-    timer       &   timeout     ->  logout
-    timer                       ->  login
-    _                           ->  error
+    rq_logout       ->  logout      /   send_logout
+    heartbeat       ->  login       /   update_hb
+    timer
+        & timeout   ->  logout
+                    ->  login
 
 [logout]
-    timer                       ->  logout
-    _                           ->  error
+    timer           ->  logout
 
 [error]
-    _                           ->  error
+    _               ->  error
 ```
 
 And this is the input for this tool to generate code
@@ -152,14 +164,28 @@ Functions that will be called depending on the status and input to decide the wa
     rq_login    &   valid   ->  login       /   send_login
 ```
 
-In the example we have **valid**, **timeout**, **ontime**.
-
-All transitions can be replicated with different guards, but always one of
-them has to be without guard (and the last one). Example:
+You can have more than one guard
 
 ```peg
-    rq_login    &   valid   ->  login       /   send_login
-    rq_login                ->  logout      /   log_err
+    rq_login    &   valid  &  guard2  ->  login       /   send_login
+```
+
+When you apply different options guards (or combination)...
+
+In the example we have **valid**, **timeout**, **ontime**.
+
+```peg
+    rq_login
+        &   valid   ->  login       /   send_login
+                    ->  logout      /   log_err
+```
+
+It could be written with negative guard
+
+```peg
+    rq_login
+        &   !valid  ->  logout      /   log_err
+                    ->  login       /   send_login
 ```
 
 ### Final status
@@ -184,6 +210,12 @@ This will be after the final state and '/'.
     rq_login                ->  logout      /   log_err
 ```
 
+You can have more than one action
+
+```peg
+    rq_login                ->  logout      /   log_err  action2
+```
+
 In this example we have **send_key**, **send_login**...
 
 ### Special transition
@@ -194,7 +226,7 @@ But it is very common that many transitions are the same (generally error cases)
 
 This is marked with the input \_
 
-Consider the `init` status:
+Consider the this example status:
 
 ```peg
 [init]
@@ -203,18 +235,33 @@ Consider the `init` status:
     _                           ->  logout      /   log_err
 ```
 
-\_ will be expanded to produce...
+\_ means... any other input...
+
+Therefore considering all possible inputs in this state
+
+## Special Status and implicit transitions
+
+`error` is a special status
+
+Any transition no defined, will finis on error status.
+
+In our example...
 
 ```peg
 [init]
-    rq_key                      ->  w_login     /   send_key
-    timer                       ->  init
-    rq_login                    ->  logout      /   log_err
-    heartbeat                   ->  logout      /   log_err
-    rq_logout                   ->  logout      /   log_err
+    rq_key          ->  w_login     /   send_key
+    timer           ->  init
 ```
 
-Therefore considering all possible inputs in this state
+There are no transations for `rq_login` and `rq_logout`. Both are implicit and is
+equivalent to...
+
+```peg
+[init]
+    rq_key          ->  w_login     /   send_key
+    timer           ->  init
+    _               ->  error
+```
 
 ### Comments
 
@@ -229,7 +276,7 @@ fsm_gen --help
 ```
 
 ```txt
-fsm_gen 0.2.0
+fsm_gen 0.3.0
 jleahred
 
     Generate code from a simple fsm file
@@ -348,11 +395,11 @@ public:
   Fsm();
   ~Fsm();
 
-  void in(const heartbeat_t& in);
-  void in(const rq_key_t& in);
-  void in(const rq_login_t& in);
-  void in(const rq_logout_t& in);
-  void in(const timer_t& in);
+  void process(const heartbeat_t& in);
+  void process(const rq_key_t& in);
+  void process(const rq_login_t& in);
+  void process(const rq_logout_t& in);
+  void process(const timer_t& in);
 
   ...
 }

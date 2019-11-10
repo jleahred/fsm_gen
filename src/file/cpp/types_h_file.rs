@@ -1,4 +1,6 @@
 use fomat_macros::fomat;
+use idata::cont::IVec;
+use std::collections::BTreeSet;
 use std::fs::File;
 use std::io::prelude::*;
 use std::path::PathBuf;
@@ -8,37 +10,33 @@ use crate::file::*;
 //  -------------
 //      cpp
 
-pub(crate) fn generate_types_header_fsm_code(
-    fsm: &[crate::parser::Status],
-    orig_path: &PathBuf,
-) -> Result<(), String> {
+pub(crate) fn generate(ast: &crate::parser::Ast, orig_path: &PathBuf) -> Result<(), String> {
     let (dir, stem_name) = get_dir_stem_name(&orig_path)?;
 
     let file_name = format!("{}/fsm_{}_types.h", dir, stem_name);
-    println!("Generating file... {}", file_name);
 
-    if std::path::Path::new(&file_name).exists() {
-        return Ok(());
-    }
+    //  todo: remove comment
+    // if std::path::Path::new(&file_name).exists() {
+    //     return Ok(());
+    // }
+    println!("Generating file... {}", file_name);
 
     let mut f = File::create(file_name).map_err(|e| format!("{}", e))?;
 
     let header_guard = || fomat!("FSM_" (stem_name.to_uppercase()) "_H");
 
     let status_info_empty = || {
-        crate::parser::get_status_names(fsm)
-            .iter()
-            .fold("".to_string(), |r, i| {
-                format!("{}  struct st_{}_t{{}};\n", r, i)
-            })
+        crate::parser::get_all_status_names(ast).iter().fold(
+            "".to_string(),
+            |acc, name| fomat!((acc)"\n  struct st_" (name.0) "_t{};\n"),
+        )
     };
 
     let in_types_empty_decl = || {
-        crate::parser::get_all_input_names(fsm)
-            .iter()
-            .fold("".to_string(), |r, i| {
-                format!("{}  struct in_{}_t {{}};\n", r, i)
-            })
+        crate::parser::get_all_input_names(ast).iter().fold(
+            "".to_string(),
+            |acc, name| fomat!((acc)"\n  struct in_" (name.0) "_t{};\n"),
+        )
     };
 
     let template = fomat!(

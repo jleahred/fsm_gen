@@ -9,10 +9,7 @@ use crate::file::*;
 //  -------------
 //      cpp
 
-pub(crate) fn generate_header_fsm_code_generated(
-    fsm: &[crate::parser::Status],
-    orig_path: &PathBuf,
-) -> Result<(), String> {
+pub(crate) fn generate(ast: &crate::parser::Ast, orig_path: &PathBuf) -> Result<(), String> {
     let (dir, stem_name) = get_dir_stem_name(&orig_path)?;
 
     let file_name = format!("{}/fsm_{}_gen.h", dir, stem_name);
@@ -22,11 +19,10 @@ pub(crate) fn generate_header_fsm_code_generated(
     let header_guard = || fomat!("FSM_" (stem_name.to_uppercase()) "_GENERATED_H");
 
     let in_methods_forward_decl = || {
-        crate::parser::get_all_input_names(fsm)
-            .iter()
-            .fold("".to_string(), |r, i| {
-                format!("{}  void in(const in_{}_t& in);\n", r, i)
-            })
+        crate::parser::get_all_input_names(ast).iter().fold(
+            "".to_string(),
+            |acc, name| fomat!((acc) "  void process(const in_"(name.0)"_t& in);\n"),
+        )
     };
 
     let template = fomat!(r#"

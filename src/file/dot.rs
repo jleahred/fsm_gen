@@ -8,10 +8,7 @@ use crate::file::*;
 //  --------------------
 //      dot graphviz
 
-pub(crate) fn generate_file(
-    fsm: &[crate::parser::Status],
-    orig_path: &PathBuf,
-) -> Result<(), String> {
+pub(crate) fn generate_file(ast: &crate::parser::Ast, orig_path: &PathBuf) -> Result<(), String> {
     let (dir, stem_name) = get_dir_stem_name(&orig_path)?;
 
     let file_name = format!("{}/{}.dot", dir, stem_name);
@@ -19,41 +16,42 @@ pub(crate) fn generate_file(
 
     let mut f = File::create(file_name).map_err(|e| format!("{}", e))?;
 
-    let transitions_fsm = || {
-        let transition_st = |st: &crate::parser::Status| {
-            let guard = |oguard: &Option<String>| {
-                if let Some(g) = oguard {
-                    format!("({})", g)
-                } else {
-                    "".to_string()
-                }
-            };
-            let action = |oaction: &Option<String>| {
-                if let Some(a) = oaction {
-                    format!(" / {}", a)
-                } else {
-                    "".to_string()
-                }
-            };
-            st.transitions
-                .iter()
-                .filter(|t| t.input != "_")
-                .filter(|t| !(t.action.is_none() && t.guard.is_none() && st.name == t.new_status))
-                .fold("".to_string(), |acc, t| {
-                    format!(
-                        "{}\n{} -> {} [label=\"{}{}{}\"]",
-                        acc,
-                        st.name,
-                        t.new_status,
-                        t.input,
-                        guard(&t.guard),
-                        action(&t.action)
-                    )
-                })
-        };
-        fsm.iter().fold("".to_string(), |acc, st| {
-            format!("{}\n{}", acc, transition_st(st))
-        })
+    let transitions_ast = || {
+        // let transition_st = |st: &crate::parser::Status| {
+        //     let guard = |oguard: &Option<String>| {
+        //         if let Some(g) = oguard {
+        //             format!("({})", g)
+        //         } else {
+        //             "".to_string()
+        //         }
+        //     };
+        //     let action = |oaction: &Option<String>| {
+        //         if let Some(a) = oaction {
+        //             format!(" / {}", a)
+        //         } else {
+        //             "".to_string()
+        //         }
+        //     };
+        //     st.transitions
+        //         .iter()
+        //         .filter(|t| t.input != "_")
+        //         .filter(|t| !(t.action.is_none() && t.guard.is_none() && st.name == t.new_status))
+        //         .fold("".to_string(), |acc, t| {
+        //             format!(
+        //                 "{}\n{} -> {} [label=\"{}{}{}\"]",
+        //                 acc,
+        //                 st.name,
+        //                 t.new_status,
+        //                 t.input,
+        //                 guard(&t.guard),
+        //                 action(&t.action)
+        //             )
+        //         })
+        // };
+        // ast.iter().fold("".to_string(), |acc, st| {
+        //     format!("{}\n{}", acc, transition_st(st))
+        // })
+        ""
     };
 
     let template = fomat!(
@@ -63,7 +61,7 @@ digraph finite_state_machine {
 	size="8,5"
 	node [shape = circle, width=1];
 
-"# (transitions_fsm()) r#"
+"# (transitions_ast()) r#"
 }
 
 "#

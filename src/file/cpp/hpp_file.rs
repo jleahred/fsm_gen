@@ -8,68 +8,64 @@ use crate::file::*;
 //  -------------
 //      cpp
 
-pub(crate) fn generate_hpp_fsm_code(
-    fsm: &[crate::parser::Status],
-    orig_path: &PathBuf,
-) -> Result<(), String> {
+pub(crate) fn generate(ast: &crate::parser::Ast, orig_path: &PathBuf) -> Result<(), String> {
     let (dir, stem_name) = get_dir_stem_name(&orig_path)?;
 
     let file_name = format!("{}/fsm_{}_private.hpp", dir, stem_name);
-    println!("Generating file... {}", file_name);
 
-    if std::path::Path::new(&file_name).exists() {
-        return Ok(());
-    }
+    //  todo: uncoment
+    // if std::path::Path::new(&file_name).exists() {
+    //     return Ok(());
+    // }
+    println!("Generating file... {}", file_name);
 
     let mut f = File::create(file_name).map_err(|e| format!("{}", e))?;
 
     let guards = || {
-        let st_gen_guards = |st: &crate::parser::Status| {
-            st.transitions.iter().fold("".to_string(), |acc, t| {
-                if let Some(g) = &t.guard {
-                    format!(
-                        "{}    bool {}(const in_{}_t& /*in*/, const  st_{}_t& /*st_info*/) {{ return true; }}\n",
-                        acc,
-                        g.to_string(),
-                        t.input,
-                        st.name
-                    )
-                } else {
-                    acc
+        let mut result = "".to_string();
+        for st in ast.0.iter() {
+            let st_name = st.name.clone();
+            for input in &st.inputs {
+                let input_name = input.name.clone();
+                for tr in &input.transitions {
+                    for guard in &tr.guards {
+                        let guard_name = guard.name.clone();
+                        let line = fomat!("    bool "(guard_name.0) "(const in_"(input_name.0)"_t& /*in*/, const st_"(st_name.0)"_t& /*st_from*/) { return true; }\n");
+                        result += &line;
+                    }
                 }
-            })
-        };
-        fsm.iter().fold("".to_string(), |acc, st| {
-            format!("{}{}", acc, st_gen_guards(st))
-        })
+            }
+        }
+        result
     };
 
     let actions = || {
-        let st_gen_actions = |st: &crate::parser::Status| {
-            st.transitions.iter().fold("".to_string(), |acc, t| {
-                if let Some(a) = &t.action {
-                    format!(
-                        "{}    void act_{}(const st_{}_t& /*st_orig*/, const in_{}_t& /*in*/, const  st_{}_t& /*st_dest*/) {{}}\n",
-                        acc,
-                        a.to_string(),
-                        st.name,
-                        t.input,
-                        t.new_status,
-                    )
-                } else {
-                    acc
+        let mut result = "".to_string();
+        for st in ast.0.iter() {
+            let st_from_name = st.name.clone();
+            for input in &st.inputs {
+                let input_name = input.name.clone();
+                for tr in &input.transitions {
+                    let new_status_name = tr.new_status.name.clone();
+                    for action in &tr.actions {
+                        let action_name = action.clone();
+                        let line = fomat!("    void act_"(action_name.0) "(const st_"(st_from_name.0) "_t& /*from*/, const in_"(input_name.0)"_t& /*input*/, const st_"(new_status_name.0)"_t& /*st_dest*/) {}\n");
+                        result += &line;
+                    }
                 }
-            })
-        };
-        fsm.iter().fold("".to_string(), |acc, st| {
-            format!("{}{}", acc, st_gen_actions(st))
-        })
+            }
+        }
+        result
     };
 
     let status_change_functions = || {
-        fsm.iter().fold("".to_string(), |acc, st| {
-            format!("{0}    template <typename FROM, typename IN> st_{1}_t from_in2{1}(const FROM&, const IN&) {{ return st_{1}_t{{}}; }}\n", acc, st.name)
-        })
+        let mut result = String::new();
+
+        for st in ast.0.iter() {
+            let st_name = st.name.clone();
+            result += &fomat!("    template <typename FROM, typename IN> st_"(st_name.0)"_t from_in2"(st_name.0)"(const FROM&, const IN&) { return st_"(st_name.0)"_t{}; }\n");
+        }
+        result
     };
 
     let template = fomat!(

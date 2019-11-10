@@ -29,16 +29,15 @@ namespace {
 
 
     //  guards
-    bool valid(const in_rq_login_t& /*in*/, const  st_w_login_t& /*st_info*/) { return true; }
-    bool timeout(const in_timer_t& /*in*/, const  st_w_login_t& /*st_info*/) { return true; }
-    bool timeout(const in_timer_t& /*in*/, const  st_login_t& /*st_info*/) { return true; }
+    bool timeout(const in_timer_t& /*in*/, const st_w_login_t& /*st_from*/) { return true; }
+    bool timeout(const in_timer_t& /*in*/, const st_login_t& /*st_from*/) { return true; }
 
 
     //  actions
-    void act_send_key(const st_init_t& /*st_orig*/, const in_rq_key_t& /*in*/, const  st_w_login_t& /*st_dest*/) {}
-    void act_send_login(const st_w_login_t& /*st_orig*/, const in_rq_login_t& /*in*/, const  st_login_t& /*st_dest*/) {}
-    void act_send_logout(const st_login_t& /*st_orig*/, const in_rq_logout_t& /*in*/, const  st_logout_t& /*st_dest*/) {}
-    void act_update_hb(const st_login_t& /*st_orig*/, const in_heartbeat_t& /*in*/, const  st_login_t& /*st_dest*/) {}
+    void act_send_key(const st_init_t& /*from*/, const in_rq_key_t& /*input*/, const st_w_login_t& /*st_dest*/) {}
+    void act_send_login(const st_w_login_t& /*from*/, const in_rq_login_t& /*input*/, const st_login_t& /*st_dest*/) {}
+    void act_send_logout(const st_login_t& /*from*/, const in_rq_logout_t& /*input*/, const st_logout_t& /*st_dest*/) {}
+    void act_update_hb(const st_login_t& /*from*/, const in_heartbeat_t& /*input*/, const st_login_t& /*st_dest*/) {}
 
 
 } // namespace anonymous

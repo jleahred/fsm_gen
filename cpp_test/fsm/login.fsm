@@ -2,27 +2,22 @@
 //  on server side
 
 [init]
-    rq_key                      ->  w_login     /   send_key
-    timer                       ->  init
-    _                           ->  error           //  any other input...
-
+    rq_key          ->  w_login     /   send_key
+    timer           ->  init
 [w_login]
-    rq_login    &   valid       ->  login       /   send_login
-    rq_login                    ->  error
-    timer       &   timeout     ->  error
-    timer                       ->  w_login
-    _                           ->  error
-
+    rq_login        ->  login       /   send_login
+    timer
+        & timeout   ->  error
+                    ->  w_login
 [login]
-    rq_logout                   ->  logout      /   send_logout
-    heartbeat                   ->  login       /   update_hb
-    timer       &   timeout     ->  logout
-    timer                       ->  login
-    _                           ->  error
+    rq_logout       ->  logout      /   send_logout
+    heartbeat       ->  login       /   update_hb
+    timer
+        & timeout   ->  logout
+                    ->  login
 
 [logout]
-    timer                       ->  logout
-    _                           ->  error
+    timer           ->  logout
 
 [error]
-    _                           ->  error
+    _               ->  error

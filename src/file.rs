@@ -16,14 +16,14 @@ pub(crate) fn process(path: &PathBuf, config: &Config) -> std::result::Result<()
     file.read_to_string(&mut contents)
         .map_err(|e| format!("{}", e))?;
 
-    let (full_fsm, part_fsm) = crate::parser::parse(&contents)?;
+    let ast = crate::parser::parse(&contents)?;
 
     if config.lang == crate::Langs::Cpp {
-        cpp::generate_cpp_files(&full_fsm, &path).map_err(|e| e.to_string())?;
+        cpp::generate_cpp_files(&ast, &path).map_err(|e| e.to_string())?;
     }
 
     if config.dot {
-        dot::generate_file(&part_fsm, &path).map_err(|e| e.to_string())?;
+        dot::generate_file(&ast, &path).map_err(|e| e.to_string())?;
     }
     Ok(())
 }

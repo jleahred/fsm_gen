@@ -3,12 +3,11 @@ mod parser;
 
 extern crate chrono;
 extern crate rayon;
-
-extern crate structopt;
 use rayon::prelude::*;
+extern crate structopt;
+use structopt::StructOpt;
 
 use std::path::PathBuf;
-use structopt::StructOpt;
 
 macro_rules! enum_str {
     (enum $name:ident {
@@ -19,7 +18,6 @@ macro_rules! enum_str {
             $($variant),*
         }
 
-
         impl std::str::FromStr for Langs {
             type Err = String;
             fn from_str(s: &str) -> Result<Langs, String> {
@@ -29,7 +27,6 @@ macro_rules! enum_str {
                 }
             }
         }
-
 
         impl std::fmt::Debug for $name {
             fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
@@ -127,237 +124,132 @@ fn main() {
     }
 }
 
+// mod parser;
+
 // fn main() {
 //     let parsed = parser::parse(
 //         r#"
 //         [init]
-//             rq_key                  -   send_key        ->  w_login
-//             rq_login                -   log_err         ->  logout
-//             rq_logout               -   log_err         ->  logout
-//             heartbeat               -   log_err         ->  logout
-//             timer                   -   log_err         ->  logout
+//             rq_key          ->  w_login     /   send_key
+//             timer           ->  init
 
 //         [w_login]
-//             rq_key                  -   log_err         ->  logout
-//             rq_login    &   valid   -   send_login      ->  login
-//             rq_login                -   log_err         ->  logout
-//             rq_logout               -   log_err         ->  logout
-//             heartbeat               -   log_err         ->  logout
-//             timer                   -                   ->  logout
+//             rq_login        ->  login       /   send_login
+
+//             timer
+//                 timeout     ->  error
+//                             ->  w_login
 
 //         [login]
-//             rq_key                  -   log_err         ->  logout
-//             rq_login                -   log_err         ->  logout
-//             rq_logout               -   send_logout     ->  logout
-//             heartbeat               -   log_err         ->  logout
-//             timer       &   on_time -                   ->  login
-//             timer                   -                   ->  logout
+//             rq_logout       ->  logout      /   send_logout
+//             heartbeat       ->  login       /   update_hb
+//             timer
+//                 timeout     ->  logout
+//                             ->  login
 
 //         [logout]
-//             rq_key                  -   log_err         ->  logout
-//             rq_login                -   log_err         ->  logout
-//             rq_logout               -   logout          ->  logout
-//             heartbeat               -   log_err         ->  logout
-//             timer                   -   log_err         ->  logout
+//             timer           ->  logout
+
+//         [error]
+//             _               ->  error
+//     "#,
+//     );
+//     match parsed {
+//         Ok(fsm) => println!("parsed {:#?}", fsm),
+//         Err(err) => println!("Error!! {}", err),
+//     }
+// }
+
+// mod parser;
+
+// fn main() {
+//     let parsed = parser::parse(
+//         r#"
+//         //  iceberg
+//         //
+//         //  inputs:
+//         //      client
+//         //          rq_nw
+//         //          rq_md
+//         //          rq_cc
+//         //      server
+//         //          cf_nw
+//         //          cf_cc
+//         //          cf_ex
+
+//          [init]
+//             rq_nw               ->  w_cf_nw                 /   send_rq_nw
+
+//         [w_cf_nw]
+//             cf_nw               ->  market
+
+//             timer
+//                 timeout         ->  error                   /   send_rq_cc
+//                                 ->  w_cf_nw                 /   send_rq_cc
+//             rq_md               ->  modifying_w_nw
+//             rq_cc               ->  canceling_w_nw
+
+//         [modifying_w_nw]
+//             cf_nw               ->  w_cf_nw                 /   send_rq_nw
+//             rq_md               ->  modifying_w_nw
+//             rq_cc               ->  canceling_w_nw
+//             cf_cc               ->  error                   /   send_rq_cc
+//             cf_ex               ->  error                   /   send_cf_ex
+//             timer
+//                 timeout         ->  error                   /   send_rq_cc
+//                                 ->  modifying_w_nw
+
+//         [canceling_w_nw]
+//             rq_md               ->  canceling_w_nw          /   send_rj_md
+//             rq_cc               ->  canceling_w_nw          /   send_rq_cc
+//             cf_cc               ->  error                   /   send_rq_cc
+//             cf_ex               ->  error                   /   send_cf_ex send_rq_cc
+//             timer
+//                 timeout         ->  error                   /   send_rq_cc
+//                                 ->  canceling_w_nw
+
+//         [market]
+//             cf_ex
+//                 partial         ->  market                  /   send_cf_ex
+//                                 ->  end                     /   send_cf_ex
+//             rq_md               ->  modifying_w_cc          /   send_rq_cc
+//             rq_cc               ->  canceling_w_cc          /   send_rq_cc
+
+//         [modifying_w_cc]
+//             cf_cc               ->  w_cf_nw                 /   send_rq_nw
+//             cf_ex
+//                 partial         ->  modifying_w_cc          /   send_cf_ex
+//                                 ->  end                     /   send_cf_ex
+//             rq_md               ->  modifying_w_cc
+//             rq_cc               ->  canceling_w_cc
+//             timer
+//                 timeout         ->  error                   /   send_rq_cc
+//                                 ->  modifying_w_cc
+
+//         [canceling_w_cc]
+//             cf_cc               ->  end                     /   send_rq_nw
+//             cf_ex
+//                 partial         ->  canceling_w_cc          /   send_cf_ex
+//                                 ->  end                     /   send_cf_ex
+//             rq_md               ->  canceling_w_cc          /   send_rj_md
+//             rq_cc               ->  canceling_w_cc
+//             timer
+//                 timeout         ->  error                   /   send_rq_cc
+//                                 ->  canceling_w_cc
+
+//         [end]
+//             _                           ->  error
+
+//         [error]
+//             _                           ->  error2          /   try_send_cc
+
+//         [error2]
+//             _                           ->  error2
 //     "#,
 //     );
 
-//     println!("parsed {:#?}", parsed);
-// }
-
-//  [
-//     Status {
-//         name: "init",
-//         transitions: [
-//             Transition {
-//                 input: "rq_key",
-//                 guard: None,
-//                 action: Some(
-//                     "send_key"
-//                 ),
-//                 new_status: "w_login"
-//             },
-//             Transition {
-//                 input: "rq_login",
-//                 guard: None,
-//                 action: Some(
-//                     "log_err"
-//                 ),
-//                 new_status: "logout"
-//             },
-//             Transition {
-//                 input: "rq_logout",
-//                 guard: None,
-//                 action: Some(
-//                     "log_err"
-//                 ),
-//                 new_status: "logout"
-//             },
-//             Transition {
-//                 input: "heartbeat",
-//                 guard: None,
-//                 action: Some(
-//                     "log_err"
-//                 ),
-//                 new_status: "logout"
-//             },
-//             Transition {
-//                 input: "timer",
-//                 guard: None,
-//                 action: Some(
-//                     "log_err"
-//                 ),
-//                 new_status: "logout"
-//             }
-//         ]
-//     },
-//     Status {
-//         name: "w_login",
-//         transitions: [
-//             Transition {
-//                 input: "rq_key",
-//                 guard: None,
-//                 action: Some(
-//                     "log_err"
-//                 ),
-//                 new_status: "logout"
-//             },
-//             Transition {
-//                 input: "rq_login",
-//                 guard: Some(
-//                     "valid"
-//                 ),
-//                 action: Some(
-//                     "send_login"
-//                 ),
-//                 new_status: "login"
-//             },
-//             Transition {
-//                 input: "rq_login",
-//                 guard: None,
-//                 action: Some(
-//                     "log_err"
-//                 ),
-//                 new_status: "logout"
-//             },
-//             Transition {
-//                 input: "rq_logout",
-//                 guard: None,
-//                 action: Some(
-//                     "log_err"
-//                 ),
-//                 new_status: "logout"
-//             },
-//             Transition {
-//                 input: "heartbeat",
-//                 guard: None,
-//                 action: Some(
-//                     "log_err"
-//                 ),
-//                 new_status: "logout"
-//             },
-//             Transition {
-//                 input: "timer",
-//                 guard: None,
-//                 action: None,
-//                 new_status: "logout"
-//             }
-//         ]
-//     },
-//     Status {
-//         name: "login",
-//         transitions: [
-//             Transition {
-//                 input: "rq_key",
-//                 guard: None,
-//                 action: Some(
-//                     "log_err"
-//                 ),
-//                 new_status: "logout"
-//             },
-//             Transition {
-//                 input: "rq_login",
-//                 guard: None,
-//                 action: Some(
-//                     "log_err"
-//                 ),
-//                 new_status: "logout"
-//             },
-//             Transition {
-//                 input: "rq_logout",
-//                 guard: None,
-//                 action: Some(
-//                     "send_logout"
-//                 ),
-//                 new_status: "logout"
-//             },
-//             Transition {
-//                 input: "heartbeat",
-//                 guard: None,
-//                 action: Some(
-//                     "log_err"
-//                 ),
-//                 new_status: "logout"
-//             },
-//             Transition {
-//                 input: "timer",
-//                 guard: Some(
-//                     "on_time"
-//                 ),
-//                 action: None,
-//                 new_status: "login"
-//             },
-//             Transition {
-//                 input: "timer",
-//                 guard: None,
-//                 action: None,
-//                 new_status: "logout"
-//             }
-//         ]
-//     },
-//     Status {
-//         name: "logout",
-//         transitions: [
-//             Transition {
-//                 input: "rq_key",
-//                 guard: None,
-//                 action: Some(
-//                     "log_err"
-//                 ),
-//                 new_status: "logout"
-//             },
-//             Transition {
-//                 input: "rq_login",
-//                 guard: None,
-//                 action: Some(
-//                     "log_err"
-//                 ),
-//                 new_status: "logout"
-//             },
-//             Transition {
-//                 input: "rq_logout",
-//                 guard: None,
-//                 action: Some(
-//                     "logout"
-//                 ),
-//                 new_status: "logout"
-//             },
-//             Transition {
-//                 input: "heartbeat",
-//                 guard: None,
-//                 action: Some(
-//                     "log_err"
-//                 ),
-//                 new_status: "logout"
-//             },
-//             Transition {
-//                 input: "timer",
-//                 guard: None,
-//                 action: Some(
-//                     "log_err"
-//                 ),
-//                 new_status: "logout"
-//             }
-//         ]
+//     match parsed {
+//         Ok(fsm) => println!("parsed {:#?}", fsm),
+//         Err(err) => println!("Error!! {}", err),
 //     }
-// ]
+// }

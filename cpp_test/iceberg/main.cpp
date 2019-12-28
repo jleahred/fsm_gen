@@ -10,6 +10,6 @@
 
 int main() {
   iceberg::Fsm ice;
-  ice.in(iceberg::in_rq_nw_t{});
+  ice.process(iceberg::in_rq_nw_t{});
   return 0;
 }

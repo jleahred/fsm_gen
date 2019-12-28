@@ -7,19 +7,31 @@ use crate::file::*;
 
 //  -------------
 //      cpp
-
 pub(crate) fn generate(ast: &crate::parser::Ast, orig_path: &PathBuf) -> Result<(), String> {
     let (dir, stem_name) = get_dir_stem_name(&orig_path)?;
+    {
+        // generate if don't exists
+        let full_file_name = format!("{}/fsm_{}_private.hpp", dir, stem_name);
+        if !std::path::Path::new(&full_file_name).exists() {
+            generate_file(ast, &full_file_name, &stem_name)?;
+        }
+    }
+    {
+        // generate reference allways
+        let full_file_name = format!("{}/fsm_{}_private.hpp.reference", dir, stem_name);
+        generate_file(ast, &full_file_name, &stem_name)?;
+    }
+    Ok(())
+}
 
-    let file_name = format!("{}/fsm_{}_private.hpp", dir, stem_name);
+fn generate_file(
+    ast: &crate::parser::Ast,
+    full_file_name: &str,
+    stem_name: &str,
+) -> Result<(), String> {
+    println!("Generating file... {}", full_file_name);
 
-    //  todo: uncoment
-    // if std::path::Path::new(&file_name).exists() {
-    //     return Ok(());
-    // }
-    println!("Generating file... {}", file_name);
-
-    let mut f = File::create(file_name).map_err(|e| format!("{}", e))?;
+    let mut f = File::create(full_file_name).map_err(|e| format!("{}", e))?;
 
     let guards = || {
         let mut result = "".to_string();
@@ -45,12 +57,27 @@ pub(crate) fn generate(ast: &crate::parser::Ast, orig_path: &PathBuf) -> Result<
             let st_from_name = st.name.clone();
             for input in &st.inputs {
                 let input_name = input.name.clone();
+                use std::collections::BTreeSet;
+                let mut generated_actions: BTreeSet<(
+                    crate::parser::ActionName,
+                    crate::parser::StatusName,
+                )> = BTreeSet::new();
                 for tr in &input.transitions {
                     let new_status_name = tr.new_status.name.clone();
                     for action in &tr.actions {
                         let action_name = action.clone();
-                        let line = fomat!("    void act_"(action_name.0) "(const st_"(st_from_name.0) "_t& /*from*/, const in_"(input_name.0)"_t& /*input*/, const st_"(new_status_name.0)"_t& /*st_dest*/) {}\n");
-                        result += &line;
+                        if !generated_actions
+                            .contains(&(action_name.clone(), new_status_name.clone()))
+                        {
+                            generated_actions
+                                .insert((action_name.clone(), new_status_name.clone()));
+                            let line = if input_name.0 != "_" {
+                                fomat!("    void act_"(action_name.0) "(const st_"(st_from_name.0) "_t& /*from*/, const in_"(input_name.0)"_t& /*input*/, const st_"(new_status_name.0)"_t& /*st_dest*/) {}\n")
+                            } else {
+                                fomat!("    template<typename IN> void act_"(action_name.0) "(const st_"(st_from_name.0) "_t& /*from*/, const IN& /*input*/, const st_"(new_status_name.0)"_t& /*st_dest*/) {}\n")
+                            };
+                            result += &line;
+                        }
                     }
                 }
             }
@@ -73,6 +100,8 @@ pub(crate) fn generate(ast: &crate::parser::Ast, orig_path: &PathBuf) -> Result<
 //  Code generated automatically to be filled manually
 //  This file will not be updated by generator
 //  It's created just the first time as a reference
+//  Generator will allways create a  .reference file to help with
+//  new methods and so
 
 //  This file will be included in _gen.cpp
 //  (anywhere else)

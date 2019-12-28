@@ -10,10 +10,16 @@ You can download from repository and build and install as usual
 
 ```bash
 cargo build --release
-cargo install
+cargo install --path . -f
 ```
 
 ## Versions
+
+### 0.4
+
+- error redefinied action on cpp (watch example iceberg)
+- fix error when running on current directory
+- Add full proposed file for hand written .h and .cpp on generated one
 
 ### 0.3
 
@@ -39,14 +45,11 @@ cargo install
 
 ## TODO
 
-- error redefinied action on cpp (watch example iceberg)
-- fix error when running on current directory
 - reactivate `.dot` files generation
 
 - Error transition is special
 - Inprove exceptions control
 
-- Add full proposed file for hand written .h and .cpp on generated one
 - Update idata in order to use ispush with btrees and more
 
 - Complete the cpp example and update on README.md
@@ -424,6 +427,8 @@ If the file doesn't exist, it will be created with empty data types
 //  Code generated automatically to be filled manually
 //  This file will not be updated by generator
 //  It's created just the first time as a reference
+//  Generator will allways create a  .reference file to help with
+//  new methods and so
 ```
 
 On `namespace` based on fsm file, we have the two types to declare
@@ -464,6 +469,8 @@ This is the other file you have to maintain by hand.
 //  Code generated automatically to be filled manually
 //  This file will not be updated by generator
 //  It's created just the first time as a reference
+//  Generator will allways create a  .reference file to help with
+//  new methods and so
 
 //  This file will be included in _gen.cpp
 //  (anywhere else)

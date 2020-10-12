@@ -1,18 +1,16 @@
+use crate::file::*;
 use chrono::prelude::*;
 use fomat_macros::fomat;
 use std::fs::File;
-use std::io::prelude::*;
 use std::path::PathBuf;
-
-use crate::file::*;
+use support::get_dir_stem_name;
 
 //  -------------
 //      cpp
 
 pub(crate) fn generate(ast: &crate::parser::Ast, orig_path: &PathBuf) -> Result<(), String> {
-    let (dir, stem_name) = get_dir_stem_name(&orig_path)?;
+    let (file_name, stem_name) = file_name_stem(orig_path)?;
 
-    let file_name = format!("{}/fsm_{}_gen.h", dir, stem_name);
     println!("Generating file... {}", file_name);
     let mut f = File::create(file_name).map_err(|e| format!("{}", e))?;
 
@@ -71,4 +69,10 @@ private:
 
     f.sync_all().map_err(|e| format!("{}", e))?;
     Ok(())
+}
+
+fn file_name_stem(orig_path: &PathBuf) -> Result<(String, String), String> {
+    let (dir, stem_name) = get_dir_stem_name(&orig_path)?;
+
+    Ok((format!("{}/fsm_{}_gen.h", dir, stem_name), stem_name))
 }

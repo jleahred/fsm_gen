@@ -4,22 +4,20 @@ use std::path::PathBuf;
 
 pub(crate) mod cpp;
 mod dot;
+mod support;
 
 pub(crate) struct Config {
-    pub(crate) lang: crate::Langs,
+    pub(crate) lang: crate::cli_params::Langs,
     pub(crate) dot: bool,
 }
 
 pub(crate) fn process(path: &PathBuf, config: &Config) -> std::result::Result<(), String> {
-    let mut file = File::open(path).map_err(|e| format!("{}", e))?;
-    let mut contents = String::new();
-    file.read_to_string(&mut contents)
-        .map_err(|e| format!("{}", e))?;
+    let ast = crate::parser::parse(&read_file(path)?)?;
 
-    let ast = crate::parser::parse(&contents)?;
-
-    if config.lang == crate::Langs::Cpp {
-        cpp::generate_cpp_files(&ast, &path).map_err(|e| e.to_string())?;
+    match config.lang {
+        crate::cli_params::Langs::Cpp => {
+            cpp::generate_files(&ast, &path).map_err(|e| e.to_string())?
+        }
     }
 
     if config.dot {
@@ -28,33 +26,10 @@ pub(crate) fn process(path: &PathBuf, config: &Config) -> std::result::Result<()
     Ok(())
 }
 
-//  -------------
-//      support
-
-fn get_dir_stem_name(orig_path: &PathBuf) -> Result<(String, String), String> {
-    let to_string = |p: &Option<&str>| -> Result<String, String> {
-        Ok(p.ok_or(format!(
-            "cannot take original file name from {:?}",
-            orig_path
-        ))?
-        .to_string())
-    };
-
-    let dir = {
-        let mut dir = orig_path.clone();
-        dir.pop();
-        dir
-    };
-
-    let dir_string = to_string(&dir.to_str())?;
-    let dir_string = if dir_string == "" {
-        ".".to_string()
-    } else {
-        dir_string
-    };
-
-    Ok((
-        dir_string,
-        to_string(&orig_path.file_stem().and_then(|fname| fname.to_str()))?,
-    ))
+fn read_file(path: &PathBuf) -> std::result::Result<String, String> {
+    let mut file = File::open(path).map_err(|e| format!("{}", e))?;
+    let mut contents = String::new();
+    file.read_to_string(&mut contents)
+        .map_err(|e| format!("{}", e))?;
+    Ok(contents.to_string())
 }

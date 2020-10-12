@@ -1,9 +1,8 @@
+use crate::file::*;
 use fomat_macros::fomat;
 use std::fs::File;
-use std::io::prelude::*;
 use std::path::PathBuf;
-
-use crate::file::*;
+use support::get_dir_stem_name;
 
 //  -------------
 //      cpp

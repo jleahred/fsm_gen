@@ -5,19 +5,20 @@ mod h_gen_file;
 mod hpp_file;
 mod types_h_file;
 
-pub(super) fn generate_cpp_files(
+pub(super) fn generate_files(
     ast: &crate::parser::Ast,
     orig_path: &PathBuf,
 ) -> std::result::Result<(), String> {
     h_gen_file::generate(ast, orig_path).map_err(|e| e.to_string())?;
-    cpp_gen_file::generate_cpp_fsm_code_generated(ast, orig_path).map_err(|e| e.to_string())?;
+    cpp_gen_file::generate(ast, orig_path).map_err(|e| e.to_string())?;
     types_h_file::generate(ast, orig_path).map_err(|e| e.to_string())?;
     hpp_file::generate(ast, orig_path).map_err(|e| e.to_string())?;
     Ok(())
 }
 
 pub(crate) fn print_cpp_help_message() {
-    println!(r#"
+    println!(
+        r#"
 Being "name.fsm" the name of the file with the definition of the machine, two files will be generated.
 
     fsm_name_gen.cpp
@@ -33,5 +34,6 @@ The manual implementation of the methods and declarations of the types, it is re
     fsm_name_gen.h
 
 If they do not exist, they will be created with an empty implementation.
-"#);
+"#
+    );
 }

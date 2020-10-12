@@ -2,13 +2,14 @@ use fomat_macros::fomat;
 use std::fs::File;
 use std::io::prelude::*;
 use std::path::PathBuf;
+use support::get_dir_stem_name;
 
 use crate::file::*;
 
 //  --------------------
 //      dot graphviz
 
-pub(crate) fn generate_file(ast: &crate::parser::Ast, orig_path: &PathBuf) -> Result<(), String> {
+pub(crate) fn generate_file(_ast: &crate::parser::Ast, orig_path: &PathBuf) -> Result<(), String> {
     let (dir, stem_name) = get_dir_stem_name(&orig_path)?;
 
     let file_name = format!("{}/{}.dot", dir, stem_name);

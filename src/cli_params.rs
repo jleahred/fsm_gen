@@ -5,7 +5,7 @@ use structopt::StructOpt;
 mod support;
 
 enum_str! {
-    enum Langs {
+    enum Lang {
         Cpp = "cpp",
     }
 }
@@ -21,7 +21,7 @@ enum_str! {
 pub(crate) struct Opt {
     /// Language to generate code (show available --show-langs)
     #[structopt(short = "l", long = "lang", default_value = "cpp")]
-    pub(crate) lang: Langs,
+    pub(crate) lang: Lang,
 
     // /// Generate all files regardless of change date
     // #[structopt(short = "f", long = "force")]

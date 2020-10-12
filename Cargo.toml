@@ -1,19 +1,21 @@
 [package]
-name = "fsm_gen"
-version = "0.4.0"
 authors = ["jleahred"]
-edition = "2018"
-license = "GPL-3.0"
 description = "FSM (finite state machine) DSL for code generation (c++ at the moment)"
+edition = "2018"
+keywords = ["code_generator", "cpp", "fsm", "finite_state_machine"]
+license = "GPL-3.0"
+name = "fsm_gen"
 readme = "README.md"
 repository = "https://github.com/jleahred/fsm_gen"
-keywords = ["code_generator", "cpp", "fsm", "finite_state_machine"]
+version = "0.5.0"
 
 [dependencies]
-peg = "0.6.0"
-idata = "0.1.0"
-clap = "2.32.0"
-structopt = "0.2"
-fomat-macros = "0.3.1"
 chrono = "0.4"
+clap = "2.32.0"
+fomat-macros = "0.3.1"
+idata = "0.1.0"
+peg = "0.6.0"
 rayon = "1.0"
+serde = {version = "1.0.116", features = ["derive"]}
+structopt = "0.2"
+tera = "1.5.0"

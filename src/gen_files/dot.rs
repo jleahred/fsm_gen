@@ -1,10 +1,8 @@
+use crate::files::get_dir_stem_name;
 use fomat_macros::fomat;
 use std::fs::File;
 use std::io::prelude::*;
 use std::path::PathBuf;
-use support::get_dir_stem_name;
-
-use crate::file::*;
 
 //  --------------------
 //      dot graphviz

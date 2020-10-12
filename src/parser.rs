@@ -1,5 +1,6 @@
 use idata::cont::IVec;
 use peg::parser;
+use serde::{Deserialize, Serialize};
 use std::collections::{BTreeMap, BTreeSet};
 use std::result::Result;
 
@@ -31,42 +32,42 @@ use std::result::Result;
 ///                        },
 ///         ...
 
-#[derive(Debug)]
+#[derive(Serialize, Deserialize, Debug)]
 pub(crate) struct Ast(pub(crate) Vec<Status>);
 
-#[derive(Debug, PartialEq, PartialOrd, Ord, Eq, Clone)]
+#[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Ord, Eq, Clone)]
 pub(crate) struct StatusName(pub(crate) String);
-#[derive(Debug, PartialEq, PartialOrd, Ord, Eq, Clone)]
+#[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Ord, Eq, Clone)]
 pub(crate) struct InputName(pub(crate) String);
-#[derive(Debug, PartialEq, PartialOrd, Ord, Eq, Clone)]
+#[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Ord, Eq, Clone)]
 pub(crate) struct GuardName(pub(crate) String);
-#[derive(Debug, PartialEq, PartialOrd, Ord, Eq, Clone)]
+#[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Ord, Eq, Clone)]
 pub(crate) struct ActionName(pub(crate) String);
-#[derive(Debug, PartialEq, PartialOrd, Ord, Eq, Clone)]
+#[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Ord, Eq, Clone)]
 pub(crate) struct StatusRef {
     pub(crate) name: StatusName,
     pos: usize,
 }
 
-#[derive(Debug, PartialEq, PartialOrd, Ord, Eq)]
+#[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Ord, Eq)]
 pub(crate) struct Status {
     pub(crate) name: StatusName,
     pub(crate) inputs: Vec<Input_>,
 }
 
-#[derive(Debug, PartialEq, PartialOrd, Ord, Eq)]
+#[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Ord, Eq)]
 pub(crate) struct Input_ {
     pub(crate) name: InputName,
     pub(crate) transitions: Vec<Transition>,
 }
 
-#[derive(Debug, PartialEq, PartialOrd, Ord, Eq)]
+#[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Ord, Eq)]
 pub(crate) struct Guard {
     pub(crate) name: GuardName,
     pub(crate) positiv: bool,
 }
 
-#[derive(Debug, PartialEq, PartialOrd, Ord, Eq)]
+#[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Ord, Eq)]
 pub(crate) struct Transition {
     pub(crate) guards: Vec<Guard>,
     pub(crate) actions: Vec<ActionName>,
@@ -100,7 +101,7 @@ fn get_status(ast: &Ast) -> (BTreeSet<StatusName>, BTreeMap<StatusName, usize>) 
     (status, status_refs)
 }
 
-pub(crate) fn parse(input: &str) -> Result<Ast, String> {
+pub(crate) fn compile(input: &str) -> Result<Ast, String> {
     fsm_peg::compile(input)
         .or_else(|e| Err(parse_error2string(input, e)))
         .and_then(|ast| check_status_refs(input, ast))

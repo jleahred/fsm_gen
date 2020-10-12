@@ -1,11 +1,15 @@
-mod cli_params;
-mod file;
-mod parser;
-
 extern crate chrono;
 extern crate rayon;
 extern crate structopt;
+extern crate tera;
 
+mod cli_params;
+mod config;
+mod files;
+mod gen_files;
+mod parser;
+
+use config::Config;
 use rayon::prelude::*;
 use structopt::StructOpt;
 
@@ -15,30 +19,15 @@ fn main() {
     if opt.show_langs {
         println!(
             "\nSupported languages: {}\n\n",
-            cli_params::Langs::get_options_as_string()
+            cli_params::Lang::get_options_as_string()
         );
     } else if opt.help_cpp {
-        file::cpp::print_cpp_help_message();
+        gen_files::cpp::print_cpp_help_message();
     } else if opt.fsm_files.is_empty() {
         eprintln!("No files provied!!! If doubt,  --help");
     } else {
-        if opt.n_threads != 0 {
-            init_rayon(opt.n_threads);
-        }
-
-        let config = file::Config {
-            lang: opt.lang,
-            dot: opt.dot,
-        };
-
-        match opt.fsm_files.par_iter().try_for_each(|f| {
-            file::process(&f, &config)
-                .map_err(|e| format!("error processing file: {:?}\n\n{}", f, e))
-        }) {
-            Ok(()) => (),
-            Err(e) => eprintln!("{}", e),
-        };
-        println!("File generation finished.");
+        configure_rayon(opt.n_threads);
+        process_files(&opt.fsm_files, opt.lang, opt.dot);
     }
 }
 
@@ -49,4 +38,23 @@ fn init_rayon(n_threads: usize) {
             .build_global()
             .unwrap();
     }
+}
+
+fn configure_rayon(n_threads: usize) {
+    if n_threads != 0 {
+        init_rayon(n_threads);
+    }
+}
+
+fn process_files(fsm_files: &Vec<std::path::PathBuf>, lang: cli_params::Lang, dot: bool) {
+    let config = Config { lang, dot };
+
+    match fsm_files.par_iter().try_for_each(|f| {
+        gen_files::process(&f, &config)
+            .map_err(|e| format!("error processing file: {:?}\n\n{}", f, e))
+    }) {
+        Ok(()) => (),
+        Err(e) => eprintln!("{}", e),
+    };
+    println!("File generation finished.");
 }

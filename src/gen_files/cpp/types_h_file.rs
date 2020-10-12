@@ -1,10 +1,10 @@
 use fomat_macros::fomat;
 // use idata::cont::IVec;
 // use std::collections::BTreeSet;
-use crate::file::*;
+use crate::gen_files::get_dir_stem_name;
 use std::fs::File;
+use std::io::Write;
 use std::path::PathBuf;
-use support::get_dir_stem_name;
 
 //  -------------
 //      cpp

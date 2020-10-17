@@ -222,20 +222,3 @@ fn check_status_refs(input: &str, ast: Ast) -> Result<Ast, String> {
         }
     }
 }
-
-pub(crate) fn get_all_input_names(ast: &Ast) -> BTreeSet<InputName> {
-    ast.0.iter().fold(BTreeSet::new(), |acc, st| {
-        st.inputs.iter().fold(acc, |mut acc, inputs| {
-            if inputs.name.0 != "_" {
-                acc.insert(inputs.name.clone());
-            }
-            acc
-        })
-    })
-}
-
-pub(crate) fn get_all_status_names(ast: &Ast) -> Vec<StatusName> {
-    ast.0
-        .iter()
-        .fold(vec![], |acc, st| acc.ipush(st.name.clone()))
-}

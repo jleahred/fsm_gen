@@ -14,9 +14,7 @@ pub(crate) fn process(path: &PathBuf, config: &Config) -> std::result::Result<()
     let context = Context::new(ast, path)?;
 
     match config.lang {
-        crate::cli_params::Lang::Cpp => {
-            cpp::generate_files(&context, &path).map_err(|e| e.to_string())?
-        }
+        crate::cli_params::Lang::Cpp => cpp::generate_files(&context).map_err(|e| e.to_string())?,
     }
 
     if config.dot {

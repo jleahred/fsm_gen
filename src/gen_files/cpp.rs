@@ -1,6 +1,5 @@
-use crate::gen_files::sup::generate_file;
+use crate::gen_files::sup::*;
 use crate::gen_files::Context;
-use std::path::PathBuf;
 
 mod cpp_gen_file;
 mod h_gen_file;
@@ -8,10 +7,7 @@ mod hpp_file;
 mod templates;
 mod types_h_file;
 
-pub(super) fn generate_files(
-    context: &Context,
-    orig_path: &PathBuf,
-) -> std::result::Result<(), String> {
+pub(super) fn generate_files(context: &Context) -> std::result::Result<(), String> {
     generate_file(
         context,
         &h_gen_file::get_full_name(context),
@@ -24,10 +20,28 @@ pub(super) fn generate_files(
         templates::cpp_gen_file::t(),
     )?;
 
-    // h_gen_file::generate(&context).map_err(|e| e.to_string())?;
-    // cpp_gen_file::generate(&context.ast, orig_path).map_err(|e| e.to_string())?;
-    types_h_file::generate(&context.ast, orig_path).map_err(|e| e.to_string())?;
-    hpp_file::generate(&context.ast, orig_path).map_err(|e| e.to_string())?;
+    generate_file_if_missing(
+        context,
+        &types_h_file::get_full_name(context),
+        templates::types_h_file::t(),
+    )?;
+    generate_file(
+        context,
+        &format!("{}{}", &types_h_file::get_full_name(context), ".reference"),
+        templates::types_h_file::t(),
+    )?;
+
+    generate_file_if_missing(
+        context,
+        &hpp_file::get_full_name(context),
+        templates::hpp_file::t(),
+    )?;
+    generate_file(
+        context,
+        &format!("{}{}", &hpp_file::get_full_name(context), ".reference"),
+        templates::hpp_file::t(),
+    )?;
+
     Ok(())
 }
 

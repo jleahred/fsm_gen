@@ -1,5 +1,7 @@
 
-//  generated automatically  2020-10-17 14:50:41
+// clang-format off
+
+//  generated automatically  2020-10-17 21:43:02
 //  do not modify it manually
 
 #pragma once
@@ -21,11 +23,11 @@ public:
     Fsm();
     ~Fsm();
 
-    void process(const in_timer_t &in);
-    void process(const in_rq_key_t &in);
     void process(const in_heartbeat_t &in);
     void process(const in_rq_login_t &in);
     void process(const in_rq_logout_t &in);
+    void process(const in_rq_key_t &in);
+    void process(const in_timer_t &in);
     
 private:
     SState state;
@@ -35,3 +37,5 @@ private:
 //  -------------------
 
 } // namespace login
+
+// clang-format on

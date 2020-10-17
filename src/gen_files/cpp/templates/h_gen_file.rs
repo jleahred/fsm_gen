@@ -1,5 +1,7 @@
 pub(crate) fn t() -> &'static str {
     r#"
+// clang-format off
+
 //  generated automatically  {{ gen_time }}
 //  do not modify it manually
 
@@ -34,5 +36,7 @@ private:
 //  -------------------
 
 } // namespace {{ in_file.stem_name }}
+
+// clang-format on
 "#
 }

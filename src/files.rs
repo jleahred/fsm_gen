@@ -10,10 +10,6 @@ pub(crate) fn read_file(path: &PathBuf) -> std::result::Result<String, String> {
     Ok(contents.to_string())
 }
 
-pub(crate) fn exists_file(full_file_name: &str) -> bool {
-    std::path::Path::new(&full_file_name).exists()
-}
-
 pub(crate) fn write_file(full_file_name: &str, content: &str) -> Result<(), String> {
     println!("Generating file... {}", full_file_name);
     let mut f = File::create(full_file_name).map_err(|e| format!("{}", e))?;

@@ -15,6 +15,10 @@ cargo install --path . -f
 
 ## Versions
 
+### 0.5
+
+- moved to tera templates
+
 ### 0.4
 
 - error redefinied action on cpp (watch example iceberg)
@@ -49,6 +53,8 @@ cargo install --path . -f
 
 - Error transition is special
 - Inprove exceptions control
+- web ui for templates
+- read template from file
 
 - Update idata in order to use ispush with btrees and more
 

@@ -31,6 +31,19 @@ fn main() {
     }
 }
 
+fn process_files(fsm_files: &Vec<std::path::PathBuf>, lang: cli_params::Lang, dot: bool) {
+    let config = Config { lang, dot };
+
+    let _ = fsm_files
+        .par_iter()
+        .try_for_each(|f| {
+            gen_files::process(&f, &config)
+                .map_err(|e| format!("error processing file: {:?}\n\n{}", f, e))
+        })
+        .map_err(|e| eprintln!("{}", e));
+    println!("File generation finished.");
+}
+
 fn init_rayon(n_threads: usize) {
     if n_threads != 0 {
         rayon::ThreadPoolBuilder::new()
@@ -44,17 +57,4 @@ fn configure_rayon(n_threads: usize) {
     if n_threads != 0 {
         init_rayon(n_threads);
     }
-}
-
-fn process_files(fsm_files: &Vec<std::path::PathBuf>, lang: cli_params::Lang, dot: bool) {
-    let config = Config { lang, dot };
-
-    match fsm_files.par_iter().try_for_each(|f| {
-        gen_files::process(&f, &config)
-            .map_err(|e| format!("error processing file: {:?}\n\n{}", f, e))
-    }) {
-        Ok(()) => (),
-        Err(e) => eprintln!("{}", e),
-    };
-    println!("File generation finished.");
 }

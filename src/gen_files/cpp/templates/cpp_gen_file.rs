@@ -1,3 +1,9 @@
+pub(crate) fn t() -> &'static str {
+    r#"
+/*
+{{ __tera_context }}
+*/
+
 
 //  generated automatically  2020-10-17 11:47:44
 //  do not modify it manually
@@ -429,3 +435,6 @@ void Fsm::process(const in_timer_t& in) { state = state ->input(in); }
 
 } // namespace login
 
+
+"#
+}

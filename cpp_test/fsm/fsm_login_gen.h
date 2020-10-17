@@ -179,22 +179,22 @@
       "name": "error"
     }
   ],
-  "gen_time": "2020-10-13 00:04:28",
+  "gen_time": "2020-10-17 11:47:44",
   "in_file": {
     "dir": "./cpp_test/fsm",
     "stem_name": "login"
   },
   "inputs": [
+    "rq_login",
     "rq_key",
     "timer",
-    "rq_login",
     "rq_logout",
     "heartbeat"
   ]
 }
 */
 
-//  generated automatically  2020-10-13 00:04:28
+//  generated automatically  2020-10-17 11:47:44
 //  do not modify it manually
 
 #pragma once
@@ -216,9 +216,9 @@ public:
     Fsm();
     ~Fsm();
 
+    void process(const in_rq_login_t &in);
     void process(const in_rq_key_t &in);
     void process(const in_timer_t &in);
-    void process(const in_rq_login_t &in);
     void process(const in_rq_logout_t &in);
     void process(const in_heartbeat_t &in);
     

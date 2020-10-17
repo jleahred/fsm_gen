@@ -1,5 +1,6 @@
 pub(crate) mod cpp;
 mod dot;
+mod sup;
 
 use crate::config::Config;
 use crate::files::*;
@@ -7,6 +8,22 @@ use crate::parser::Ast;
 use chrono::prelude::*;
 use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
+
+pub(crate) fn process(path: &PathBuf, config: &Config) -> std::result::Result<(), String> {
+    let ast = crate::parser::compile(&read_file(path)?)?;
+    let context = Context::new(ast, path)?;
+
+    match config.lang {
+        crate::cli_params::Lang::Cpp => {
+            cpp::generate_files(&context, &path).map_err(|e| e.to_string())?
+        }
+    }
+
+    if config.dot {
+        dot::generate_file(&context.ast, &path).map_err(|e| e.to_string())?;
+    }
+    Ok(())
+}
 
 #[derive(Serialize, Deserialize)]
 pub(crate) struct Context {
@@ -34,22 +51,6 @@ impl Context {
 pub(crate) struct InFile {
     pub(crate) dir: String,
     pub(crate) stem_name: String,
-}
-
-pub(crate) fn process(path: &PathBuf, config: &Config) -> std::result::Result<(), String> {
-    let ast = crate::parser::compile(&read_file(path)?)?;
-    let context = Context::new(ast, path)?;
-
-    match config.lang {
-        crate::cli_params::Lang::Cpp => {
-            cpp::generate_files(&context, &path).map_err(|e| e.to_string())?
-        }
-    }
-
-    if config.dot {
-        dot::generate_file(&context.ast, &path).map_err(|e| e.to_string())?;
-    }
-    Ok(())
 }
 
 fn get_inputs(ast: &Ast) -> Vec<crate::parser::InputName> {

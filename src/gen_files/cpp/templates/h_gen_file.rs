@@ -1,9 +1,5 @@
 pub(crate) fn t() -> &'static str {
     r#"
-/*
-{{ __tera_context }}
-*/
-
 //  generated automatically  {{ gen_time }}
 //  do not modify it manually
 

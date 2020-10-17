@@ -1,3 +1,4 @@
+use crate::gen_files::sup::generate_file;
 use crate::gen_files::Context;
 use std::path::PathBuf;
 
@@ -11,8 +12,20 @@ pub(super) fn generate_files(
     context: &Context,
     orig_path: &PathBuf,
 ) -> std::result::Result<(), String> {
-    h_gen_file::generate(&context).map_err(|e| e.to_string())?;
-    cpp_gen_file::generate(&context.ast, orig_path).map_err(|e| e.to_string())?;
+    generate_file(
+        context,
+        &h_gen_file::get_full_name(context),
+        templates::h_gen_file::t(),
+    )?;
+
+    generate_file(
+        context,
+        &cpp_gen_file::get_full_name(context),
+        templates::cpp_gen_file::t(),
+    )?;
+
+    // h_gen_file::generate(&context).map_err(|e| e.to_string())?;
+    // cpp_gen_file::generate(&context.ast, orig_path).map_err(|e| e.to_string())?;
     types_h_file::generate(&context.ast, orig_path).map_err(|e| e.to_string())?;
     hpp_file::generate(&context.ast, orig_path).map_err(|e| e.to_string())?;
     Ok(())

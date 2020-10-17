@@ -60,7 +60,7 @@ SState {{status.name}}::input(const in_{{input}}_t& in) {
       {% for transition in sinput.transitions -%}
       {% if transition.new_status.name != status.name or transition.actions %}
       if(true
-        {%- for guard in transition.guards %} && {{guard.name}}(in, info)
+        {%- for guard in transition.guards %} && {% if not guard.positiv %}!{%endif%}{{guard.name}}(in, info)
         {%- endfor -%}
              ){
         auto nw_st_info = from_in2{{transition.new_status.name}}<st_{{status.name}}_t, in_{{sinput.name}}_t>(this->info, in);

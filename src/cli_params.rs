@@ -26,6 +26,7 @@ pub(crate) struct Opt {
     // /// Generate all files regardless of change date
     // #[structopt(short = "f", long = "force")]
     // force: bool,
+    //
     /// Number of threads to use. 0 means one per core  ;-)
     #[structopt(short = "t", long = "threads", default_value = "0")]
     pub(crate) n_threads: usize,

@@ -1,21 +1,36 @@
 
+//  generated automatically  2020-10-17 22:31:14
+
 digraph finite_state_machine {
-	rankdir=LR;
-	size="8,5"
-	node [shape = circle, width=1];
+    rankdir=LR;
+    size="8,5"
+    node [shape = circle, width=1];
 
 
+    
+    init -> w_login [label="rq_key / send_key"]
+    
+    
+    
+    w_login -> login [label="rq_login / send_login"]
+    
+    
+    w_login -> error [label="timer"]
+    
+    
+    
+    login -> logout [label="rq_logout / send_logout"]
+    
+    
+    login -> login [label="heartbeat / update_hb"]
+    
+    
+    login -> logout [label="timer"]
+    
+    
+    
+    
 
-init -> w_login [label="rq_key / send_key"]
-
-w_login -> login [label="rq_login(valid) / send_login"]
-w_login -> error [label="rq_login"]
-w_login -> error [label="timer(timeout)"]
-
-login -> logout [label="rq_logout / send_logout"]
-login -> login [label="heartbeat / update_hb"]
-login -> logout [label="timer(timeout)"]
 
 
 }
-

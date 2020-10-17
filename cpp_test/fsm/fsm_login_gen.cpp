@@ -1,7 +1,7 @@
 
 // clang-format off
 
-//  generated automatically  2020-10-17 21:43:02
+//  generated automatically  2020-10-17 22:31:14
 //  do not modify it manually
 
 #include "fsm_login_gen.h"
@@ -16,11 +16,11 @@ namespace login {
     ~BaseState() {}
 
    public:
-     virtual SState input(const in_heartbeat_t& in) = 0;
-     virtual SState input(const in_rq_login_t& in) = 0;
      virtual SState input(const in_rq_logout_t& in) = 0;
-     virtual SState input(const in_rq_key_t& in) = 0;
+     virtual SState input(const in_heartbeat_t& in) = 0;
      virtual SState input(const in_timer_t& in) = 0;
+     virtual SState input(const in_rq_key_t& in) = 0;
+     virtual SState input(const in_rq_login_t& in) = 0;
      
    };
 
@@ -34,11 +34,11 @@ namespace login {
   private:
     st_init_t info;
 
-    SState input(const in_heartbeat_t& in) override;
-    SState input(const in_rq_login_t& in) override;
     SState input(const in_rq_logout_t& in) override;
-    SState input(const in_rq_key_t& in) override;
+    SState input(const in_heartbeat_t& in) override;
     SState input(const in_timer_t& in) override;
+    SState input(const in_rq_key_t& in) override;
+    SState input(const in_rq_login_t& in) override;
     
   };
   
@@ -50,11 +50,11 @@ namespace login {
   private:
     st_w_login_t info;
 
-    SState input(const in_heartbeat_t& in) override;
-    SState input(const in_rq_login_t& in) override;
     SState input(const in_rq_logout_t& in) override;
-    SState input(const in_rq_key_t& in) override;
+    SState input(const in_heartbeat_t& in) override;
     SState input(const in_timer_t& in) override;
+    SState input(const in_rq_key_t& in) override;
+    SState input(const in_rq_login_t& in) override;
     
   };
   
@@ -66,11 +66,11 @@ namespace login {
   private:
     st_login_t info;
 
-    SState input(const in_heartbeat_t& in) override;
-    SState input(const in_rq_login_t& in) override;
     SState input(const in_rq_logout_t& in) override;
-    SState input(const in_rq_key_t& in) override;
+    SState input(const in_heartbeat_t& in) override;
     SState input(const in_timer_t& in) override;
+    SState input(const in_rq_key_t& in) override;
+    SState input(const in_rq_login_t& in) override;
     
   };
   
@@ -82,11 +82,11 @@ namespace login {
   private:
     st_logout_t info;
 
-    SState input(const in_heartbeat_t& in) override;
-    SState input(const in_rq_login_t& in) override;
     SState input(const in_rq_logout_t& in) override;
-    SState input(const in_rq_key_t& in) override;
+    SState input(const in_heartbeat_t& in) override;
     SState input(const in_timer_t& in) override;
+    SState input(const in_rq_key_t& in) override;
+    SState input(const in_rq_login_t& in) override;
     
   };
   
@@ -98,11 +98,11 @@ namespace login {
   private:
     st_error_t info;
 
-    SState input(const in_heartbeat_t& in) override;
-    SState input(const in_rq_login_t& in) override;
     SState input(const in_rq_logout_t& in) override;
-    SState input(const in_rq_key_t& in) override;
+    SState input(const in_heartbeat_t& in) override;
     SState input(const in_timer_t& in) override;
+    SState input(const in_rq_key_t& in) override;
+    SState input(const in_rq_login_t& in) override;
     
   };
   
@@ -112,15 +112,23 @@ namespace login {
 Fsm::Fsm() : state(std::make_shared<init>(st_init_t{})) {}
 Fsm::~Fsm() {}
 
-void Fsm::process(const in_heartbeat_t& in) { state = state ->input(in); }
-void Fsm::process(const in_rq_login_t& in) { state = state ->input(in); }
 void Fsm::process(const in_rq_logout_t& in) { state = state ->input(in); }
-void Fsm::process(const in_rq_key_t& in) { state = state ->input(in); }
+void Fsm::process(const in_heartbeat_t& in) { state = state ->input(in); }
 void Fsm::process(const in_timer_t& in) { state = state ->input(in); }
+void Fsm::process(const in_rq_key_t& in) { state = state ->input(in); }
+void Fsm::process(const in_rq_login_t& in) { state = state ->input(in); }
 
 
 
 
+SState init::input(const in_rq_logout_t& in) {
+  try {
+  } catch (...) {}
+
+  auto nw_st_info = from_in2error<st_init_t, in_rq_logout_t>(this->info, in);
+  log("[init] rq_logout error/default -> error", in, info, nw_st_info);
+  return std::make_shared<error>(nw_st_info);
+}
 SState init::input(const in_heartbeat_t& in) {
   try {
   } catch (...) {}
@@ -129,20 +137,13 @@ SState init::input(const in_heartbeat_t& in) {
   log("[init] heartbeat error/default -> error", in, info, nw_st_info);
   return std::make_shared<error>(nw_st_info);
 }
-SState init::input(const in_rq_login_t& in) {
+SState init::input(const in_timer_t& in) {
   try {
+      
   } catch (...) {}
 
-  auto nw_st_info = from_in2error<st_init_t, in_rq_login_t>(this->info, in);
-  log("[init] rq_login error/default -> error", in, info, nw_st_info);
-  return std::make_shared<error>(nw_st_info);
-}
-SState init::input(const in_rq_logout_t& in) {
-  try {
-  } catch (...) {}
-
-  auto nw_st_info = from_in2error<st_init_t, in_rq_logout_t>(this->info, in);
-  log("[init] rq_logout error/default -> error", in, info, nw_st_info);
+  auto nw_st_info = from_in2error<st_init_t, in_timer_t>(this->info, in);
+  log("[init] timer error/default -> error", in, info, nw_st_info);
   return std::make_shared<error>(nw_st_info);
 }
 SState init::input(const in_rq_key_t& in) {
@@ -162,22 +163,53 @@ SState init::input(const in_rq_key_t& in) {
   log("[init] rq_key error/default -> error", in, info, nw_st_info);
   return std::make_shared<error>(nw_st_info);
 }
-SState init::input(const in_timer_t& in) {
+SState init::input(const in_rq_login_t& in) {
   try {
-      
   } catch (...) {}
 
-  auto nw_st_info = from_in2error<st_init_t, in_timer_t>(this->info, in);
-  log("[init] timer error/default -> error", in, info, nw_st_info);
+  auto nw_st_info = from_in2error<st_init_t, in_rq_login_t>(this->info, in);
+  log("[init] rq_login error/default -> error", in, info, nw_st_info);
   return std::make_shared<error>(nw_st_info);
 }
 
+SState w_login::input(const in_rq_logout_t& in) {
+  try {
+  } catch (...) {}
+
+  auto nw_st_info = from_in2error<st_w_login_t, in_rq_logout_t>(this->info, in);
+  log("[w_login] rq_logout error/default -> error", in, info, nw_st_info);
+  return std::make_shared<error>(nw_st_info);
+}
 SState w_login::input(const in_heartbeat_t& in) {
   try {
   } catch (...) {}
 
   auto nw_st_info = from_in2error<st_w_login_t, in_heartbeat_t>(this->info, in);
   log("[w_login] heartbeat error/default -> error", in, info, nw_st_info);
+  return std::make_shared<error>(nw_st_info);
+}
+SState w_login::input(const in_timer_t& in) {
+  try {
+      
+      if(true && timeout(in, info)){
+        auto nw_st_info = from_in2error<st_w_login_t, in_timer_t>(this->info, in);
+        log("[w_login] timer -> error", in, info, nw_st_info);
+        
+        return std::make_shared<error>(nw_st_info);
+      }
+      
+  } catch (...) {}
+
+  auto nw_st_info = from_in2error<st_w_login_t, in_timer_t>(this->info, in);
+  log("[w_login] timer error/default -> error", in, info, nw_st_info);
+  return std::make_shared<error>(nw_st_info);
+}
+SState w_login::input(const in_rq_key_t& in) {
+  try {
+  } catch (...) {}
+
+  auto nw_st_info = from_in2error<st_w_login_t, in_rq_key_t>(this->info, in);
+  log("[w_login] rq_key error/default -> error", in, info, nw_st_info);
   return std::make_shared<error>(nw_st_info);
 }
 SState w_login::input(const in_rq_login_t& in) {
@@ -197,64 +229,7 @@ SState w_login::input(const in_rq_login_t& in) {
   log("[w_login] rq_login error/default -> error", in, info, nw_st_info);
   return std::make_shared<error>(nw_st_info);
 }
-SState w_login::input(const in_rq_logout_t& in) {
-  try {
-  } catch (...) {}
 
-  auto nw_st_info = from_in2error<st_w_login_t, in_rq_logout_t>(this->info, in);
-  log("[w_login] rq_logout error/default -> error", in, info, nw_st_info);
-  return std::make_shared<error>(nw_st_info);
-}
-SState w_login::input(const in_rq_key_t& in) {
-  try {
-  } catch (...) {}
-
-  auto nw_st_info = from_in2error<st_w_login_t, in_rq_key_t>(this->info, in);
-  log("[w_login] rq_key error/default -> error", in, info, nw_st_info);
-  return std::make_shared<error>(nw_st_info);
-}
-SState w_login::input(const in_timer_t& in) {
-  try {
-      
-      if(true && timeout(in, info)){
-        auto nw_st_info = from_in2error<st_w_login_t, in_timer_t>(this->info, in);
-        log("[w_login] timer -> error", in, info, nw_st_info);
-        
-        return std::make_shared<error>(nw_st_info);
-      }
-      
-  } catch (...) {}
-
-  auto nw_st_info = from_in2error<st_w_login_t, in_timer_t>(this->info, in);
-  log("[w_login] timer error/default -> error", in, info, nw_st_info);
-  return std::make_shared<error>(nw_st_info);
-}
-
-SState login::input(const in_heartbeat_t& in) {
-  try {
-      
-      if(true){
-        auto nw_st_info = from_in2login<st_login_t, in_heartbeat_t>(this->info, in);
-        log("[login] heartbeat -> login", in, info, nw_st_info);
-        act_update_hb(this->info, in, nw_st_info);
-        
-        return std::make_shared<login>(nw_st_info);
-      }
-      
-  } catch (...) {}
-
-  auto nw_st_info = from_in2error<st_login_t, in_heartbeat_t>(this->info, in);
-  log("[login] heartbeat error/default -> error", in, info, nw_st_info);
-  return std::make_shared<error>(nw_st_info);
-}
-SState login::input(const in_rq_login_t& in) {
-  try {
-  } catch (...) {}
-
-  auto nw_st_info = from_in2error<st_login_t, in_rq_login_t>(this->info, in);
-  log("[login] rq_login error/default -> error", in, info, nw_st_info);
-  return std::make_shared<error>(nw_st_info);
-}
 SState login::input(const in_rq_logout_t& in) {
   try {
       
@@ -272,12 +247,21 @@ SState login::input(const in_rq_logout_t& in) {
   log("[login] rq_logout error/default -> error", in, info, nw_st_info);
   return std::make_shared<error>(nw_st_info);
 }
-SState login::input(const in_rq_key_t& in) {
+SState login::input(const in_heartbeat_t& in) {
   try {
+      
+      if(true){
+        auto nw_st_info = from_in2login<st_login_t, in_heartbeat_t>(this->info, in);
+        log("[login] heartbeat -> login", in, info, nw_st_info);
+        act_update_hb(this->info, in, nw_st_info);
+        
+        return std::make_shared<login>(nw_st_info);
+      }
+      
   } catch (...) {}
 
-  auto nw_st_info = from_in2error<st_login_t, in_rq_key_t>(this->info, in);
-  log("[login] rq_key error/default -> error", in, info, nw_st_info);
+  auto nw_st_info = from_in2error<st_login_t, in_heartbeat_t>(this->info, in);
+  log("[login] heartbeat error/default -> error", in, info, nw_st_info);
   return std::make_shared<error>(nw_st_info);
 }
 SState login::input(const in_timer_t& in) {
@@ -296,23 +280,23 @@ SState login::input(const in_timer_t& in) {
   log("[login] timer error/default -> error", in, info, nw_st_info);
   return std::make_shared<error>(nw_st_info);
 }
-
-SState logout::input(const in_heartbeat_t& in) {
+SState login::input(const in_rq_key_t& in) {
   try {
   } catch (...) {}
 
-  auto nw_st_info = from_in2error<st_logout_t, in_heartbeat_t>(this->info, in);
-  log("[logout] heartbeat error/default -> error", in, info, nw_st_info);
+  auto nw_st_info = from_in2error<st_login_t, in_rq_key_t>(this->info, in);
+  log("[login] rq_key error/default -> error", in, info, nw_st_info);
   return std::make_shared<error>(nw_st_info);
 }
-SState logout::input(const in_rq_login_t& in) {
+SState login::input(const in_rq_login_t& in) {
   try {
   } catch (...) {}
 
-  auto nw_st_info = from_in2error<st_logout_t, in_rq_login_t>(this->info, in);
-  log("[logout] rq_login error/default -> error", in, info, nw_st_info);
+  auto nw_st_info = from_in2error<st_login_t, in_rq_login_t>(this->info, in);
+  log("[login] rq_login error/default -> error", in, info, nw_st_info);
   return std::make_shared<error>(nw_st_info);
 }
+
 SState logout::input(const in_rq_logout_t& in) {
   try {
   } catch (...) {}
@@ -321,12 +305,12 @@ SState logout::input(const in_rq_logout_t& in) {
   log("[logout] rq_logout error/default -> error", in, info, nw_st_info);
   return std::make_shared<error>(nw_st_info);
 }
-SState logout::input(const in_rq_key_t& in) {
+SState logout::input(const in_heartbeat_t& in) {
   try {
   } catch (...) {}
 
-  auto nw_st_info = from_in2error<st_logout_t, in_rq_key_t>(this->info, in);
-  log("[logout] rq_key error/default -> error", in, info, nw_st_info);
+  auto nw_st_info = from_in2error<st_logout_t, in_heartbeat_t>(this->info, in);
+  log("[logout] heartbeat error/default -> error", in, info, nw_st_info);
   return std::make_shared<error>(nw_st_info);
 }
 SState logout::input(const in_timer_t& in) {
@@ -338,7 +322,31 @@ SState logout::input(const in_timer_t& in) {
   log("[logout] timer error/default -> error", in, info, nw_st_info);
   return std::make_shared<error>(nw_st_info);
 }
+SState logout::input(const in_rq_key_t& in) {
+  try {
+  } catch (...) {}
 
+  auto nw_st_info = from_in2error<st_logout_t, in_rq_key_t>(this->info, in);
+  log("[logout] rq_key error/default -> error", in, info, nw_st_info);
+  return std::make_shared<error>(nw_st_info);
+}
+SState logout::input(const in_rq_login_t& in) {
+  try {
+  } catch (...) {}
+
+  auto nw_st_info = from_in2error<st_logout_t, in_rq_login_t>(this->info, in);
+  log("[logout] rq_login error/default -> error", in, info, nw_st_info);
+  return std::make_shared<error>(nw_st_info);
+}
+
+SState error::input(const in_rq_logout_t& in) {
+  try {
+  } catch (...) {}
+
+  auto nw_st_info = from_in2error<st_error_t, in_rq_logout_t>(this->info, in);
+  log("[error] rq_logout error/default -> error", in, info, nw_st_info);
+  return std::make_shared<error>(nw_st_info);
+}
 SState error::input(const in_heartbeat_t& in) {
   try {
   } catch (...) {}
@@ -347,20 +355,12 @@ SState error::input(const in_heartbeat_t& in) {
   log("[error] heartbeat error/default -> error", in, info, nw_st_info);
   return std::make_shared<error>(nw_st_info);
 }
-SState error::input(const in_rq_login_t& in) {
+SState error::input(const in_timer_t& in) {
   try {
   } catch (...) {}
 
-  auto nw_st_info = from_in2error<st_error_t, in_rq_login_t>(this->info, in);
-  log("[error] rq_login error/default -> error", in, info, nw_st_info);
-  return std::make_shared<error>(nw_st_info);
-}
-SState error::input(const in_rq_logout_t& in) {
-  try {
-  } catch (...) {}
-
-  auto nw_st_info = from_in2error<st_error_t, in_rq_logout_t>(this->info, in);
-  log("[error] rq_logout error/default -> error", in, info, nw_st_info);
+  auto nw_st_info = from_in2error<st_error_t, in_timer_t>(this->info, in);
+  log("[error] timer error/default -> error", in, info, nw_st_info);
   return std::make_shared<error>(nw_st_info);
 }
 SState error::input(const in_rq_key_t& in) {
@@ -371,12 +371,12 @@ SState error::input(const in_rq_key_t& in) {
   log("[error] rq_key error/default -> error", in, info, nw_st_info);
   return std::make_shared<error>(nw_st_info);
 }
-SState error::input(const in_timer_t& in) {
+SState error::input(const in_rq_login_t& in) {
   try {
   } catch (...) {}
 
-  auto nw_st_info = from_in2error<st_error_t, in_timer_t>(this->info, in);
-  log("[error] timer error/default -> error", in, info, nw_st_info);
+  auto nw_st_info = from_in2error<st_error_t, in_rq_login_t>(this->info, in);
+  log("[error] rq_login error/default -> error", in, info, nw_st_info);
   return std::make_shared<error>(nw_st_info);
 }
 

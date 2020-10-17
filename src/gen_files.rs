@@ -18,7 +18,7 @@ pub(crate) fn process(path: &PathBuf, config: &Config) -> std::result::Result<()
     }
 
     if config.dot {
-        dot::generate_file(&context.ast, &path).map_err(|e| e.to_string())?;
+        dot::generate_files(&context).map_err(|e| e.to_string())?;
     }
     Ok(())
 }

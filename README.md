@@ -18,7 +18,8 @@ cargo install --path . -f
 ### 0.5
 
 - moved to tera templates
-
+- added dot files generation
+- 
 ### 0.4
 
 - error redefinied action on cpp (watch example iceberg)
@@ -48,8 +49,6 @@ cargo install --path . -f
 - Add comments support on fsm grammar
 
 ## TODO
-
-- reactivate `.dot` files generation
 
 - Error transition is special
 - Inprove exceptions control

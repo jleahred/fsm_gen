@@ -1,74 +1,38 @@
-use crate::files::get_dir_stem_name;
-use fomat_macros::fomat;
-use std::fs::File;
-use std::io::prelude::*;
-use std::path::PathBuf;
+use crate::gen_files::sup::*;
+use crate::gen_files::Context;
 
-//  --------------------
-//      dot graphviz
-
-pub(crate) fn generate_file(_ast: &crate::parser::Ast, orig_path: &PathBuf) -> Result<(), String> {
-    let (dir, stem_name) = get_dir_stem_name(&orig_path)?;
-
-    let file_name = format!("{}/{}.dot", dir, stem_name);
-    println!("Generating file... {}", file_name);
-
-    let mut f = File::create(file_name).map_err(|e| format!("{}", e))?;
-
-    let transitions_ast = || {
-        // let transition_st = |st: &crate::parser::Status| {
-        //     let guard = |oguard: &Option<String>| {
-        //         if let Some(g) = oguard {
-        //             format!("({})", g)
-        //         } else {
-        //             "".to_string()
-        //         }
-        //     };
-        //     let action = |oaction: &Option<String>| {
-        //         if let Some(a) = oaction {
-        //             format!(" / {}", a)
-        //         } else {
-        //             "".to_string()
-        //         }
-        //     };
-        //     st.transitions
-        //         .iter()
-        //         .filter(|t| t.input != "_")
-        //         .filter(|t| !(t.action.is_none() && t.guard.is_none() && st.name == t.new_status))
-        //         .fold("".to_string(), |acc, t| {
-        //             format!(
-        //                 "{}\n{} -> {} [label=\"{}{}{}\"]",
-        //                 acc,
-        //                 st.name,
-        //                 t.new_status,
-        //                 t.input,
-        //                 guard(&t.guard),
-        //                 action(&t.action)
-        //             )
-        //         })
-        // };
-        // ast.iter().fold("".to_string(), |acc, st| {
-        //     format!("{}\n{}", acc, transition_st(st))
-        // })
-        ""
-    };
-
-    let template = fomat!(
-        r#"
-digraph finite_state_machine {
-	rankdir=LR;
-	size="8,5"
-	node [shape = circle, width=1];
-
-"# (transitions_ast()) r#"
+pub(super) fn generate_files(context: &Context) -> std::result::Result<(), String> {
+    generate_file(context, &get_full_name(context), template())?;
+    Ok(())
 }
 
+fn get_full_name(context: &Context) -> String {
+    format!("{}/{}.dot", context.in_file.dir, context.in_file.stem_name)
+}
+
+pub(crate) fn template() -> &'static str {
+    r#"
+//  generated automatically  {{gen_time}}
+
+digraph finite_state_machine {
+    rankdir=LR;
+    size="8,5"
+    node [shape = circle, width=1];
+
+{% for status in ast -%}
+{%- for input in status.inputs -%}
+{%- for t in input.transitions %}
+    {% if status.name != t.new_status.name  or t.actions %}
+    {{status.name}} -> {{t.new_status.name}} [label="{{input.name}}
+    {%- if t.actions -%}{{" "}}/ {%- endif -%}
+    {%- for a in t.actions -%}
+    {{" "}}{{a}}
+    {%- endfor -%}"]
+    {% endif %}
+{%- endfor -%}
+{%- endfor -%}
+{%- endfor %}
+
+}
 "#
-    );
-
-    f.write_all(template.as_bytes())
-        .map_err(|e| format!("{}", e))?;
-
-    f.sync_all().map_err(|e| format!("{}", e))?;
-    Ok(())
 }

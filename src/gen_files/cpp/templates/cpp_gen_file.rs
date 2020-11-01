@@ -9,6 +9,8 @@ pub(crate) fn t() -> &'static str {
 
 #include "fsm_{{in_file.stem_name}}_private.hpp"
 
+#include <variant>
+
 namespace {{ in_file.stem_name }} {
 
   class BaseState {
@@ -63,12 +65,27 @@ SState {{status.name}}::input(const in_{{input}}_t& in) {
         {%- for guard in transition.guards %} && {% if not guard.positiv %}!{%endif%}{{guard.name}}(in, info)
         {%- endfor -%}
              ){
-        auto nw_st_info = from_in2{{transition.new_status.name}}<st_{{status.name}}_t, in_{{sinput.name}}_t>(this->info, in);
+        {% if transition.new_status.name != "error" %}
+        auto nw_st_info_or_error = fromin2<st_{{status.name}}_t, in_{{sinput.name}}_t, st_{{transition.new_status.name}}_t>(this->info, in);
+        if(auto nw_st_info = std::get_if<st_{{transition.new_status.name}}_t>(&nw_st_info_or_error))
+        {
+          log("[{{status.name}}] {{sinput.name}} -> {{transition.new_status.name}}", in, info, nw_st_info);
+          {% for action in transition.actions -%}
+          act_{{action}}(this->info, in, *nw_st_info);
+          {% endfor %}
+          return std::make_shared<{{transition.new_status.name}}>(*nw_st_info);
+        } else if(auto nw_st_info = std::get_if<st_error_t>(&nw_st_info_or_error)){
+            log("[init] rq_key -> error", in, info, nw_st_info);
+            return std::make_shared<error>(*nw_st_info);
+        }
+        {% else %}
+        auto nw_st_info = fromin2error<st_{{status.name}}_t, in_{{sinput.name}}_t>(this->info, in);
         log("[{{status.name}}] {{sinput.name}} -> {{transition.new_status.name}}", in, info, nw_st_info);
         {% for action in transition.actions -%}
-        act_{{action}}(this->info, in, nw_st_info);
+        act_{{action}}(this->info, in, *nw_st_info);
         {% endfor %}
         return std::make_shared<{{transition.new_status.name}}>(nw_st_info);
+        {% endif %}
       }
       {% endif -%}
       {% endfor -%}
@@ -76,7 +93,7 @@ SState {{status.name}}::input(const in_{{input}}_t& in) {
       {% endfor %}
   } catch (...) {}
 
-  auto nw_st_info = from_in2error<st_{{status.name}}_t, in_{{input}}_t>(this->info, in);
+  auto nw_st_info = fromin2error<st_{{status.name}}_t, in_{{input}}_t>(this->info, in);
   log("[{{status.name}}] {{input}} error/default -> error", in, info, nw_st_info);
   return std::make_shared<error>(nw_st_info);
 }

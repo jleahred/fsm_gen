@@ -20,6 +20,7 @@ pub(super) fn generate_files(context: &Context) -> std::result::Result<(), Strin
         templates::cpp_gen_file::t(),
     )?;
 
+    //generate_file(
     generate_file_if_missing(
         context,
         &types_h_file::get_full_name(context),
@@ -31,6 +32,7 @@ pub(super) fn generate_files(context: &Context) -> std::result::Result<(), Strin
         templates::types_h_file::t(),
     )?;
 
+    //generate_file(
     generate_file_if_missing(
         context,
         &hpp_file::get_full_name(context),

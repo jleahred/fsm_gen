@@ -4,6 +4,7 @@
 [init]
     rq_key          ->  w_login     /   send_key
     timer           ->  init
+
 [w_login]
     rq_login        ->  login       /   send_login
     timer

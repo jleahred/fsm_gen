@@ -9,10 +9,13 @@ pub(crate) fn t() -> &'static str {
 //  This file will be included in _gen.cpp
 //  (anywhere else)
 
+#pragma once
 //  to make happy some IDEs -----
 #include "fsm_{{in_file.stem_name}}_types.h"
 #include "fsm_{{in_file.stem_name}}_gen.h"
 //  to make happy some IDEs -----
+
+#include<variant>
 
 namespace {
     using namespace {{in_file.stem_name}};
@@ -25,10 +28,15 @@ namespace {
     }
 
     //  status change functions
-    {% for st in ast -%}
-    template <typename FROM, typename IN> st_{{st.name}}_t from_in2{{st.name}}(const FROM&, const IN&) { return st_{{st.name}}_t{}; }
-    {% endfor -%}
-    {{""}}
+    template <typename FROM, typename IN, typename TO>
+    std::variant<TO, st_error_t> fromin2(const FROM &, const IN &) {
+        return TO{};
+    }
+    template <typename FROM, typename IN>
+    st_error_t fromin2error(const FROM &, const IN &) {
+      return st_error_t{};
+    }
+    
 
     //  guards
     {% for st in ast -%}

@@ -3,7 +3,7 @@
 //  This file will not be updated by generator
 //  It's created just the first time as a reference
 //  but a file with same name ended wiht .reference will be created always
-//    generated on 2020-10-17 21:42:34
+//    generated on 2020-11-02 00:10:20
 
 //  This file will be included in _gen.cpp
 //  (anywhere else)
@@ -12,6 +12,8 @@
 #include "fsm_login_types.h"
 #include "fsm_login_gen.h"
 //  to make happy some IDEs -----
+
+#include<variant>
 
 namespace {
     using namespace login;
@@ -24,11 +26,14 @@ namespace {
     }
 
     //  status change functions
-    template <typename FROM, typename IN> st_init_t from_in2init(const FROM&, const IN&) { return st_init_t{}; }
-    template <typename FROM, typename IN> st_w_login_t from_in2w_login(const FROM&, const IN&) { return st_w_login_t{}; }
-    template <typename FROM, typename IN> st_login_t from_in2login(const FROM&, const IN&) { return st_login_t{}; }
-    template <typename FROM, typename IN> st_logout_t from_in2logout(const FROM&, const IN&) { return st_logout_t{}; }
-    template <typename FROM, typename IN> st_error_t from_in2error(const FROM&, const IN&) { return st_error_t{}; }
+    template <typename FROM, typename IN, typename TO>
+    std::variant<TO, st_error_t> fromin2(const FROM &, const IN &) {
+        return TO{};
+    }
+    template <typename FROM, typename IN>
+    st_error_t fromin2error(const FROM &, const IN &) {
+      return st_error_t{};
+    }
     
 
     //  guards

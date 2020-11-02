@@ -7,12 +7,12 @@ macro_rules! enum_str {
             $($variant),*
         }
 
-        impl std::str::FromStr for Lang {
+        impl std::str::FromStr for Templ {
             type Err = String;
-            fn from_str(s: &str) -> Result<Lang, String> {
+            fn from_str(s: &str) -> Result<Templ, String> {
                 match s {
                     $($val => Ok($name::$variant)),*,
-                    _ => Err(format!("Language not supported (yet) -> {}\nsupported languages (at the moment): {}", s, Lang::get_options_as_string())),
+                    _ => Err(format!("Template not supported (yet) -> {}\nsupported templates (at the moment): {}", s, Templ::get_options_as_string())),
                 }
             }
         }

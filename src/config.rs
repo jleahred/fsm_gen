@@ -1,4 +1,4 @@
 pub(crate) struct Config {
-    pub(crate) lang: crate::cli_params::Lang,
+    pub(crate) templ: crate::cli_params::Templ,
     pub(crate) dot: bool,
 }

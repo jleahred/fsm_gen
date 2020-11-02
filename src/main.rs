@@ -16,10 +16,10 @@ use structopt::StructOpt;
 fn main() {
     let opt = cli_params::Opt::from_args();
 
-    if opt.show_langs {
+    if opt.show_templs {
         println!(
-            "\nSupported languages: {}\n\n",
-            cli_params::Lang::get_options_as_string()
+            "\nSupported templates: {}\n\n",
+            cli_params::Templ::get_options_as_string()
         );
     } else if opt.help_cpp {
         gen_files::cpp::print_cpp_help_message();
@@ -27,12 +27,12 @@ fn main() {
         eprintln!("No files provied!!! If doubt,  --help");
     } else {
         configure_rayon(opt.n_threads);
-        process_files(&opt.fsm_files, opt.lang, opt.dot);
+        process_files(&opt.fsm_files, opt.templ, opt.dot);
     }
 }
 
-fn process_files(fsm_files: &Vec<std::path::PathBuf>, lang: cli_params::Lang, dot: bool) {
-    let config = Config { lang, dot };
+fn process_files(fsm_files: &Vec<std::path::PathBuf>, templ: cli_params::Templ, dot: bool) {
+    let config = Config { templ, dot };
 
     let _ = fsm_files
         .par_iter()

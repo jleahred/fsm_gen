@@ -5,7 +5,7 @@ use structopt::StructOpt;
 mod support;
 
 enum_str! {
-    enum Lang {
+    enum Templ {
         Cpp = "cpp",
     }
 }
@@ -15,31 +15,31 @@ enum_str! {
     name = "fsm_gen",
     about = r#"
     Generate code from a simple fsm file
-    To check the supported languages  --show_langs
+    To check the supported templates  --show_templs
     "#
 )]
 pub(crate) struct Opt {
-    /// Language to generate code (show available --show-langs)
-    #[structopt(short = "l", long = "lang", default_value = "cpp")]
-    pub(crate) lang: Lang,
+    /// Template to generate code (show available --show-templs)
+    #[structopt(short = "t", long = "templ", default_value = "cpp")]
+    pub(crate) templ: Templ,
 
     // /// Generate all files regardless of change date
     // #[structopt(short = "f", long = "force")]
     // force: bool,
     //
     /// Number of threads to use. 0 means one per core  ;-)
-    #[structopt(short = "t", long = "threads", default_value = "0")]
+    #[structopt(short = "T", long = "threads", default_value = "0")]
     pub(crate) n_threads: usize,
 
-    ///  Show supported languages generators
-    #[structopt(short = "s", long = "show-langs")]
-    pub(crate) show_langs: bool,
+    ///  Show supported template generators
+    #[structopt(short = "s", long = "show-templs")]
+    pub(crate) show_templs: bool,
 
     ///  Generate graphviz dot file
     #[structopt(short = "d", long = "dot-graphviz")]
     pub(crate) dot: bool,
 
-    /// List of fsm files
+    /// List of fsm files to be processed
     #[structopt(parse(from_os_str))]
     pub(crate) fsm_files: Vec<PathBuf>,
 

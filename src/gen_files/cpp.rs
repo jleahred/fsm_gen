@@ -50,21 +50,42 @@ pub(super) fn generate_files(context: &Context) -> std::result::Result<(), Strin
 pub(crate) fn print_cpp_help_message() {
     println!(
         r#"
-Being "name.fsm" the name of the file with the definition of the machine, two files will be generated.
+Being "name.fsm" the name of the file with the definition of the machine, four files will be generated.
 
-    fsm_name_gen.cpp
-    fsm_name_gen.h
+    fsm_<name>_gen.h
+    fsm_<name>_types.h
+    fsm_<name>_private.hpp
 
-In them the declarations and definitions of the state machine will be generated.
+    fsm_<name>_gen.cpp
 
-In fsm_name_gen.h it is indicated with comments, the methods to overwrite manually and the file where it is convenient to do it.
 
-The manual implementation of the methods and declarations of the types, it is recommended to do it in the following files.
+About fsm_<name>_private.hpp
 
-    fsm_name_gen.cpp
-    fsm_name_gen.h
+    //  Code generated automatically to be filled manually
+    //  This file will not be updated by generator
+    //  It's created just the first time as a reference
+    //  but a file with same name ended wiht .reference will be created always
+    //    generated on xxxxx
 
-If they do not exist, they will be created with an empty implementation.
+    //  This file will be included in _gen.cpp
+    //  (anywhere else)
+
+    Logic to fill guards functions, transitions, logging...
+
+About fsm_<name>_types.h
+
+    //  Code generated automatically to be filled manually
+    //  This file will not be updated by generator
+    //  It's created just the first time as a reference
+    //  but a file with same name ended wiht .reference will be created always
+
+    You can write your logic on data types for fsm
+
+About   fsm_<name>_gen.h  and   fsm_<name>_gen.cpp
+
+    //  generated automatically  2020-11-02 00:15:18
+    //  do not modify it manually
+
 "#
     );
 }

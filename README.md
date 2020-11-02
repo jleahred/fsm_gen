@@ -15,11 +15,16 @@ cargo install --path . -f
 
 ## Versions
 
+### 0.6
+
+- `cpp` generated code with option to move to `error` state
+- Instead of `languages`, now we speak of `templates`
+
 ### 0.5
 
 - moved to tera templates
 - added dot files generation
-- 
+ 
 ### 0.4
 
 - error redefinied action on cpp (watch example iceberg)
@@ -63,7 +68,7 @@ cargo install --path . -f
   - detect duplicated inputs and guards
 - output with signals
 
-- Add languages
+- Add templates
 
 ## Aim
 
@@ -248,11 +253,19 @@ Consider the this example status:
 
 Therefore considering all possible inputs in this state
 
-## Special Status and implicit transitions
+## `error` status and implicit transitions
 
 `error` is a special status
 
+You can move to `error` status explicitly.
+
 Any transition no defined, will finis on error status.
+
+You can also put some verifications on transiction funcion, and incase
+of fail, you can move to error (even when is not explicitly writted on `fsm`)
+
+This is so, because checking the params, is so commont that adding guards for it, would generate a lot of sound
+
 
 In our example...
 
@@ -271,6 +284,38 @@ equivalent to...
     timer           ->  init
     _               ->  error
 ```
+
+This is the transition function control (obiosly you can specialize as you wish)
+
+```cpp
+    //  status change functions
+    template <typename FROM, typename IN, typename TO>
+    std::variant<TO, st_error_t> fromin2(const FROM &, const IN &) {
+        //  here you could check the params and decide to go to error
+        //  instead to the programmed trasnsition
+        ...
+    }
+```
+
+And this is when you explicitly write a transition who finished on error status
+```cpp
+    template <typename FROM, typename IN>
+    st_error_t fromin2error(const FROM &, const IN &) {
+      return st_error_t{...};
+    }
+```
+
+Another way to end on error transition. If an exception is thrown while the input is being procesed...
+
+```cpp
+  [...]
+  } catch (...) {}
+
+  auto nw_st_info = fromin2error<st_init_t, in_rq_key_t>(this->info, in);
+  log("[init] rq_key error/default -> error", in, info, nw_st_info);
+  return std::make_shared<error>(nw_st_info);
+```
+
 
 ### Comments
 
@@ -310,7 +355,7 @@ ARGS:
     <fsm_files>...    List of fsm files
 ```
 
-The default language is `c++` (and at the moment the only one)
+The default template is `c++` (and at the moment the only one)
 
 You can run:
 
@@ -378,8 +423,7 @@ in your program.
 Headers and `namespaces` based on filename
 
 ```cpp
-#ifndef FSM_FSM_LOGIN_GENERATED_H
-#define FSM_FSM_LOGIN_GENERATED_H
+#pragma once
 
 #include <iostream>
 #include <memory>
@@ -515,11 +559,15 @@ In this way, you can specialize or generalize as much as you want.
     }
 
     //  status change functions
-    template <typename FROM, typename IN> st_init_t from_in2init(const FROM&, const IN&) { return st_init_t{}; }
-    template <typename FROM, typename IN> st_w_login_t from_in2w_login(const FROM&, const IN&) { return st_w_login_t{}; }
-    template <typename FROM, typename IN> st_login_t from_in2login(const FROM&, const IN&) { return st_login_t{}; }
-    template <typename FROM, typename IN> st_logout_t from_in2logout(const FROM&, const IN&) { return st_logout_t{}; }
-    template <typename FROM, typename IN> st_error_t from_in2error(const FROM&, const IN&) { return st_error_t{}; }
+    template <typename FROM, typename IN, typename TO>
+    std::variant<TO, st_error_t> fromin2(const FROM &, const IN &) {
+        //  you can specialize this generic function
+        return TO{};
+    }
+    template <typename FROM, typename IN>
+    st_error_t fromin2error(const FROM &, const IN &) {
+      return st_error_t{};
+    }
 ```
 
 First parameter in log, is an string with transition change information (initial transition, input, guard if so, final transition)

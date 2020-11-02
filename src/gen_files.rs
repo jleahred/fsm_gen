@@ -13,8 +13,10 @@ pub(crate) fn process(path: &PathBuf, config: &Config) -> std::result::Result<()
     let ast = crate::parser::compile(&read_file(path)?)?;
     let context = Context::new(ast, path)?;
 
-    match config.lang {
-        crate::cli_params::Lang::Cpp => cpp::generate_files(&context).map_err(|e| e.to_string())?,
+    match config.templ {
+        crate::cli_params::Templ::Cpp => {
+            cpp::generate_files(&context).map_err(|e| e.to_string())?
+        }
     }
 
     if config.dot {

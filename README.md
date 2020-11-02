@@ -18,7 +18,7 @@ cargo install --path . -f
 ### 0.6
 
 - `cpp` generated code with option to move to `error` state
-- Instead of `languages`, now we speak of `templates`
+- Instead of `languages`, now we speak about `templates`
 
 ### 0.5
 
@@ -330,12 +330,14 @@ fsm_gen --help
 ```
 
 ```txt
-fsm_gen 0.3.0
+> fsm_gen -h
+
+fsm_gen 0.6.1
 jleahred
 
     Generate code from a simple fsm file
-    To check the supported languages  --show_langs
-
+    To check the supported templates  --show_templs
+    
 
 USAGE:
     fsm_gen [FLAGS] [OPTIONS] [fsm_files]...
@@ -344,15 +346,15 @@ FLAGS:
     -d, --dot-graphviz    Generate graphviz dot file
     -h, --help            Prints help information
         --help-cpp        Give me some information about generating cpp files
-    -s, --show-langs      Show supported languages generators
+    -s, --show-templs     Show supported template generators
     -V, --version         Prints version information
 
 OPTIONS:
-    -l, --lang <lang>            Language to generate code (show available --show-langs) [default: cpp]
-    -t, --threads <n_threads>    Number of threads to use. 0 means all [default: 0]
+    -T, --threads <n_threads>    Number of threads to use. 0 means one per core  ;-) [default: 0]
+    -t, --templ <templ>          Template to generate code (show available --show-templs) [default: cpp]
 
 ARGS:
-    <fsm_files>...    List of fsm files
+    <fsm_files>...    List of fsm files to be processed
 ```
 
 The default template is `c++` (and at the moment the only one)

@@ -15,6 +15,10 @@ cargo install --path . -f
 
 ## Versions
 
+### 0.
+
+- ...
+
 ### 0.6
 
 - `cpp` generated code with option to move to `error` state
@@ -383,6 +387,12 @@ fsm_gen **/*.fsm
 
 ## C++ code generation
 
+The c++ template is the first template to generate code
+
+It will create a `finite state machine` with `RAII`
+
+You can have data and status (like a socket, o a db connection...) on each status, and you can use the `destructor` to manage these resources
+
 Starting from the example `login.fsm` the system will create...
 
 ```txt
@@ -401,8 +411,6 @@ on next files...
 ```
 
 These two files will be created if don't exist as a reference
-
-A empty reference code for these two files will be added on `_gen` files as comments.
 
 Files dependency:
 

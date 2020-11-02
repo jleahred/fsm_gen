@@ -14,7 +14,7 @@ chrono = "0.4"
 clap = "2.32.0"
 fomat-macros = "0.3.1"
 idata = "0.1.0"
-peg = "0.6.0"
+peg = "0.6.3"
 rayon = "1.0"
 serde = {version = "1.0.116", features = ["derive"]}
 structopt = "0.2"

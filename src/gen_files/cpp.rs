@@ -36,12 +36,12 @@ pub(super) fn generate_files(context: &Context) -> std::result::Result<(), Strin
     generate_file_if_missing(
         context,
         &hpp_file::get_full_name(context),
-        templates::hpp_file::t(),
+        templates::private_hpp_file::t(),
     )?;
     generate_file(
         context,
         &format!("{}{}", &hpp_file::get_full_name(context), ".reference"),
-        templates::hpp_file::t(),
+        templates::private_hpp_file::t(),
     )?;
 
     Ok(())

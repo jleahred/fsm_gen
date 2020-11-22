@@ -3,7 +3,7 @@
 //  This file will not be updated by generator
 //  It's created just the first time as a reference
 //  but a file with same name ended wiht .reference will be created always
-//    generated on 2020-11-02 10:11:19
+//    generated on 2020-11-22 23:44:05
 
 //  This file will be included in _gen.cpp
 //  (anywhere else)
@@ -39,15 +39,19 @@ namespace {
     
 
     //  guards
-    bool timeout(const in_timer_t& /*in*/, const st_w_login_t& /*st_from*/) { return true; }
-    bool timeout(const in_timer_t& /*in*/, const st_login_t& /*st_from*/) { return true; }
+    template<typename FROM_ST>
+    bool timeout(const in_timer_t& /*input*/, const FROM_ST&) { return true; }
     
 
     //  actions
-    void act_send_key(const st_init_t& /*from*/, const in_rq_key_t& /*input*/, const st_w_login_t& /*st_dest*/) {}
-    void act_send_login(const st_w_login_t& /*from*/, const in_rq_login_t& /*input*/, const st_login_t& /*st_dest*/) {}
-    void act_send_logout(const st_login_t& /*from*/, const in_rq_logout_t& /*input*/, const st_logout_t& /*st_dest*/) {}
-    void act_update_hb(const st_login_t& /*from*/, const in_heartbeat_t& /*input*/, const st_login_t& /*st_dest*/) {}
+    template<typename FROM_ST, typename TO_ST>
+    void act_update_hb(const FROM_ST&, const in_heartbeat_t& /*input*/, const TO_ST&) {}
+    template<typename FROM_ST, typename TO_ST>
+    void act_send_logout(const FROM_ST&, const in_rq_logout_t& /*input*/, const TO_ST&) {}
+    template<typename FROM_ST, typename TO_ST>
+    void act_send_key(const FROM_ST&, const in_rq_key_t& /*input*/, const TO_ST&) {}
+    template<typename FROM_ST, typename TO_ST>
+    void act_send_login(const FROM_ST&, const in_rq_login_t& /*input*/, const TO_ST&) {}
     
 
 } // namespace anonymous

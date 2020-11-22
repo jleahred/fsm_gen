@@ -17,7 +17,7 @@ cargo install --path . -f
 
 ### 0.
 
-- ...
+- More templates in `cpp` generated code
 
 ### 0.6
 
@@ -58,6 +58,9 @@ cargo install --path . -f
 - Add comments support on fsm grammar
 
 ## TODO
+
+- revisit dot
+- check README.md
 
 - Error transition is special
 - Inprove exceptions control
@@ -410,6 +413,8 @@ on next files...
     fsm_login_private.hpp
 ```
 
+There are two forward files for types and private. You can use them as reference.
+
 These two files will be created if don't exist as a reference
 
 Files dependency:
@@ -586,16 +591,20 @@ Next, we have the guards and actions functions.
 
 ```cpp
     //  guards
-    bool valid(const in_rq_login_t& /*in*/, const  st_w_login_t& /*st_info*/) { return true; }
-    bool timeout(const in_timer_t& /*in*/, const  st_w_login_t& /*st_info*/) { return true; }
-    bool timeout(const in_timer_t& /*in*/, const  st_login_t& /*st_info*/) { return true; }
+    template<typename FROM_ST>
+    bool timeout(const in_timer_t& /*input*/, const FROM_ST&) { return true; }
 
 
     //  actions
-    void act_send_key(const st_init_t& /*st_orig*/, const in_rq_key_t& /*in*/, const  st_w_login_t& /*st_dest*/) {}
-    void act_send_login(const st_w_login_t& /*st_orig*/, const in_rq_login_t& /*in*/, const  st_login_t& /*st_dest*/) {}
-    void act_send_logout(const st_login_t& /*st_orig*/, const in_rq_logout_t& /*in*/, const  st_logout_t& /*st_dest*/) {}
-    void act_update_hb(const st_login_t& /*st_orig*/, const in_heartbeat_t& /*in*/, const  st_login_t& /*st_dest*/) {}
+    template<typename FROM_ST, typename TO_ST>
+    void act_update_hb(const FROM_ST&, const in_heartbeat_t& /*input*/, const TO_ST&) {}
+    template<typename FROM_ST, typename TO_ST>
+    void act_send_logout(const FROM_ST&, const in_rq_logout_t& /*input*/, const TO_ST&) {}
+    template<typename FROM_ST, typename TO_ST>
+    void act_send_key(const FROM_ST&, const in_rq_key_t& /*input*/, const TO_ST&) {}
+    template<typename FROM_ST, typename TO_ST>
+    void act_send_login(const FROM_ST&, const in_rq_login_t& /*input*/, const TO_ST&) {}
+
 
 
 } // namespace anonymous

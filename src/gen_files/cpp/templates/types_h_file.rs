@@ -4,10 +4,13 @@ pub(crate) fn t() -> &'static str {
 //  This file will not be updated by generator
 //  It's created just the first time as a reference
 //  but a file with same name ended wiht .reference will be created always
+//
 //    generated on {{gen_time}}
 
 
 #pragma once
+
+#include "fsm_{{in_file.stem_name}}_types_forward_gen.hpp"
 
 namespace {{in_file.stem_name}} {
 

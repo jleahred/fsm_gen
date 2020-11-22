@@ -3,10 +3,12 @@
 //  This file will not be updated by generator
 //  It's created just the first time as a reference
 //  but a file with same name ended wiht .reference will be created always
-//    generated on 2020-11-02 00:10:20
+//    generated on 2020-11-22 21:53:39
 
 
 #pragma once
+
+#include "fsm_login_types_forward_gen.hpp"
 
 namespace login {
 
@@ -22,10 +24,10 @@ namespace login {
 
   //  input types
 
+    struct in_heartbeat_t{};
     struct in_rq_key_t{};
     struct in_rq_logout_t{};
     struct in_rq_login_t{};
-    struct in_heartbeat_t{};
     struct in_timer_t{};
     
 

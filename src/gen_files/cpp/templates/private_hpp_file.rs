@@ -40,27 +40,18 @@ namespace {
     
 
     //  guards
-    {% for st in ast -%}
-    {% for i in st.inputs -%}
-    {% for t in i.transitions -%}
-    {% for g in t.guards -%}
-    bool {{g.name}}(const in_{{i.name}}_t& /*in*/, const st_{{st.name}}_t& /*st_from*/) { return true; }
-    {% endfor -%}
-    {% endfor -%}
-    {% endfor -%}
+    {% for gi in guard_inputs -%}
+    template<typename FROM_ST>
+    bool {{gi.guard}}(const in_{{gi.input}}_t& /*input*/, const FROM_ST&) { return true; }
     {% endfor -%}
     {{""}}
 
     //  actions
-    {% for st in ast -%}
-    {% for i in st.inputs -%}
-    {% for t in i.transitions -%}
-    {% for action in t.actions -%}
-    void act_{{action}}(const st_{{st.name}}_t& /*from*/, const in_{{i.name}}_t& /*input*/, const st_{{t.new_status.name}}_t& /*st_dest*/) {}
+    {% for ai in action_inputs -%}
+    template<typename FROM_ST, typename TO_ST>
+    void act_{{ai.action}}(const FROM_ST&, const in_{{ai.input}}_t& /*input*/, const TO_ST&) {}
     {% endfor -%}
-    {% endfor -%}
-    {% endfor -%}
-    {% endfor %}
+    {{""}}
 
 } // namespace anonymous
 

@@ -2,16 +2,19 @@
 //  Code generated automatically to be filled manually
 //  This file will not be updated by generator
 //  It's created just the first time as a reference
-//  but a file with same name ended wiht .reference will be created always
-//    generated on 2020-11-22 23:44:05
+//
+//    generated on 2020-11-23 08:56:26
 
-//  This file will be included in _gen.cpp
+//  This file will be included in gen_fsm_login.cpp
 //  (anywhere else)
 
 #pragma once
+
+#include "gen_fsm_login_private_forward.hpp"
+
 //  to make happy some IDEs -----
 #include "fsm_login_types.h"
-#include "fsm_login_gen.h"
+#include "gen_fsm_login.h"
 //  to make happy some IDEs -----
 
 #include<variant>
@@ -45,13 +48,13 @@ namespace {
 
     //  actions
     template<typename FROM_ST, typename TO_ST>
-    void act_update_hb(const FROM_ST&, const in_heartbeat_t& /*input*/, const TO_ST&) {}
+    void act_send_login(const FROM_ST&, const in_rq_login_t& /*input*/, const TO_ST&) {}
     template<typename FROM_ST, typename TO_ST>
     void act_send_logout(const FROM_ST&, const in_rq_logout_t& /*input*/, const TO_ST&) {}
     template<typename FROM_ST, typename TO_ST>
-    void act_send_key(const FROM_ST&, const in_rq_key_t& /*input*/, const TO_ST&) {}
+    void act_update_hb(const FROM_ST&, const in_heartbeat_t& /*input*/, const TO_ST&) {}
     template<typename FROM_ST, typename TO_ST>
-    void act_send_login(const FROM_ST&, const in_rq_login_t& /*input*/, const TO_ST&) {}
+    void act_send_key(const FROM_ST&, const in_rq_key_t& /*input*/, const TO_ST&) {}
     
 
 } // namespace anonymous

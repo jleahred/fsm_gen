@@ -1,13 +1,13 @@
 
-//  Code generated automatically to be filled manually
-//  This file will not be updated by generator
+//  generated automatically  2020-11-23 08:56:26
+//  do not modify it manually
 
 //  This file will be included in private_hpp_file.hpp
 
 #pragma once
 //  to make happy some IDEs -----
-#include "fsm_login_types_forward_gen.h"
-#include "fsm_login_gen.h"
+#include "gen_fsm_login_types_forward.hpp"
+#include "gen_fsm_login.h"
 //  to make happy some IDEs -----
 
 #include<variant>
@@ -35,13 +35,13 @@ namespace {
 
     //  actions
     template<typename FROM_ST, typename TO_ST>
-    void act_update_hb(const FROM_ST&, const in_heartbeat_t& input, const TO_ST&);
+    void act_send_login(const FROM_ST&, const in_rq_login_t& input, const TO_ST&);
     template<typename FROM_ST, typename TO_ST>
     void act_send_logout(const FROM_ST&, const in_rq_logout_t& input, const TO_ST&);
     template<typename FROM_ST, typename TO_ST>
-    void act_send_key(const FROM_ST&, const in_rq_key_t& input, const TO_ST&);
+    void act_update_hb(const FROM_ST&, const in_heartbeat_t& input, const TO_ST&);
     template<typename FROM_ST, typename TO_ST>
-    void act_send_login(const FROM_ST&, const in_rq_login_t& input, const TO_ST&);
+    void act_send_key(const FROM_ST&, const in_rq_key_t& input, const TO_ST&);
     
 
 } // namespace anonymous

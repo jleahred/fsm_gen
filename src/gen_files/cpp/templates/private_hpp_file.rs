@@ -3,16 +3,19 @@ pub(crate) fn t() -> &'static str {
 //  Code generated automatically to be filled manually
 //  This file will not be updated by generator
 //  It's created just the first time as a reference
-//  but a file with same name ended wiht .reference will be created always
+//
 //    generated on {{gen_time}}
 
-//  This file will be included in _gen.cpp
+//  This file will be included in gen_fsm_{{in_file.stem_name}}.cpp
 //  (anywhere else)
 
 #pragma once
+
+#include "gen_fsm_{{in_file.stem_name}}_private_forward.hpp"
+
 //  to make happy some IDEs -----
 #include "fsm_{{in_file.stem_name}}_types.h"
-#include "fsm_{{in_file.stem_name}}_gen.h"
+#include "gen_fsm_{{in_file.stem_name}}.h"
 //  to make happy some IDEs -----
 
 #include<variant>

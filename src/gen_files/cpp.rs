@@ -34,11 +34,11 @@ pub(super) fn generate_files(context: &Context) -> std::result::Result<(), Strin
         &types_h_file::get_full_name(context),
         templates::types_h_file::t(),
     )?;
-    generate_file(
-        context,
-        &format!("{}{}", &types_h_file::get_full_name(context), ".reference"),
-        templates::types_h_file::t(),
-    )?;
+    // generate_file(
+    //     context,
+    //     &format!("{}{}", &types_h_file::get_full_name(context), ".reference"),
+    //     templates::types_h_file::t(),
+    // )?;
 
     generate_file(
         context,
@@ -46,18 +46,9 @@ pub(super) fn generate_files(context: &Context) -> std::result::Result<(), Strin
         templates::private_hpp_file_forward_gen::t(),
     )?;
     // generate_file(
-    generate_file_if_missing(
-        context,
-        &private_hpp_file::get_full_name(context),
-        templates::private_hpp_file::t(),
-    )?;
     generate_file(
         context,
-        &format!(
-            "{}{}",
-            &private_hpp_file::get_full_name(context),
-            ".reference"
-        ),
+        &private_hpp_file::get_full_name(context),
         templates::private_hpp_file::t(),
     )?;
 
@@ -69,11 +60,11 @@ pub(crate) fn print_cpp_help_message() {
         r#"
 Being "name.fsm" the name of the file with the definition of the machine, four files will be generated.
 
-    fsm_<name>_gen.h
+    gen_fsm_<name>.h
     fsm_<name>_types.h
     fsm_<name>_private.hpp
 
-    fsm_<name>_gen.cpp
+    gen_fsm_<name>.cpp
 
 
 About fsm_<name>_private.hpp
@@ -84,7 +75,7 @@ About fsm_<name>_private.hpp
     //  but a file with same name ended wiht .reference will be created always
     //    generated on xxxxx
 
-    //  This file will be included in _gen.cpp
+    //  This file will be included in gen_fsm_<name>.cpp
     //  (anywhere else)
 
     Logic to fill guards functions, transitions, logging...
@@ -98,7 +89,7 @@ About fsm_<name>_types.h
 
     You can write your logic on data types for fsm
 
-About   fsm_<name>_gen.h  and   fsm_<name>_gen.cpp
+About   gen_fsm_<name>.h  and   gen_fsm_<name>.cpp
 
     //  generated automatically  2020-11-02 00:15:18
     //  do not modify it manually

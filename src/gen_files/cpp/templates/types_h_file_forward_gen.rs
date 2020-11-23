@@ -4,6 +4,7 @@ pub(crate) fn t() -> &'static str {
 //  
 //  forward declaration of types
 //
+//  do not modify it manually
 //    generated on {{gen_time}}
 
 

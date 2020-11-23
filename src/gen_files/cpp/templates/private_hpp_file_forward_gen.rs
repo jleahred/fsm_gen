@@ -2,15 +2,15 @@ pub(crate) fn t() -> &'static str {
     // {{__tera_context}}
 
     r#"
-//  Code generated automatically to be filled manually
-//  This file will not be updated by generator
+//  generated automatically  {{ gen_time }}
+//  do not modify it manually
 
 //  This file will be included in private_hpp_file.hpp
 
 #pragma once
 //  to make happy some IDEs -----
-#include "fsm_{{in_file.stem_name}}_types_forward_gen.hpp"
-#include "fsm_{{in_file.stem_name}}_gen.h"
+#include "gen_fsm_{{in_file.stem_name}}_types_forward.hpp"
+#include "gen_fsm_{{in_file.stem_name}}.h"
 //  to make happy some IDEs -----
 
 #include<variant>

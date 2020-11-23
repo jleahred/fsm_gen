@@ -2,13 +2,14 @@
 //  Code generated automatically to be filled manually
 //  This file will not be updated by generator
 //  It's created just the first time as a reference
-//  but a file with same name ended wiht .reference will be created always
-//    generated on 2020-11-22 21:53:39
+//
+//
+//    generated on 2020-11-23 08:56:26
 
 
 #pragma once
 
-#include "fsm_login_types_forward_gen.hpp"
+#include "gen_fsm_login_types_forward.hpp"
 
 namespace login {
 
@@ -24,10 +25,10 @@ namespace login {
 
   //  input types
 
+    struct in_rq_login_t{};
     struct in_heartbeat_t{};
     struct in_rq_key_t{};
     struct in_rq_logout_t{};
-    struct in_rq_login_t{};
     struct in_timer_t{};
     
 

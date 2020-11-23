@@ -3,7 +3,8 @@
 //  
 //  forward declaration of types
 //
-//    generated on 2020-11-22 23:44:05
+//    generated on 2020-11-23 08:56:26
+//  do not modify it manually
 
 
 #pragma once
@@ -22,11 +23,11 @@ namespace login {
 
   //  input types
 
-    struct in_rq_logout_t;
-    struct in_rq_key_t;
-    struct in_timer_t;
-    struct in_heartbeat_t;
     struct in_rq_login_t;
+    struct in_heartbeat_t;
+    struct in_rq_key_t;
+    struct in_rq_logout_t;
+    struct in_timer_t;
     
 
 } // namespace login

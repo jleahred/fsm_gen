@@ -15,9 +15,13 @@ cargo install --path . -f
 
 ## Versions
 
-### 0.
+### 0.7
 
-- More templates in `cpp` generated code
+- Modifs on `cpp` generated code
+    - Removed `.reference` files
+    - Added `_forwards` files
+    - `gen_` at the begining to indicate you souldn't touch
+    - `actions` and `guards` using `cpp templates`
 
 ### 0.6
 
@@ -399,11 +403,13 @@ You can have data and status (like a socket, o a db connection...) on each statu
 Starting from the example `login.fsm` the system will create...
 
 ```txt
-    fsm_login_gen.h
-    fsm_login_gen.cpp
+    gen_fsm_login.h
+    gen_fsm_login.cpp
 ```
 
 You don't have to modify these files.
+
+In fact, all files starting with `gen_` shouldn't by modified by hand
 
 You have to write your code
 on next files...
@@ -413,7 +419,7 @@ on next files...
     fsm_login_private.hpp
 ```
 
-There are two forward files for types and private. You can use them as reference.
+There are two forward files for types and private. You can use them as reference to fill these files.
 
 These two files will be created if don't exist as a reference
 
@@ -421,9 +427,9 @@ Files dependency:
 
 ![cpp_files_depen](cpp_files_depen.png)
 
-### fsm_login_gen.h
+### gen_fsm_login.h
 
-Full code on [cpp_test/fsm/fsm_login_gen.h](cpp_test/fsm/fsm_login_gen.h)
+Full code on [cpp_test/fsm/gen_fsm_login.h](cpp_test/fsm/gen_fsm_login.h)
 
 We are informed on when it was created.
 
@@ -473,9 +479,9 @@ public:
 }
 ```
 
-### fsm_login_gen.cpp
+### gen_fsm_login.cpp
 
-Full code on [cpp_test/fsm/fsm_login_gen.cpp](cpp_test/fsm/fsm_login_gen.cpp)
+Full code on [cpp_test/fsm/gen_fsm_login.cpp](cpp_test/fsm/gen_fsm_login.cpp)
 
 You must not modify this file, and it's not necessary to know much about it
 
@@ -491,7 +497,7 @@ If the file doesn't exist, it will be created with empty data types
 //  Code generated automatically to be filled manually
 //  This file will not be updated by generator
 //  It's created just the first time as a reference
-//  Generator will allways create a  .reference file to help with
+//
 //  new methods and so
 ```
 
@@ -533,15 +539,13 @@ This is the other file you have to maintain by hand.
 //  Code generated automatically to be filled manually
 //  This file will not be updated by generator
 //  It's created just the first time as a reference
-//  Generator will allways create a  .reference file to help with
-//  new methods and so
-
-//  This file will be included in _gen.cpp
+//  
+//  This file will be included in gen_xxx.cpp
 //  (anywhere else)
 
 //  to make happy some IDEs
 #include "fsm_login_types.h"
-#include "fsm_login_gen.h"
+#include "gen_fsm_login.h"
 
 namespace {
     using namespace login;
@@ -549,7 +553,7 @@ namespace {
 
 As you can see, it is on anonymous `namespace`.
 
-This file is private, it will be included by `_gen.cpp`. Defining an anonymous
+This file is private, it will be included by `genxxx.cpp`. Defining an anonymous
 `namespace`, we keep this implementation as private. Even more important, the compiler
 will alert us if we forget an implementation, also if one is not necessary.
 
@@ -617,11 +621,11 @@ digraph G {
 rankdir = BT;
   node [shape=plaintext fontname="Arial"];
 
-main -> "fsm_login_gen.h"
+main -> "gen_fsm_login.h"
 
-"fsm_login_gen.cpp" -> "fsm_login_gen.h"
+"gen_fsm_login.cpp" -> "gen_fsm_login.h"
 
-"fsm_login_gen.h" -> "fsm_login_types.h"
+"gen_fsm_login.h" -> "fsm_login_types.h"
 
 }
 ```

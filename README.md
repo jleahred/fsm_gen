@@ -22,6 +22,7 @@ cargo install --path . -f
     - Added `_forwards` files
     - `gen_` at the begining to indicate you souldn't touch
     - `actions` and `guards` using `cpp templates`
+- Better `.dot` generated diagrams
 
 ### 0.6
 

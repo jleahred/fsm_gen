@@ -22,13 +22,25 @@ digraph finite_state_machine {
 {% for status in ast -%}
 {%- for input in status.inputs -%}
 {%- for t in input.transitions %}
-    {% if status.name != t.new_status.name  or t.actions %}
-    {{status.name}} -> {{t.new_status.name}} [label="{{input.name}}
-    {%- if t.actions -%}{{" "}}/ {%- endif -%}
+    {% set input_name = input.name -%}
+    {%- if input.name == "_" -%} {% set input_name = "<*>" -%} {% endif -%}
+    {{status.name}} -> {{t.new_status.name}} [label="{{input_name}}
+    {%- if t.guards -%}
+        {{" & "}}
+    {%- else -%}
+        {%- if input.transitions | length > 1 -%}
+            {{"<*>"}}
+        {%- endif -%}
+    {%- endif -%}
+    {%- for g in t.guards -%}
+        {{" "}}
+        {%- if g.positiv == false -%}{{"!"}}{%- endif -%}
+        {{g.name}}
+    {%- endfor -%}
+    {%- if t.actions -%}{{" "}}\n{%- endif -%}
     {%- for a in t.actions -%}
-    {{" "}}{{a}}
+        {{" "}}{{a}}
     {%- endfor -%}"]
-    {% endif %}
 {%- endfor -%}
 {%- endfor -%}
 {%- endfor %}

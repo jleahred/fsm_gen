@@ -23,6 +23,9 @@ cargo install --path . -f
     - `gen_` at the begining to indicate you souldn't touch
     - `actions` and `guards` using `cpp templates`
 - Better `.dot` generated diagrams
+- cpp
+    - Removed shadow warning
+    - Removed no virtual destructor
 
 ### 0.6
 

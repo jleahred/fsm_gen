@@ -19,14 +19,6 @@ namespace {{in_file.stem_name}} {
   {% endfor -%}
   {{""}}
 
-
-  //  input types
-
-    {% for input in inputs -%}
-    struct in_{{input}}_t;
-    {% endfor -%}
-    {{""}}
-
 } // namespace {{in_file.stem_name}}
 
 "#

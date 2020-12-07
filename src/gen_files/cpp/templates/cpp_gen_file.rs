@@ -11,12 +11,15 @@ pub(crate) fn t() -> &'static str {
 
 #include <variant>
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wshadow"
+
 namespace {{ in_file.stem_name }} {
 
   class BaseState {
   public:
     BaseState()  {}
-    ~BaseState() {}
+    virtual ~BaseState() {}
 
    public:
      {% for input in inputs -%}
@@ -102,6 +105,8 @@ SState {{status.name}}::input(const in_{{input}}_t& in) {
 {{""}}
 
 }
+
+#pragma GCC diagnostic pop
 
 // clang-format on
 "#

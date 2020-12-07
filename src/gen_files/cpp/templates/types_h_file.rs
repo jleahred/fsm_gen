@@ -24,10 +24,18 @@ namespace {{in_file.stem_name}} {
 
   //  input types
 
+    //  provisinal code, delete it when replace the nexts usings
+      {% for input in inputs -%}
+      struct provisinal_in_{{input}}_t{};
+      {% endfor -%}
+      {{""}}
+
+    //  usings
     {% for input in inputs -%}
-    struct in_{{input}}_t{};
+    using in_{{input}}_t = provisinal_in_{{input}}_t;
     {% endfor -%}
     {{""}}
+
 
 } // namespace {{in_file.stem_name}}
 

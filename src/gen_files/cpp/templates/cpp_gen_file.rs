@@ -63,7 +63,7 @@ SState {{status.name}}::input(const in_{{input}}_t& in) {
       {%- for sinput in status.inputs -%}
       {% if sinput.name == input %}
       {% for transition in sinput.transitions -%}
-      {% if transition.new_status.name != status.name or transition.actions %}
+      {% if transition.new_status.name != status.name or transition.actions  or true %}
       if(true
         {%- for guard in transition.guards %} && {% if not guard.positiv %}!{%endif%}{{guard.name}}(in, info)
         {%- endfor -%}

@@ -28,8 +28,8 @@ pub(super) fn generate_files(context: &Context) -> std::result::Result<(), Strin
         templates::types_h_file_forward_gen::t(),
     )?;
 
-    generate_file(
-        // generate_file_if_missing(
+    // generate_file(
+    generate_file_if_missing(
         context,
         &types_h_file::get_full_name(context),
         templates::types_h_file::t(),
@@ -46,7 +46,7 @@ pub(super) fn generate_files(context: &Context) -> std::result::Result<(), Strin
         templates::private_hpp_file_forward_gen::t(),
     )?;
     // generate_file(
-    generate_file(
+    generate_file_if_missing(
         context,
         &private_hpp_file::get_full_name(context),
         templates::private_hpp_file::t(),

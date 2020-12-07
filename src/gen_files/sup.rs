@@ -14,17 +14,17 @@ pub(crate) fn generate_file(
     Ok(())
 }
 
-// pub(crate) fn generate_file_if_missing(
-//     context: &Context,
-//     full_file_name: &str,
-//     template: &str,
-// ) -> Result<(), String> {
-//     if !std::path::Path::new(&full_file_name).exists() {
-//         generate_file(context, &full_file_name, template)
-//     } else {
-//         Ok(())
-//     }
-// }
+pub(crate) fn generate_file_if_missing(
+    context: &Context,
+    full_file_name: &str,
+    template: &str,
+) -> Result<(), String> {
+    if !std::path::Path::new(&full_file_name).exists() {
+        generate_file(context, &full_file_name, template)
+    } else {
+        Ok(())
+    }
+}
 
 fn err2string<E: std::fmt::Display>(err: E) -> String {
     format!("{}", err)

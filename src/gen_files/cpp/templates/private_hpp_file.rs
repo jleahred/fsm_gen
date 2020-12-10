@@ -31,13 +31,19 @@ namespace {
     }
 
     //  status change functions
-    template <typename FROM, typename IN, typename TO>
-    std::variant<TO, st_error_t> fromin2(const FROM &, const IN &) {
-        //  you can specialize or overload this generic function (not both)
-        return TO{};
-    }
+    {% for st in ast -%}
+    {% if st.name != "error" %}
     template <typename FROM, typename IN>
-    st_error_t fromin2error(const FROM &, const IN &) {
+    std::variant<st_{{st.name}}_t, st_error_t> fromin2_{{st.name}}(const FROM &, const IN &) {
+        //  you can specialize or overload this generic function (not both)
+        return st_{{st.name}}_t{};
+    }
+    {% endif %}
+    {% endfor -%}
+    {{""}}
+
+    template <typename FROM, typename IN>
+    st_error_t fromin2_error(const FROM &, const IN &) {
       return st_error_t{};
     }
     

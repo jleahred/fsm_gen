@@ -25,11 +25,16 @@ namespace {
 
     //  status change functions
     //  you can specialize this generic functions
-    template <typename FROM_ST, typename IN, typename TO_ST>
-    std::variant<TO_ST, st_error_t> fromin2(const FROM_ST &, const IN &);
+    {% for st in ast -%}
+    {% if st.name != "error" %}
+    template <typename FROM_ST, typename IN>
+    std::variant<st_{{st.name}}_t, st_error_t> fromin2_{{st.name}}(const FROM_ST &, const IN &);
+    {% endif %}
+    {% endfor -%}
+    {{""}}
 
     template <typename FROM_ST, typename IN>
-    st_error_t fromin2error(const FROM_ST &, const IN &);
+    st_error_t fromin2_error(const FROM_ST &, const IN &);
     
     //  guards
     {% for gi in guard_inputs -%}

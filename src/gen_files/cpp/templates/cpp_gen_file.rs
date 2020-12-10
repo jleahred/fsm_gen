@@ -69,7 +69,7 @@ SState {{status.name}}::input(const in_{{input}}_t& in) {
         {%- endfor -%}
              ){
         {% if transition.new_status.name != "error" %}
-        auto nw_st_info_or_error = fromin2<st_{{status.name}}_t, in_{{sinput.name}}_t, st_{{transition.new_status.name}}_t>(this->info, in);
+        auto nw_st_info_or_error = fromin2_{{transition.new_status.name}}<st_{{status.name}}_t, in_{{sinput.name}}_t>(this->info, in);
         if(auto nw_st_info = std::get_if<st_{{transition.new_status.name}}_t>(&nw_st_info_or_error))
         {
           log("[{{status.name}}] {{sinput.name}} -> {{transition.new_status.name}}", in, info, nw_st_info);
@@ -82,7 +82,7 @@ SState {{status.name}}::input(const in_{{input}}_t& in) {
             return std::make_shared<error>(*nw_st_info);
         }
         {% else %}
-        auto nw_st_info = fromin2error<st_{{status.name}}_t, in_{{sinput.name}}_t>(this->info, in);
+        auto nw_st_info = fromin2_error<st_{{status.name}}_t, in_{{sinput.name}}_t>(this->info, in);
         log("[{{status.name}}] {{sinput.name}} -> {{transition.new_status.name}}", in, info, nw_st_info);
         {% for action in transition.actions -%}
         act_{{action}}(this->info, in, *nw_st_info);
@@ -96,7 +96,7 @@ SState {{status.name}}::input(const in_{{input}}_t& in) {
       {% endfor %}
   } catch (...) {}
 
-  auto nw_st_info = fromin2error<st_{{status.name}}_t, in_{{input}}_t>(this->info, in);
+  auto nw_st_info = fromin2_error<st_{{status.name}}_t, in_{{input}}_t>(this->info, in);
   log("[{{status.name}}] {{input}} error/default -> error", in, info, nw_st_info);
   return std::make_shared<error>(nw_st_info);
 }

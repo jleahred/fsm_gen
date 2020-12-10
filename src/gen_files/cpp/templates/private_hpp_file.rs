@@ -33,7 +33,7 @@ namespace {
     //  status change functions
     template <typename FROM, typename IN, typename TO>
     std::variant<TO, st_error_t> fromin2(const FROM &, const IN &) {
-        //  you can specialize this generic function
+        //  you can specialize or overload this generic function (not both)
         return TO{};
     }
     template <typename FROM, typename IN>

@@ -1,7 +1,7 @@
 
 // clang-format off
 
-//  generated automatically  2020-11-23 08:56:26
+//  generated automatically  2020-12-10 10:55:01
 //  do not modify it manually
 
 #pragma once
@@ -23,11 +23,11 @@ public:
     Fsm();
     ~Fsm();
 
-    void process(const in_rq_login_t &in);
     void process(const in_heartbeat_t &in);
-    void process(const in_rq_key_t &in);
-    void process(const in_rq_logout_t &in);
     void process(const in_timer_t &in);
+    void process(const in_rq_logout_t &in);
+    void process(const in_rq_key_t &in);
+    void process(const in_rq_login_t &in);
     
 private:
     SState state;

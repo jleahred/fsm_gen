@@ -4,7 +4,7 @@
 //  It's created just the first time as a reference
 //
 //
-//    generated on 2020-11-23 08:56:26
+//    generated on 2020-12-10 10:55:01
 
 
 #pragma once
@@ -25,12 +25,22 @@ namespace login {
 
   //  input types
 
-    struct in_rq_login_t{};
-    struct in_heartbeat_t{};
-    struct in_rq_key_t{};
-    struct in_rq_logout_t{};
-    struct in_timer_t{};
+    //  provisinal code, delete it when replace the nexts usings
+      struct provisinal_in_heartbeat_t{};
+      struct provisinal_in_timer_t{};
+      struct provisinal_in_rq_logout_t{};
+      struct provisinal_in_rq_key_t{};
+      struct provisinal_in_rq_login_t{};
+      
+
+    //  usings
+    using in_heartbeat_t = provisinal_in_heartbeat_t;
+    using in_timer_t = provisinal_in_timer_t;
+    using in_rq_logout_t = provisinal_in_rq_logout_t;
+    using in_rq_key_t = provisinal_in_rq_key_t;
+    using in_rq_login_t = provisinal_in_rq_login_t;
     
+
 
 } // namespace login
 

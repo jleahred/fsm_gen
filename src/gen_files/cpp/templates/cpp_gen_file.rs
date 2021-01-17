@@ -74,7 +74,7 @@ SState {{status.name}}::input(const in_{{input}}_t& in) {
         {
           log("[{{status.name}}] {{sinput.name}} -> {{transition.new_status.name}}", in, info, nw_st_info);
           {% for action in transition.actions -%}
-          act_{{action}}(this->info, in, *nw_st_info);
+          act_{{action}}(this->info, in, nw_st_info);
           {% endfor %}
           return std::make_shared<{{transition.new_status.name}}>(*nw_st_info);
         } else if(auto nw_st_info = std::get_if<st_error_t>(&nw_st_info_or_error)){
@@ -85,7 +85,7 @@ SState {{status.name}}::input(const in_{{input}}_t& in) {
         auto nw_st_info = fromin2_error<st_{{status.name}}_t, in_{{sinput.name}}_t>(this->info, in);
         log("[{{status.name}}] {{sinput.name}} -> {{transition.new_status.name}}", in, info, nw_st_info);
         {% for action in transition.actions -%}
-        act_{{action}}(this->info, in, *nw_st_info);
+        act_{{action}}(this->info, in, nw_st_info);
         {% endfor %}
         return std::make_shared<{{transition.new_status.name}}>(nw_st_info);
         {% endif %}

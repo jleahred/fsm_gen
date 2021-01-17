@@ -160,8 +160,8 @@ parser! {
         rule _()        = quiet!{[' ' | '\t']*}
         rule comment()  = "//" (!endl() [_])*
         rule __()       = ([' ' | '\t' | '\n'] / comment())*
-        rule __endl()   = [' ' | '\t']* endl()   __()
-                        / comment()   __()
+        rule __endl()   = _() endl()   __()
+                        / _() comment()   __()
 
 
         rule _endls()   = quiet!{ [' ' | '\t' | '\n']* }

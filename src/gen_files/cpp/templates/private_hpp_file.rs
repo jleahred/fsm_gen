@@ -19,15 +19,33 @@ pub(crate) fn t() -> &'static str {
 //  to make happy some IDEs -----
 
 #include<variant>
+#include<iostream>
 
 namespace {
     using namespace {{in_file.stem_name}};
 
     //  log
+    std::ostream& operator<<(std::ostream& os, en_log_level level) {
+        switch(level) {
+        case en_log_level::critic:
+            os << "CRITIC";
+            break;
+        case en_log_level::error:
+            os << "ERROR ";
+            break;
+        case en_log_level::warning:
+            os << "warning";
+            break;
+        case en_log_level::info:
+            os << "info   ";
+            break;
+        }
+        return os;
+    }
     template <typename IN, typename INIT_ST, typename END_ST>
-    void log(const std::string &txt_trans, const IN &, const INIT_ST &,
+    void log(en_log_level level, const std::string &txt_trans, const IN &, const INIT_ST &,
             const END_ST &) {
-        std::cout << txt_trans << std::endl;
+        std::cout << level << "  " << txt_trans << std::endl;
     }
 
     //  status change functions

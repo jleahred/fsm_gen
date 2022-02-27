@@ -19,8 +19,9 @@ namespace {
     using namespace {{in_file.stem_name}};
 
     //  log
+    enum class en_log_level { critic, error, warning, info };
     template <typename IN, typename INIT_ST, typename END_ST>
-    void log(const std::string &txt_trans, const IN &, const INIT_ST &,
+    void log(en_log_level, const std::string &txt_trans, const IN &, const INIT_ST &,
             const END_ST &);
 
     //  status change functions

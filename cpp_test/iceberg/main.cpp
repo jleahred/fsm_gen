@@ -6,7 +6,7 @@
 
 #include <iostream>
 
-#include "fsm_iceberg_gen.h"
+#include "gen_fsm_iceberg.h"
 
 int main() {
   iceberg::Fsm ice;

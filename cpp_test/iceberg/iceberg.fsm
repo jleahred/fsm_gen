@@ -112,7 +112,7 @@
     _                   ->  error
 
 [error]
-    _                   ->  error2      /   rq_cc
+    _                   ->  error2
 
 
 [error2]

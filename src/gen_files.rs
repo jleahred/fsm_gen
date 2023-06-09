@@ -1,4 +1,5 @@
-pub(crate) mod cpp;
+pub(crate) mod cpp1;
+pub(crate) mod cpp2;
 mod dot;
 mod sup;
 
@@ -14,8 +15,11 @@ pub(crate) fn process(path: &PathBuf, config: &Config) -> std::result::Result<()
     let context = Context::new(ast, path)?;
 
     match config.templ {
-        crate::cli_params::Templ::Cpp => {
-            cpp::generate_files(&context).map_err(|e| e.to_string())?
+        crate::cli_params::Templ::Cpp1 => {
+            cpp1::generate_files(&context).map_err(|e| e.to_string())?
+        }
+        crate::cli_params::Templ::Cpp2 => {
+            cpp2::generate_files(&context).map_err(|e| e.to_string())?
         }
     }
 

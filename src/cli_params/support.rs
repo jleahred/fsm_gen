@@ -28,7 +28,7 @@ macro_rules! enum_str {
         impl $name {
             pub(crate) fn get_options_as_string() -> String {
                 let mut s = String::new();
-                $(s = format!("{}  {} ", s, $val);),*
+                $(s = format!("{}  {} ", s, $val);)*
                 s
             }
         }

@@ -6,7 +6,8 @@ mod support;
 
 enum_str! {
     enum Templ {
-        Cpp = "cpp",
+        Cpp1 = "cpp1",
+        Cpp2 = "cpp2",
     }
 }
 
@@ -20,7 +21,7 @@ enum_str! {
 )]
 pub(crate) struct Opt {
     /// Template to generate code (show available --show-templs)
-    #[structopt(short = "t", long = "templ", default_value = "cpp")]
+    #[structopt(short = "t", long = "templ", default_value = "cpp2")]
     pub(crate) templ: Templ,
 
     // /// Generate all files regardless of change date
@@ -43,7 +44,11 @@ pub(crate) struct Opt {
     #[structopt(parse(from_os_str))]
     pub(crate) fsm_files: Vec<PathBuf>,
 
-    /// Give me some information about generating cpp files
-    #[structopt(long = "help-cpp")]
-    pub(crate) help_cpp: bool,
+    /// Give me some information about generating cpp files with templates
+    #[structopt(long = "help-cpp1")]
+    pub(crate) help_cpp1: bool,
+
+    /// Give me some information about generating cpp files with no templates to fill
+    #[structopt(long = "help-cpp2")]
+    pub(crate) help_cpp2: bool,
 }

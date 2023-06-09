@@ -1,0 +1,57 @@
+pub(crate) fn t() -> &'static str {
+    // {{__tera_context}}
+
+    r#"
+//  generated automatically  {{ gen_time }}
+//  do not modify it manually
+
+//  This file will be included in private_hpp_file.hpp
+
+#pragma once
+//  to make happy some IDEs -----
+#include "gen_fsm_{{in_file.stem_name}}_types_forward.hpp"
+#include "gen_fsm_{{in_file.stem_name}}.h"
+//  to make happy some IDEs -----
+
+#include<variant>
+
+namespace {
+    using namespace {{in_file.stem_name}};
+
+    //  log
+    enum class en_log_level { critic, error, warning, info };
+    template <typename IN, typename INIT_ST, typename END_ST>
+    void log(en_log_level, const std::string &txt_trans, const IN &, const INIT_ST &,
+            const END_ST &);
+
+    //  status change functions
+    //  you can specialize this generic functions
+    {% for st in ast -%}
+    {% if st.name != "error" %}
+    template <typename FROM_ST, typename IN>
+    std::variant<st_{{st.name}}_t, st_error_t> fromin2_{{st.name}}(const FROM_ST &, const IN &);
+    {% endif %}
+    {% endfor -%}
+    {{""}}
+
+    template <typename FROM_ST, typename IN>
+    st_error_t fromin2_error(const FROM_ST &, const IN &);
+    
+    //  guards
+    {% for gi in guard_inputs -%}
+    template<typename FROM_ST>
+    bool {{gi.guard}}(const in_{{gi.input}}_t& input, const FROM_ST&);
+    {% endfor -%}
+    {{""}}
+
+    //  actions
+    {% for ai in action_inputs -%}
+    template<typename FROM_ST, typename TO_ST>
+    void act_{{ai.action}}(const FROM_ST&, const in_{{ai.input}}_t& input, const TO_ST&);
+    {% endfor -%}
+    {{""}}
+
+} // namespace anonymous
+
+"#
+}

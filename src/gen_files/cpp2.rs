@@ -60,39 +60,22 @@ pub(crate) fn print_cpp_help_message() {
         r#"
 Being "name.fsm" the name of the file with the definition of the machine, four files will be generated.
 
-    gen/fsm_<name>.h
+    Main entry point. Do not modify
+        fsm_<name>.h
+        fsm_<name>.cpp
 
-    fsm_<name>_types.h
-    fsm_<name>_private.hpp
+    Types. To be filled
+        fsm/<name>_types.h
 
+    Support functions. To be filled
+        fsm/<name>_log.hpp
+        fsm/<name>_guards.h
+        fsm/<name>_guards.cpp
+        fsm/<name>_actions.h
+        fsm/<name>_actions.cpp
+        fsm/<name>_transitions.h
+        fsm/<name>_transitions.cpp
 
-
-About fsm_<name>_private.hpp
-
-    //  Code generated automatically to be filled manually
-    //  This file will not be updated by generator
-    //  It's created just the first time as a reference
-    //  but a file with same name ended wiht .reference will be created always
-    //    generated on xxxxx
-
-    //  This file will be included in gen_fsm_<name>.cpp
-    //  (anywhere else)
-
-    Logic to fill guards functions, transitions, logging...
-
-About fsm_<name>_types.h
-
-    //  Code generated automatically to be filled manually
-    //  This file will not be updated by generator
-    //  It's created just the first time as a reference
-    //  but a file with same name ended wiht .reference will be created always
-
-    You can write your logic on data types for fsm
-
-About   gen_fsm_<name>.h  and   gen_fsm_<name>.cpp
-
-    //  generated automatically  2020-11-02 00:15:18
-    //  do not modify it manually
 
 "#
     );

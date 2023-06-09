@@ -4,11 +4,14 @@ CONFIG -= app_bundle
 CONFIG -= qt
 
 SOURCES += \
-    *.cpp
+    *.cpp \
+    fsm/*.cpp \
 
 HEADERS += \
     *.h \
     *.hpp \
+    fsm/*.h \
+    fsm/*.hpp \
 
 DISTFILES += \
     login.dot \

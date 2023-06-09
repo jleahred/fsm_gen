@@ -10,7 +10,8 @@ pub(crate) fn t() -> &'static str {
 
 #pragma once
 
-#include "gen_fsm_{{in_file.stem_name}}_types_forward.hpp"
+
+#include "{{in_file.stem_name}}_types_forward.h"
 
 namespace {{in_file.stem_name}} {
 

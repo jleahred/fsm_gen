@@ -5,9 +5,7 @@ pub(crate) fn t() -> &'static str {
 //  generated automatically  {{ gen_time }}
 //  do not modify it manually
 
-#include "gen_fsm_{{in_file.stem_name}}.h"
-
-#include "fsm_{{in_file.stem_name}}_private.hpp"
+#include "{{in_file.stem_name}}_fsm.h"
 
 #include <variant>
 

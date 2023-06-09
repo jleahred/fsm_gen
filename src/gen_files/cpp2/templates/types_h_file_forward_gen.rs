@@ -4,11 +4,12 @@ pub(crate) fn t() -> &'static str {
 //  
 //  forward declaration of types
 //
-//  do not modify it manually
+//  do not modify it manually!!!
 //    generated on {{gen_time}}
 
-
 #pragma once
+
+
 
 namespace {{in_file.stem_name}} {
 

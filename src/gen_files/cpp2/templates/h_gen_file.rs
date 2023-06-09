@@ -10,7 +10,7 @@ pub(crate) fn t() -> &'static str {
 #include <iostream>
 #include <memory>
 
-#include "fsm_{{ in_file.stem_name }}_types.h"
+#include "fsm/{{ in_file.stem_name }}_types.hpp"
 
 namespace {{ in_file.stem_name }} {
 

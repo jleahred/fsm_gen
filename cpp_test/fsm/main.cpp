@@ -6,7 +6,7 @@
 
 #include <iostream>
 
-#include "gen_fsm_login.h"
+#include "login_fsm.h"
 
 int main() {
   login::Fsm login;

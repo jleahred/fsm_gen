@@ -1,26 +1,26 @@
 use crate::gen_files::sup::*;
 use crate::gen_files::Context;
 
-mod cpp_gen_file;
-mod h_gen_file;
-mod private_hpp_file;
-mod private_hpp_file_forward_gen;
+// mod cpp_gen_file;
+// mod h_gen_file;
+// mod private_hpp_file;
+// mod private_hpp_file_forward_gen;
 mod templates;
 mod types_h_file;
 mod types_h_file_forward_gen;
 
 pub(super) fn generate_files(context: &Context) -> std::result::Result<(), String> {
-    generate_file(
-        context,
-        &h_gen_file::get_full_name(context),
-        templates::h_gen_file::t(),
-    )?;
+    // generate_file(
+    //     context,
+    //     &h_gen_file::get_full_name(context),
+    //     templates::h_gen_file::t(),
+    // )?;
 
-    generate_file(
-        context,
-        &cpp_gen_file::get_full_name(context),
-        templates::cpp_gen_file::t(),
-    )?;
+    // generate_file(
+    //     context,
+    //     &cpp_gen_file::get_full_name(context),
+    //     templates::cpp_gen_file::t(),
+    // )?;
 
     generate_file(
         context,
@@ -34,23 +34,23 @@ pub(super) fn generate_files(context: &Context) -> std::result::Result<(), Strin
         &types_h_file::get_full_name(context),
         templates::types_h_file::t(),
     )?;
-    // generate_file(
-    //     context,
-    //     &format!("{}{}", &types_h_file::get_full_name(context), ".reference"),
-    //     templates::types_h_file::t(),
-    // )?;
-
     generate_file(
         context,
-        &private_hpp_file_forward_gen::get_full_name(context),
-        templates::private_hpp_file_forward_gen::t(),
+        &format!("{}{}", &types_h_file::get_full_name(context), ".reference"),
+        templates::types_h_file::t(),
     )?;
+
     // generate_file(
-    generate_file_if_missing(
-        context,
-        &private_hpp_file::get_full_name(context),
-        templates::private_hpp_file::t(),
-    )?;
+    //     context,
+    //     &private_hpp_file_forward_gen::get_full_name(context),
+    //     templates::private_hpp_file_forward_gen::t(),
+    // )?;
+    // // generate_file(
+    // generate_file_if_missing(
+    //     context,
+    //     &private_hpp_file::get_full_name(context),
+    //     templates::private_hpp_file::t(),
+    // )?;
 
     Ok(())
 }

@@ -10,6 +10,13 @@ mod types_h_file;
 mod types_h_file_forward_gen;
 
 pub(super) fn generate_files(context: &Context) -> std::result::Result<(), String> {
+    println!("------------------");
+    let folder = format!("{}/fsm", context.in_file.dir);
+    dbg!(&folder);
+    match std::fs::create_dir_all(folder) {
+        Ok(_) => (),
+        Err(e) => panic!("Error al crear el directorio: {}", e),
+    }
     // generate_file(
     //     context,
     //     &h_gen_file::get_full_name(context),
@@ -34,11 +41,11 @@ pub(super) fn generate_files(context: &Context) -> std::result::Result<(), Strin
         &types_h_file::get_full_name(context),
         templates::types_h_file::t(),
     )?;
-    generate_file(
-        context,
-        &format!("{}{}", &types_h_file::get_full_name(context), ".reference"),
-        templates::types_h_file::t(),
-    )?;
+    // generate_file(
+    //     context,
+    //     &format!("{}{}", &types_h_file::get_full_name(context), ".reference"),
+    //     templates::types_h_file::t(),
+    // )?;
 
     // generate_file(
     //     context,

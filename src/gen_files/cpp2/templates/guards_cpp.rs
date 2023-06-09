@@ -7,7 +7,6 @@ pub(crate) fn t() -> &'static str {
 //    generated on {{gen_time}}
 
 
-//#include "gen_fsm_{{in_file.stem_name}}_private_forward.hpp"
 
 #include<variant>
 #include<iostream>

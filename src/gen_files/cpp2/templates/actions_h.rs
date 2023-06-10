@@ -1,8 +1,11 @@
+//    {{ast | json_encode(pretty=true)}}
+//    {{inputs | json_encode(pretty=true)}}
+//    {{guard_inputs | json_encode(pretty=true)}}
+
 pub(crate) fn t() -> &'static str {
     r#"
-//  Code generated automatically to be filled manually
-//  This file will not be updated by generator
-//  It's created just the first time as a reference
+//  Code generated automatically
+//  DO NOT modif. It will be rewritten on each generation
 //
 //    generated on {{gen_time}}
 
@@ -10,15 +13,14 @@ pub(crate) fn t() -> &'static str {
 #pragma once
 
 
-#include<variant>
-#include<iostream>
+#include "{{in_file.stem_name}}_types_forward.h"
+
 
 namespace {{in_file.stem_name}} {
 
     //  actions
-    {% for ai in action_inputs -%}
-    template<typename FROM_ST, typename TO_ST>
-    void act_{{ai.action}}(const FROM_ST&, const in_{{ai.input}}_t& /*input*/, const TO_ST&) {}
+    {% for ai in action_init_param_to -%}
+    void act_{{ai.action}}(const st_{{ai.from}}_t& /*from*/, const in_{{ai.input}}_t& /*input*/, const st_{{ai.to}}_t& /*to*/);
     {% endfor -%}
     {{""}}
 

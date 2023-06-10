@@ -41,11 +41,20 @@ pub(crate) struct ActionInput {
     input: crate::parser::InputName,
 }
 
+#[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Ord, Eq, Clone, Hash)]
+pub(crate) struct ActionInitParamTo {
+    action: crate::parser::ActionName,
+    from: crate::parser::StatusName,
+    input: crate::parser::InputName,
+    to: crate::parser::StatusName,
+}
+
 #[derive(Serialize, Deserialize)]
 pub(crate) struct Context {
     pub(crate) ast: Ast,
     pub(crate) inputs: Vec<crate::parser::InputName>,
     pub(crate) guard_inputs: Vec<GuardInput>,
+    pub(crate) action_init_param_to: Vec<ActionInitParamTo>,
     pub(crate) action_inputs: Vec<ActionInput>,
     pub(crate) gen_time: String,
     pub(crate) in_file: InFile,
@@ -57,12 +66,14 @@ impl Context {
         let inputs = get_inputs(&ast);
         let guard_inputs = get_guard_inputs(&ast);
         let action_inputs = get_action_inputs(&ast);
+        let action_init_param_to = get_action_init_param_to(&ast);
 
         Ok(Context {
             ast,
             inputs,
             guard_inputs,
             action_inputs,
+            action_init_param_to,
             gen_time: Local::now().format("%Y-%m-%d %H:%M:%S").to_string(),
             in_file: InFile { dir, stem_name },
         })
@@ -134,6 +145,34 @@ fn get_action_inputs(ast: &Ast) -> Vec<ActionInput> {
                         action_set.insert(ActionInput {
                             action: action.clone(),
                             input: input.name.clone(),
+                        });
+                    }
+                }
+            }
+        }
+        action_set
+    };
+
+    action_set.iter().fold(vec![], |mut acc, ai| {
+        acc.push(ai.clone());
+        acc
+    })
+}
+
+fn get_action_init_param_to(ast: &Ast) -> Vec<ActionInitParamTo> {
+    use std::collections::HashSet;
+
+    let action_set: HashSet<ActionInitParamTo> = {
+        let mut action_set = HashSet::new();
+        for st in &ast.0 {
+            for input in &st.inputs {
+                for trans in &input.transitions {
+                    for action in &trans.actions {
+                        action_set.insert(ActionInitParamTo {
+                            action: action.clone(),
+                            from: st.name.clone(),
+                            input: input.name.clone(),
+                            to: trans.new_status.name.clone(),
                         });
                     }
                 }

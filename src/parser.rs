@@ -35,7 +35,7 @@ use std::result::Result;
 #[derive(Serialize, Deserialize, Debug)]
 pub(crate) struct Ast(pub(crate) Vec<Status>);
 
-#[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Ord, Eq, Clone)]
+#[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Ord, Eq, Clone, Hash)]
 pub(crate) struct StatusName(pub(crate) String);
 #[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Ord, Eq, Clone, Hash)]
 pub(crate) struct InputName(pub(crate) String);

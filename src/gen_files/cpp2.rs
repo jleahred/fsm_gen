@@ -65,7 +65,7 @@ pub(super) fn generate_files(context: &Context) -> std::result::Result<(), Strin
         templates::actions_cpp::t(),
     )?;
 
-    generate_file_if_missing(
+    generate_file(
         context,
         &actions_h::get_full_name(context),
         templates::actions_h::t(),
@@ -82,24 +82,6 @@ pub(super) fn generate_files(context: &Context) -> std::result::Result<(), Strin
         &transitions_h::get_full_name(context),
         templates::transitions_h::t(),
     )?;
-
-    // generate_file(
-    //     context,
-    //     &format!("{}{}", &types_h_file::get_full_name(context), ".reference"),
-    //     templates::types_h_file::t(),
-    // )?;
-
-    // generate_file(
-    //     context,
-    //     &private_hpp_file_forward_gen::get_full_name(context),
-    //     templates::private_hpp_file_forward_gen::t(),
-    // )?;
-    // // generate_file(
-    // generate_file_if_missing(
-    //     context,
-    //     &private_hpp_file::get_full_name(context),
-    //     templates::private_hpp_file::t(),
-    // )?;
 
     Ok(())
 }

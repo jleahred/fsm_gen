@@ -7,15 +7,18 @@ pub(crate) fn t() -> &'static str {
 //    generated on {{gen_time}}
 
 
-#include<variant>
-#include<iostream>
+#include "{{in_file.stem_name}}_actions.h"
+
+#include "{{in_file.stem_name}}_types.hpp"
+
 
 namespace {{in_file.stem_name}} {
 
     //  actions
-    {% for ai in action_inputs -%}
-    template<typename FROM_ST, typename TO_ST>
-    void act_{{ai.action}}(const FROM_ST&, const in_{{ai.input}}_t& /*input*/, const TO_ST&) {}
+    {% for ai in action_init_param_to -%}
+    void act_{{ai.action}}(const st_{{ai.from}}_t& /*from*/, const in_{{ai.input}}_t& /*input*/, const st_{{ai.to}}_t& /*to*/)
+    {
+    }
     {% endfor -%}
     {{""}}
 

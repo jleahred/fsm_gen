@@ -10,8 +10,9 @@ SOURCES += \
 HEADERS += \
     *.h \
     *.hpp \
-    fsm/*.h \
-    fsm/*.hpp \
+    fsm_login/*.h \
+    fsm_login/*.hpp \
+    fsm_login/*.cpp \
 
 DISTFILES += \
     login.dot \

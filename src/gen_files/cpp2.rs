@@ -16,7 +16,7 @@ mod types_h_file;
 mod types_h_file_forward_gen;
 
 pub(super) fn generate_files(context: &Context) -> std::result::Result<(), String> {
-    let folder = format!("{}/fsm", context.in_file.dir);
+    let folder = format!("{}/fsm_{}", context.in_file.dir, context.in_file.stem_name);
     match std::fs::create_dir_all(folder) {
         Ok(_) => (),
         Err(e) => panic!("Error al crear el directorio: {}", e),

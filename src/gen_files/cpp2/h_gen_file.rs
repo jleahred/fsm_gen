@@ -5,7 +5,7 @@ use crate::gen_files::Context;
 
 pub(crate) fn get_full_name(context: &Context) -> String {
     format!(
-        "{}/{}_fsm.h",
-        context.in_file.dir, context.in_file.stem_name
+        "{}/fsm_{}/{}.h",
+        context.in_file.dir, context.in_file.stem_name, context.in_file.stem_name
     )
 }

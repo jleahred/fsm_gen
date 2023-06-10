@@ -7,9 +7,9 @@ pub(crate) fn t() -> &'static str {
 //    generated on {{gen_time}}
 
 
-#include "{{in_file.stem_name}}_actions.h"
+#include "actions.h"
 
-#include "{{in_file.stem_name}}_types.hpp"
+#include "types.hpp"
 
 
 namespace {{in_file.stem_name}} {

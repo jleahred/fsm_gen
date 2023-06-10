@@ -12,7 +12,7 @@ pub(crate) fn t() -> &'static str {
 
 #include "types.hpp"
 
-namespace {{ in_file.stem_name }} {
+namespace fsm_{{ in_file.stem_name }} {
 
 class BaseState;
 typedef std::shared_ptr<BaseState> SState;

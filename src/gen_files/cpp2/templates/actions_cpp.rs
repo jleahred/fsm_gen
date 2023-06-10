@@ -9,10 +9,11 @@ pub(crate) fn t() -> &'static str {
 
 #include "actions.h"
 
-#include "types.hpp"
+#include "../types.hpp"
 
 
-namespace {{in_file.stem_name}} {
+namespace fsm_{{in_file.stem_name}} {
+    namespace impl {
 
     //  actions
     {% for ai in action_init_param_to -%}
@@ -22,6 +23,7 @@ namespace {{in_file.stem_name}} {
     {% endfor -%}
     {{""}}
 
+    } // namespace impl
 } // namespace {{in_file.stem_name}}
 
 "#

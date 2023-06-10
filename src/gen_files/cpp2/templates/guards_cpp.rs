@@ -7,19 +7,23 @@ pub(crate) fn t() -> &'static str {
 //    generated on {{gen_time}}
 
 
+#include "guards.h"
 
-#include<variant>
-#include<iostream>
+#include "../types.hpp"
 
-namespace {{in_file.stem_name}} {
+namespace fsm_{{in_file.stem_name}} {
+    namespace impl {
 
-    {% for gi in guard_inputs -%}
-    template<typename FROM_ST>
-    bool {{gi.guard}}(const in_{{gi.input}}_t& /*input*/, const FROM_ST&) { return true; }
+    {% for gi in guard_from_input -%}
+    bool is_{{gi.guard}}(const st_{{gi.from}}_t& /*from*/, const in_{{gi.input}}_t& /*input*/)
+    {
+
+    }
     {% endfor -%}
     {{""}}
 
-} // namespace anonymous
+    } // namespace impl
+} // namespace {{in_file.stem_name}}
 
 "#
 }

@@ -42,11 +42,25 @@ pub(crate) struct ActionInput {
 }
 
 #[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Ord, Eq, Clone, Hash)]
-pub(crate) struct ActionInitParamTo {
+pub(crate) struct TransitionToFromInput {
+    to: crate::parser::StatusName,
+    from: crate::parser::StatusName,
+    input: crate::parser::InputName,
+}
+
+#[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Ord, Eq, Clone, Hash)]
+pub(crate) struct ActionFromInputTo {
     action: crate::parser::ActionName,
     from: crate::parser::StatusName,
     input: crate::parser::InputName,
     to: crate::parser::StatusName,
+}
+
+#[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Ord, Eq, Clone, Hash)]
+pub(crate) struct GuardFromInput {
+    guard: crate::parser::GuardName,
+    from: crate::parser::StatusName,
+    input: crate::parser::InputName,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -54,8 +68,11 @@ pub(crate) struct Context {
     pub(crate) ast: Ast,
     pub(crate) inputs: Vec<crate::parser::InputName>,
     pub(crate) guard_inputs: Vec<GuardInput>,
-    pub(crate) action_init_param_to: Vec<ActionInitParamTo>,
+    pub(crate) action_init_param_to: Vec<ActionFromInputTo>,
     pub(crate) action_inputs: Vec<ActionInput>,
+    pub(crate) guard_from_input: Vec<GuardFromInput>,
+    pub(crate) transition_from_input_to: Vec<TransitionToFromInput>,
+    pub(crate) transition_from_input_to_error: Vec<TransitionToFromInput>,
     pub(crate) gen_time: String,
     pub(crate) in_file: InFile,
 }
@@ -66,7 +83,10 @@ impl Context {
         let inputs = get_inputs(&ast);
         let guard_inputs = get_guard_inputs(&ast);
         let action_inputs = get_action_inputs(&ast);
-        let action_init_param_to = get_action_init_param_to(&ast);
+        let action_init_param_to = get_action_from_input_to(&ast);
+        let guard_from_input = get_guard_from_input(&ast);
+        let transition_from_input_to = get_transition_from_input_to(&ast);
+        let transition_from_input_to_error = get_transition_from_input_to_error(&ast);
 
         Ok(Context {
             ast,
@@ -74,6 +94,9 @@ impl Context {
             guard_inputs,
             action_inputs,
             action_init_param_to,
+            guard_from_input,
+            transition_from_input_to,
+            transition_from_input_to_error,
             gen_time: Local::now().format("%Y-%m-%d %H:%M:%S").to_string(),
             in_file: InFile { dir, stem_name },
         })
@@ -159,16 +182,16 @@ fn get_action_inputs(ast: &Ast) -> Vec<ActionInput> {
     })
 }
 
-fn get_action_init_param_to(ast: &Ast) -> Vec<ActionInitParamTo> {
+fn get_action_from_input_to(ast: &Ast) -> Vec<ActionFromInputTo> {
     use std::collections::HashSet;
 
-    let action_set: HashSet<ActionInitParamTo> = {
+    let action_set: HashSet<ActionFromInputTo> = {
         let mut action_set = HashSet::new();
         for st in &ast.0 {
             for input in &st.inputs {
                 for trans in &input.transitions {
                     for action in &trans.actions {
-                        action_set.insert(ActionInitParamTo {
+                        action_set.insert(ActionFromInputTo {
                             action: action.clone(),
                             from: st.name.clone(),
                             input: input.name.clone(),
@@ -182,6 +205,144 @@ fn get_action_init_param_to(ast: &Ast) -> Vec<ActionInitParamTo> {
     };
 
     action_set.iter().fold(vec![], |mut acc, ai| {
+        acc.push(ai.clone());
+        acc
+    })
+}
+
+fn get_guard_from_input(ast: &Ast) -> Vec<GuardFromInput> {
+    use std::collections::HashSet;
+
+    let set: HashSet<GuardFromInput> = {
+        let mut set = HashSet::new();
+        for st in &ast.0 {
+            for input in &st.inputs {
+                for trans in &input.transitions {
+                    for guard in &trans.guards {
+                        set.insert(GuardFromInput {
+                            guard: guard.name.clone(),
+                            from: st.name.clone(),
+                            input: input.name.clone(),
+                        });
+                    }
+                }
+            }
+        }
+        set
+    };
+
+    set.iter().fold(vec![], |mut acc, ai| {
+        acc.push(ai.clone());
+        acc
+    })
+}
+
+fn get_transition_from_input_to(ast: &Ast) -> Vec<TransitionToFromInput> {
+    use std::collections::BTreeSet;
+
+    // #[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Ord, Eq, Clone)]
+    // struct FromInput {
+    //     from: crate::parser::StatusName,
+    //     input: crate::parser::InputName,
+    // }
+
+    // let set_inputs: BTreeSet<crate::parser::InputName> = {
+    //     let mut set = BTreeSet::new();
+    //     for st in &ast.0 {
+    //         for input in &st.inputs {
+    //             set.insert(input.name.clone());
+    //         }
+    //     }
+    //     set
+    // };
+
+    // let set_from_input: BTreeSet<FromInput> = {
+    //     let mut set = BTreeSet::new();
+    //     for st in &ast.0 {
+    //         for input in &set_inputs {
+    //             set.insert(FromInput {
+    //                 from: st.name.clone(),
+    //                 input: input.clone(),
+    //             });
+    //         }
+    //     }
+    //     set
+    // };
+
+    let set: BTreeSet<TransitionToFromInput> = {
+        let mut set = BTreeSet::new();
+
+        for st in &ast.0 {
+            for input in &st.inputs {
+                for trans in &input.transitions {
+                    if input.name.0 != "_" && trans.new_status.name.0 != "error" {
+                        set.insert(TransitionToFromInput {
+                            to: trans.new_status.name.clone(),
+                            from: st.name.clone(),
+                            input: input.name.clone(),
+                        });
+                    }
+                }
+            }
+        }
+
+        set
+    };
+
+    set.iter().fold(vec![], |mut acc, ai| {
+        acc.push(ai.clone());
+        acc
+    })
+}
+
+fn get_transition_from_input_to_error(ast: &Ast) -> Vec<TransitionToFromInput> {
+    use std::collections::BTreeSet;
+
+    #[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Ord, Eq, Clone)]
+    struct FromInput {
+        from: crate::parser::StatusName,
+        input: crate::parser::InputName,
+    }
+
+    let set_inputs: BTreeSet<crate::parser::InputName> = {
+        let mut set = BTreeSet::new();
+        for st in &ast.0 {
+            for input in &st.inputs {
+                set.insert(input.name.clone());
+            }
+        }
+        set
+    };
+
+    let set_from_input: BTreeSet<FromInput> = {
+        let mut set = BTreeSet::new();
+        for st in &ast.0 {
+            for input in &set_inputs {
+                set.insert(FromInput {
+                    from: st.name.clone(),
+                    input: input.clone(),
+                });
+            }
+        }
+        set
+    };
+
+    let set: BTreeSet<TransitionToFromInput> = {
+        let mut set = BTreeSet::new();
+        for from_input in &set_from_input {
+            if from_input.input.0 != "_" {
+                set.insert(TransitionToFromInput {
+                    to: crate::parser::StatusName("error".to_owned()),
+                    from: from_input.from.clone(),
+                    input: from_input.input.clone(),
+                });
+            }
+        }
+
+        set
+    };
+
+    set.iter().fold(vec![], |mut acc, ai| {
         acc.push(ai.clone());
         acc
     })

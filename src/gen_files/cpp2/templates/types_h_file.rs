@@ -11,9 +11,9 @@ pub(crate) fn t() -> &'static str {
 #pragma once
 
 
-#include "types_forward.h"
+// #include "types_forward.h"
 
-namespace {{in_file.stem_name}} {
+namespace fsm_{{in_file.stem_name}} {
 
   //  status info types
 

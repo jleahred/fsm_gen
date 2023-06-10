@@ -9,17 +9,18 @@ pub(crate) fn t() -> &'static str {
 
 #pragma once
 
-#include<variant>
-#include<iostream>
+#include "../types.hpp"
 
-namespace {{in_file.stem_name}} {
-    
-    {% for gi in guard_inputs -%}
-    template<typename FROM_ST>
-    bool {{gi.guard}}(const in_{{gi.input}}_t& /*input*/, const FROM_ST&);
+
+namespace fsm_{{in_file.stem_name}} {
+    namespace impl {
+  
+    {% for gi in guard_from_input -%}
+    bool is_{{gi.guard}}(const st_{{gi.from}}_t& /*from*/, const in_{{gi.input}}_t& /*input*/);
     {% endfor -%}
     {{""}}
 
+    } // namespace impl
 } // namespace {{in_file.stem_name}}
 
 "#

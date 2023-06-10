@@ -12,7 +12,7 @@ pub(crate) fn t() -> &'static str {
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wshadow"
 
-namespace {{ in_file.stem_name }} {
+namespace fsm_{{ in_file.stem_name }} {
 
   class BaseState {
   public:

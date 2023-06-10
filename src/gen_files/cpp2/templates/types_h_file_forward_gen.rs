@@ -10,8 +10,7 @@ pub(crate) fn t() -> &'static str {
 #pragma once
 
 
-
-namespace {{in_file.stem_name}} {
+namespace fsm_{{in_file.stem_name}} {
 
   //  status info types
 

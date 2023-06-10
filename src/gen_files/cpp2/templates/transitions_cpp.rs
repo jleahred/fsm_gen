@@ -12,7 +12,8 @@ pub(crate) fn t() -> &'static str {
 #include<variant>
 #include<iostream>
 
-namespace {{in_file.stem_name}} {
+namespace fsm_{{in_file.stem_name}} {
+  namespace impl {
 
 //  status change functions
 {% for st in ast -%}
@@ -31,6 +32,7 @@ st_error_t fromin2_error(const FROM &, const IN &) {
   return st_error_t{};
 }
 
+  } // namespace impl
 } // namespace {{in_file.stem_name}}
 
 "#

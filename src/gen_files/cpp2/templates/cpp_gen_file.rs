@@ -7,6 +7,10 @@ pub(crate) fn t() -> &'static str {
 
 #include "{{in_file.stem_name}}.h"
 
+#include "impl/actions.h"
+#include "impl/guards.h"
+#include "impl/transitions.h"
+
 #include <variant>
 
 #pragma GCC diagnostic push
@@ -63,25 +67,25 @@ SState {{status.name}}::input(const in_{{input}}_t& in) {
       {% for transition in sinput.transitions -%}
       {% if transition.new_status.name != status.name or transition.actions  or true %}
       if(true
-        {%- for guard in transition.guards %} && {% if not guard.positiv %}!{%endif%}{{guard.name}}(in, info)
+        {%- for guard in transition.guards %} && {% if not guard.positiv %}!{%endif%}impl::is_{{guard.name}}(info, in)
         {%- endfor -%}
              ){
         {% if transition.new_status.name != "error" %}
-        auto nw_st_info_or_error = fromin2_{{transition.new_status.name}}<st_{{status.name}}_t, in_{{sinput.name}}_t>(this->info, in);
+        auto nw_st_info_or_error = impl::transition_2{{transition.new_status.name}}(this->info, in);
         if(auto nw_st_info = std::get_if<st_{{transition.new_status.name}}_t>(&nw_st_info_or_error))
         {
-          log(en_log_level::info, "[{{status.name}}] {{sinput.name}} -> {{transition.new_status.name}}", in, info, nw_st_info);
+          //log(en_log_level::info, "[{{status.name}}] {{sinput.name}} -> {{transition.new_status.name}}", in, info, nw_st_info);
           {% for action in transition.actions -%}
-          act_{{action}}(this->info, in, nw_st_info);
+          impl::act_{{action}}(this->info, in, *nw_st_info);
           {% endfor %}
           return std::make_shared<{{transition.new_status.name}}>(*nw_st_info);
         } else if(auto nw_st_info = std::get_if<st_error_t>(&nw_st_info_or_error)){
-            log(en_log_level::info, "[init] rq_key -> error", in, info, nw_st_info);
+            //log(en_log_level::info, "[init] rq_key -> error", in, info, nw_st_info);
             return std::make_shared<error>(*nw_st_info);
         }
         {% else %}
-        auto nw_st_info = fromin2_error<st_{{status.name}}_t, in_{{sinput.name}}_t>(this->info, in);
-        log(en_log_level::info, "[{{status.name}}] {{sinput.name}} -> {{transition.new_status.name}}", in, info, nw_st_info);
+        auto nw_st_info = impl::transition_2error(this->info, in);
+        //log(en_log_level::info, "[{{status.name}}] {{sinput.name}} -> {{transition.new_status.name}}", in, info, nw_st_info);
         {% for action in transition.actions -%}
         act_{{action}}(this->info, in, nw_st_info);
         {% endfor %}
@@ -94,8 +98,8 @@ SState {{status.name}}::input(const in_{{input}}_t& in) {
       {% endfor %}
   } catch (...) {}
 
-  auto nw_st_info = fromin2_error<st_{{status.name}}_t, in_{{input}}_t>(this->info, in);
-  log(en_log_level::critic, "[{{status.name}}] {{input}} error/default -> error", in, info, nw_st_info);
+  auto nw_st_info = impl::transition_2error(this->info, in);
+  //log(en_log_level::critic, "[{{status.name}}] {{input}} error/default -> error", in, info, nw_st_info);
   return std::make_shared<error>(nw_st_info);
 }
 {% endfor -%}

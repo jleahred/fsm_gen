@@ -17,7 +17,8 @@ namespace fsm_{{in_file.stem_name}} {
     {% for gi in guard_from_input -%}
     bool is_{{gi.guard}}(const st_{{gi.from}}_t& /*from*/, const in_{{gi.input}}_t& /*input*/)
     {
-
+        //  pending
+        return true;
     }
     {% endfor -%}
     {{""}}

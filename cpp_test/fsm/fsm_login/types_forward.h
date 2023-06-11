@@ -4,7 +4,7 @@
 //  forward declaration of types
 //
 //  do not modify it manually!!!
-//    generated on 2023-06-11 21:20:40
+//    generated on 2023-06-11 23:28:39
 
 #pragma once
 
@@ -18,6 +18,7 @@ namespace fsm_login {
   struct st_login_t;
   struct st_logout_t;
   struct st_error_t;
+  struct st_testing_t;
   
 
 } // namespace login

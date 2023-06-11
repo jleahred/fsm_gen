@@ -13,7 +13,34 @@ cargo build --release
 cargo install --path . -f
 ```
 
+
+## TODO
+
+- cpp2 CamelNames for structs
+
+- revisit dot
+- generate mermaid
+- check README.md
+
+- Error transition is special
+- Inprove exceptions control
+- web ui for templates
+- read template from file
+
+- Update idata in order to use ispush with btrees and more
+
+- Complete the cpp example and update on README.md
+- Check fsm format
+  - detect duplicated states
+  - detect duplicated inputs and guards
+- output with signals
+
+- Add new templates
+
 ## Versions
+
+### 0.8
+- New cpp generator with no c++ template<> code
 
 ### 0.7
 
@@ -65,25 +92,6 @@ cargo install --path . -f
 - Anonymous `namespace` for functions
 - Add comments support on fsm grammar
 
-## TODO
-
-- revisit dot
-- check README.md
-
-- Error transition is special
-- Inprove exceptions control
-- web ui for templates
-- read template from file
-
-- Update idata in order to use ispush with btrees and more
-
-- Complete the cpp example and update on README.md
-- Check fsm format
-  - detect duplicated states
-  - detect duplicated inputs and guards
-- output with signals
-
-- Add templates
 
 ## Aim
 

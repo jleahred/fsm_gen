@@ -1,3 +1,4 @@
+mod ast_expand_;
 pub(crate) mod cpp1;
 pub(crate) mod cpp2;
 mod dot;
@@ -12,6 +13,8 @@ use std::path::PathBuf;
 
 pub(crate) fn process(path: &PathBuf, config: &Config) -> std::result::Result<(), String> {
     let ast = crate::parser::compile(&read_file(path)?)?;
+    let ast = ast_expand_::expand(ast);
+    dbg!(&ast);
     let context = Context::new(ast, path)?;
 
     match config.templ {
@@ -29,26 +32,26 @@ pub(crate) fn process(path: &PathBuf, config: &Config) -> std::result::Result<()
     Ok(())
 }
 
-#[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Ord, Eq, Clone, Hash)]
+#[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Ord, Eq, Clone)]
 pub(crate) struct GuardInput {
     guard: crate::parser::GuardName,
     input: crate::parser::InputName,
 }
 
-#[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Ord, Eq, Clone, Hash)]
+#[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Ord, Eq, Clone)]
 pub(crate) struct ActionInput {
     action: crate::parser::ActionName,
     input: crate::parser::InputName,
 }
 
-#[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Ord, Eq, Clone, Hash)]
+#[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Ord, Eq, Clone)]
 pub(crate) struct TransitionToFromInput {
     to: crate::parser::StatusName,
     from: crate::parser::StatusName,
     input: crate::parser::InputName,
 }
 
-#[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Ord, Eq, Clone, Hash)]
+#[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Ord, Eq, Clone)]
 pub(crate) struct ActionFromInputTo {
     action: crate::parser::ActionName,
     from: crate::parser::StatusName,
@@ -56,7 +59,7 @@ pub(crate) struct ActionFromInputTo {
     to: crate::parser::StatusName,
 }
 
-#[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Ord, Eq, Clone, Hash)]
+#[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Ord, Eq, Clone)]
 pub(crate) struct GuardFromInput {
     guard: crate::parser::GuardName,
     from: crate::parser::StatusName,
@@ -110,10 +113,10 @@ pub(crate) struct InFile {
 }
 
 fn get_inputs(ast: &Ast) -> Vec<crate::parser::InputName> {
-    use std::collections::HashSet;
+    use std::collections::BTreeSet;
 
     let input_set = {
-        let mut input_set = HashSet::new();
+        let mut input_set = BTreeSet::new();
         for st in &ast.0 {
             for input in &st.inputs {
                 if &input.name.0 != "_" {
@@ -131,10 +134,10 @@ fn get_inputs(ast: &Ast) -> Vec<crate::parser::InputName> {
 }
 
 fn get_guard_inputs(ast: &Ast) -> Vec<GuardInput> {
-    use std::collections::HashSet;
+    use std::collections::BTreeSet;
 
     let action_set = {
-        let mut action_set = HashSet::new();
+        let mut action_set = BTreeSet::new();
         for st in &ast.0 {
             for input in &st.inputs {
                 for trans in &input.transitions {
@@ -157,10 +160,10 @@ fn get_guard_inputs(ast: &Ast) -> Vec<GuardInput> {
 }
 
 fn get_action_inputs(ast: &Ast) -> Vec<ActionInput> {
-    use std::collections::HashSet;
+    use std::collections::BTreeSet;
 
     let action_set = {
-        let mut action_set = HashSet::new();
+        let mut action_set = BTreeSet::new();
         for st in &ast.0 {
             for input in &st.inputs {
                 for trans in &input.transitions {
@@ -183,10 +186,10 @@ fn get_action_inputs(ast: &Ast) -> Vec<ActionInput> {
 }
 
 fn get_action_from_input_to(ast: &Ast) -> Vec<ActionFromInputTo> {
-    use std::collections::HashSet;
+    use std::collections::BTreeSet;
 
-    let action_set: HashSet<ActionFromInputTo> = {
-        let mut action_set = HashSet::new();
+    let action_set: BTreeSet<ActionFromInputTo> = {
+        let mut action_set = BTreeSet::new();
         for st in &ast.0 {
             for input in &st.inputs {
                 for trans in &input.transitions {
@@ -211,10 +214,10 @@ fn get_action_from_input_to(ast: &Ast) -> Vec<ActionFromInputTo> {
 }
 
 fn get_guard_from_input(ast: &Ast) -> Vec<GuardFromInput> {
-    use std::collections::HashSet;
+    use std::collections::BTreeSet;
 
-    let set: HashSet<GuardFromInput> = {
-        let mut set = HashSet::new();
+    let set: BTreeSet<GuardFromInput> = {
+        let mut set = BTreeSet::new();
         for st in &ast.0 {
             for input in &st.inputs {
                 for trans in &input.transitions {
@@ -240,21 +243,23 @@ fn get_guard_from_input(ast: &Ast) -> Vec<GuardFromInput> {
 fn get_transition_from_input_to(ast: &Ast) -> Vec<TransitionToFromInput> {
     use std::collections::BTreeSet;
 
-    // #[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Ord, Eq, Clone)]
-    // struct FromInput {
-    //     from: crate::parser::StatusName,
-    //     input: crate::parser::InputName,
-    // }
+    #[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Ord, Eq, Clone)]
+    struct FromInput {
+        from: crate::parser::StatusName,
+        input: crate::parser::InputName,
+    }
 
-    // let set_inputs: BTreeSet<crate::parser::InputName> = {
-    //     let mut set = BTreeSet::new();
-    //     for st in &ast.0 {
-    //         for input in &st.inputs {
-    //             set.insert(input.name.clone());
-    //         }
-    //     }
-    //     set
-    // };
+    let set_inputs: BTreeSet<crate::parser::InputName> = {
+        let mut set = BTreeSet::new();
+        for st in &ast.0 {
+            for input in &st.inputs {
+                if input.name.0 != "_" {
+                    set.insert(input.name.clone());
+                }
+            }
+        }
+        set
+    };
 
     // let set_from_input: BTreeSet<FromInput> = {
     //     let mut set = BTreeSet::new();
@@ -271,6 +276,7 @@ fn get_transition_from_input_to(ast: &Ast) -> Vec<TransitionToFromInput> {
 
     let set: BTreeSet<TransitionToFromInput> = {
         let mut set = BTreeSet::new();
+        let mut set_consumed_from_input = BTreeSet::new();
 
         for st in &ast.0 {
             for input in &st.inputs {
@@ -281,6 +287,31 @@ fn get_transition_from_input_to(ast: &Ast) -> Vec<TransitionToFromInput> {
                             from: st.name.clone(),
                             input: input.name.clone(),
                         });
+                        set_consumed_from_input.insert(FromInput {
+                            from: st.name.clone(),
+                            input: input.name.clone(),
+                        });
+                    }
+                }
+            }
+        }
+
+        for st in &ast.0 {
+            for input in &st.inputs {
+                for trans in &input.transitions {
+                    if input.name.0 == "_" && trans.new_status.name.0 != "error" {
+                        for i in &set_inputs {
+                            if !set_consumed_from_input.contains(&FromInput {
+                                from: st.name.clone(),
+                                input: input.name.clone(),
+                            }) {
+                                set.insert(TransitionToFromInput {
+                                    to: trans.new_status.name.clone(),
+                                    from: st.name.clone(),
+                                    input: i.clone(),
+                                });
+                            }
+                        }
                     }
                 }
             }

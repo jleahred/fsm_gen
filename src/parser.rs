@@ -55,19 +55,19 @@ pub(crate) struct Status {
     pub(crate) inputs: Vec<Input_>,
 }
 
-#[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Ord, Eq)]
+#[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Ord, Eq, Clone)]
 pub(crate) struct Input_ {
     pub(crate) name: InputName,
     pub(crate) transitions: Vec<Transition>,
 }
 
-#[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Ord, Eq)]
+#[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Ord, Eq, Clone)]
 pub(crate) struct Guard {
     pub(crate) name: GuardName,
     pub(crate) positiv: bool,
 }
 
-#[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Ord, Eq)]
+#[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Ord, Eq, Clone)]
 pub(crate) struct Transition {
     pub(crate) guards: Vec<Guard>,
     pub(crate) actions: Vec<ActionName>,
@@ -180,7 +180,6 @@ fn get_line_from_pos(txt: &str, pos: usize) -> String {
         .chars()
         .rev()
         .collect();
-    dbg!(&res);
     res
 }
 

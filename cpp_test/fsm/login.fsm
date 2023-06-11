@@ -19,6 +19,14 @@
 
 [logout]
     timer           ->  logout
+    _               ->  testing
 
 [error]
     _               ->  error
+
+
+[testing]
+    rq_key  & ho    ->  logout
+                    ->  testing
+    _     & hia     ->  login
+                    ->  init

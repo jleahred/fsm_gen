@@ -30,12 +30,21 @@ fn err2string<E: std::fmt::Display>(err: E) -> String {
 }
 
 fn get_processed_txt(context: &Context, template: &str) -> Result<String, String> {
-    Tera::one_off(
-        template,
+    let mut tera = Tera::default();
+    tera.register_filter("ToCamel", tera_filter_snake2camel);
+    tera.add_raw_template("template", template)
+        .map_err(err2string)?;
+    tera.render(
+        "template",
         &tera::Context::from_serialize(context).map_err(err2string)?,
-        false,
     )
     .map_err(err2string)
+    // Tera::one_off(
+    //     template,
+    //     &tera::Context::from_serialize(context).map_err(err2string)?,
+    //     false,
+    // )
+    // .map_err(err2string)
 }
 
 use std::fs::File;
@@ -52,14 +61,39 @@ pub(crate) fn write_file(full_file_name: &str, content: &str) -> Result<(), Stri
     Ok(())
 }
 
+pub(crate) fn tera_filter_snake2camel(
+    val: &tera::Value,
+    _args: &std::collections::HashMap<String, tera::Value>,
+) -> tera::Result<tera::Value> {
+    Ok(tera::Value::from(snake2camel(
+        val.as_str()
+            .ok_or(tera::Error::from("val is not an string"))?,
+    )))
+}
+
 fn snake2camel(txt: &str) -> String {
-    txt.to_owned()
+    txt //
+        .split("_")
+        .map(|w| capitalize_first_letter(w))
+        .collect()
 }
 
 #[test]
-fn test_tera_filter_2snake() {
+fn test_snake2camel() {
     assert_eq!("Rq", snake2camel("Rq"));
     assert_eq!("RqNw", snake2camel("RqNw"));
     assert_eq!("RqNw", snake2camel("rq_nw"));
     assert_eq!("RqNwA", snake2camel("rq_nw_a"));
+}
+
+fn capitalize_first_letter(s: &str) -> String {
+    s.char_indices()
+        .map(|(i, c)| {
+            if i == 0 {
+                c.to_uppercase().to_string()
+            } else {
+                c.to_string()
+            }
+        })
+        .collect()
 }

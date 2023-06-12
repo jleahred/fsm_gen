@@ -25,7 +25,7 @@ public:
     ~Fsm();
 
     {% for input in inputs -%}
-    void process(const In{{ input | ToCamel }} &in);
+    void process(const In{{ input | ToCamel }} &{{input}});
     {% endfor -%}
     {{""}}
 private:

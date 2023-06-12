@@ -19,7 +19,7 @@ namespace fsm_{{in_file.stem_name}} {
 
 //  status change functions
 {% for t in transition_from_input_to -%}
-std::variant<St{{ t.to | ToCamel}}, StError> transition_2{{t.to}}(const St{{ t.from | ToCamel }}& /*from*/, const In{{ t.input | ToCamel }}& /*input*/)
+std::variant<St{{ t.to | ToCamel}}, StError> transition_2{{t.to}}(const St{{ t.from | ToCamel }}& /*from*/, const In{{ t.input | ToCamel }}& /*{{t.input}}*/)
 {
   //  pending
   return St{{ t.to | ToCamel }}{};
@@ -29,7 +29,7 @@ std::variant<St{{ t.to | ToCamel}}, StError> transition_2{{t.to}}(const St{{ t.f
 
 //  status change functions 2 error
 {% for t in transition_from_input_to_error -%}
-StError transition_2{{t.to}}(const St{{ t.from | ToCamel }}& /*from*/, const In{{ t.input | ToCamel }}& /*input*/)
+StError transition_2{{t.to}}(const St{{ t.from | ToCamel }}& /*from*/, const In{{ t.input | ToCamel }}& /*{{t.input}}*/)
 {
   //  pending
   return StError{};

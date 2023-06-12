@@ -16,7 +16,7 @@ namespace fsm_{{in_file.stem_name}} {
     namespace impl {
   
     {% for gi in guard_from_input -%}
-    bool is_{{gi.guard}}(const St{{ gi.from | ToCamel }}& /*from*/, const In{{ gi.input  | ToCamel }}& /*input*/);
+    bool is_{{gi.guard}}(const St{{ gi.from | ToCamel }}& /*from*/, const In{{ gi.input  | ToCamel }}& /*{{gi.input}}*/);
     {% endfor -%}
     {{""}}
 

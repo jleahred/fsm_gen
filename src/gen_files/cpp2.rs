@@ -1,19 +1,10 @@
 use crate::gen_files::support::generate_file;
 use crate::gen_files::Context;
 
-mod cpp_gen_file;
-mod h_gen_file;
-// mod private_hpp_file;
-// mod private_hpp_file_forward_gen;
-mod actions_cpp;
-mod actions_h;
-mod guards_cpp;
-mod guards_h;
+mod file_names;
 mod templates;
-mod transitions_cpp;
-mod transitions_h;
-mod types_h_file;
-mod types_h_file_forward_gen;
+
+use file_names::*;
 
 pub(super) fn generate_files(
     context: &Context,
@@ -40,7 +31,7 @@ pub(super) fn generate_files(
 
     generate_file(
         context,
-        &h_gen_file::get_full_name(context),
+        &file_names::h_gen_file::get_full_name(context),
         templates::h_gen_file::t(),
     )?;
 

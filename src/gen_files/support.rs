@@ -51,3 +51,15 @@ pub(crate) fn write_file(full_file_name: &str, content: &str) -> Result<(), Stri
     f.sync_all().map_err(|e| format!("{}", e))?;
     Ok(())
 }
+
+fn snake2camel(txt: &str) -> String {
+    txt.to_owned()
+}
+
+#[test]
+fn test_tera_filter_2snake() {
+    assert_eq!("Rq", snake2camel("Rq"));
+    assert_eq!("RqNw", snake2camel("RqNw"));
+    assert_eq!("RqNw", snake2camel("rq_nw"));
+    assert_eq!("RqNwA", snake2camel("rq_nw_a"));
+}

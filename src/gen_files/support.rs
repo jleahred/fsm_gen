@@ -1,4 +1,3 @@
-use crate::files::*;
 use crate::gen_files::Context;
 use tera::Tera;
 
@@ -37,4 +36,18 @@ fn get_processed_txt(context: &Context, template: &str) -> Result<String, String
         false,
     )
     .map_err(err2string)
+}
+
+use std::fs::File;
+use std::io::prelude::*;
+
+pub(crate) fn write_file(full_file_name: &str, content: &str) -> Result<(), String> {
+    println!("Generating file... {}", full_file_name);
+    let mut f = File::create(full_file_name).map_err(|e| format!("{}", e))?;
+
+    f.write_all(content.as_bytes())
+        .map_err(|e| format!("{}", e))?;
+
+    f.sync_all().map_err(|e| format!("{}", e))?;
+    Ok(())
 }

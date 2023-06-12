@@ -5,7 +5,6 @@ extern crate tera;
 
 mod cli_params;
 mod config;
-mod files;
 mod gen_files;
 mod parser;
 

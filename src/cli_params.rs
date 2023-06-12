@@ -24,7 +24,7 @@ pub(crate) struct Opt {
     #[structopt(short = "t", long = "templ", default_value = "cpp2")]
     pub(crate) templ: Templ,
 
-    /// Generate all files regardless of change date
+    /// Generate all files regardless of change date. DANGEROUS!!!
     #[structopt(short = "f", long = "force")]
     pub(crate) force: bool,
 

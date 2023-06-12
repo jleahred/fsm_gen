@@ -1,78 +1,9 @@
-use idata::cont::IVec;
+pub(crate) mod types;
+
 use peg::parser;
-use serde::{Deserialize, Serialize};
-use std::collections::{BTreeMap, BTreeSet};
 use std::result::Result;
-
-///Ast(
-///    [
-///        Status {
-///            name: StatusName(
-///                "init",
-///            ),
-///            inputs: [
-///                Input_ {
-///                    name: InputName(
-///                        "rq_key",
-///                    ),
-///                    transitions: [
-///                        Transition {
-///                            guard: [],
-///                            actions: [
-///                                ActionName(
-///                                    "send_key",
-///                                ),
-///                            ],
-///                            new_status: StatusRef {
-///                                name: StatusName(
-///                                    "w_login",
-///                                ),
-///                                pos: 55,
-///                            },
-///                        },
-///         ...
-
-#[derive(Serialize, Deserialize, Debug)]
-pub(crate) struct Ast(pub(crate) Vec<Status>);
-
-#[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Ord, Eq, Clone, Hash)]
-pub(crate) struct StatusName(pub(crate) String);
-#[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Ord, Eq, Clone, Hash)]
-pub(crate) struct InputName(pub(crate) String);
-#[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Ord, Eq, Clone, Hash)]
-pub(crate) struct GuardName(pub(crate) String);
-#[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Ord, Eq, Clone, Hash)]
-pub(crate) struct ActionName(pub(crate) String);
-#[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Ord, Eq, Clone)]
-pub(crate) struct StatusRef {
-    pub(crate) name: StatusName,
-    pos: usize,
-}
-
-#[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Ord, Eq)]
-pub(crate) struct Status {
-    pub(crate) name: StatusName,
-    pub(crate) inputs: Vec<Input_>,
-}
-
-#[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Ord, Eq, Clone)]
-pub(crate) struct Input_ {
-    pub(crate) name: InputName,
-    pub(crate) transitions: Vec<Transition>,
-}
-
-#[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Ord, Eq, Clone)]
-pub(crate) struct Guard {
-    pub(crate) name: GuardName,
-    pub(crate) positiv: bool,
-}
-
-#[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Ord, Eq, Clone)]
-pub(crate) struct Transition {
-    pub(crate) guards: Vec<Guard>,
-    pub(crate) actions: Vec<ActionName>,
-    pub(crate) new_status: StatusRef,
-}
+use types::Ast;
+use types::*;
 
 fn parse_error2string(input: &str, pe: ::peg::error::ParseError<peg::str::LineCol>) -> String {
     let location = pe.location.clone();
@@ -82,29 +13,11 @@ fn parse_error2string(input: &str, pe: ::peg::error::ParseError<peg::str::LineCo
     format!("{}\nline: {:?}\n{}^", error_txt, line, indicator)
 }
 
-fn get_status(ast: &Ast) -> (BTreeSet<StatusName>, BTreeMap<StatusName, usize>) {
-    let status = ast.0.iter().fold(BTreeSet::new(), |mut acc, st| {
-        acc.insert(st.name.clone());
-        acc
-    });
-    let status_refs = ast.0.iter().fold(BTreeMap::new(), |acc, st| {
-        st.inputs.iter().fold(acc, |acc, input| {
-            input.transitions.iter().fold(acc, |mut acc, transition| {
-                acc.insert(
-                    transition.new_status.name.clone(),
-                    transition.new_status.pos,
-                );
-                acc
-            })
-        })
-    });
-    (status, status_refs)
-}
-
 pub(crate) fn compile(input: &str) -> Result<Ast, String> {
     fsm_peg::compile(input)
         .or_else(|e| Err(parse_error2string(input, e)))
-        .and_then(|ast| check_status_refs(input, ast))
+        .and_then(|ast| ast.check_status_refs(input))
+        .and_then(|ast| ast.expand_())
 }
 
 parser! {
@@ -167,57 +80,5 @@ parser! {
         rule _endls()   = quiet!{ [' ' | '\t' | '\n']* }
         rule endl()     = quiet!{ ['\n'] }
         rule endls()    = quiet!{ endl()* }
-    }
-}
-
-fn get_line_from_pos(txt: &str, pos: usize) -> String {
-    let res = txt
-        .chars()
-        .rev()
-        .skip(txt.len() - pos)
-        .take_while(|ch| !ch.is_control())
-        .collect::<String>()
-        .chars()
-        .rev()
-        .collect();
-    res
-}
-
-fn check_status_refs(input: &str, ast: Ast) -> Result<Ast, String> {
-    let (status, status_refs) = get_status(&ast);
-    let status_no_refs = status.iter().fold(vec![], |acc, k| {
-        if !status_refs.contains_key(k) && *k != StatusName("init".to_string()) {
-            acc.ipush(k)
-        } else {
-            acc
-        }
-    });
-    if !status_no_refs.is_empty() {
-        Err(format!("status not referenced\n{:#?}", status_no_refs))
-    } else {
-        let status_refs_non_exists = status_refs.iter().fold(vec![], |acc, (k, v)| {
-            if !status.contains(k) {
-                acc.ipush((k, v))
-            } else {
-                acc
-            }
-        });
-        if !status_refs_non_exists.is_empty() {
-            let lines =
-                status_refs_non_exists
-                    .iter()
-                    .fold("".to_string(), |mut acc, (st_name, &pos)| {
-                        acc = format!(
-                            "{}\n  {} >> {}",
-                            &acc,
-                            st_name.0,
-                            get_line_from_pos(input, pos)
-                        );
-                        acc
-                    });
-            Err(format!("reference to non existing status{}", lines))
-        } else {
-            Ok(ast)
-        }
     }
 }

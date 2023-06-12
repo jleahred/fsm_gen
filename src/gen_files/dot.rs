@@ -1,4 +1,4 @@
-use crate::gen_files::sup::*;
+use crate::gen_files::support::*;
 use crate::gen_files::Context;
 
 pub(super) fn generate_files(context: &Context) -> std::result::Result<(), String> {

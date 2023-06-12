@@ -1,4 +1,4 @@
-use crate::gen_files::sup::generate_file;
+use crate::gen_files::support::generate_file;
 use crate::gen_files::Context;
 
 mod cpp_gen_file;

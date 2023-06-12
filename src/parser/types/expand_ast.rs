@@ -1,4 +1,4 @@
-use crate::parser::{Ast, InputName, Input_};
+use crate::parser::types::{Ast, InputName, Input_};
 
 pub(crate) fn expand(mut ast: Ast) -> Ast {
     use std::collections::BTreeSet;
@@ -37,7 +37,7 @@ pub(crate) fn expand(mut ast: Ast) -> Ast {
                 if input.name.0 == "_" {
                     for i in &set_inputs {
                         if !set_used_inputs.contains(i) {
-                            let ni = crate::parser::Input_ {
+                            let ni = Input_ {
                                 name: i.clone(),
                                 transitions: input.transitions.clone(),
                             };

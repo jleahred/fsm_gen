@@ -87,7 +87,7 @@ SState {{status.name}}::input(const In{{ input| ToCamel}}& in) {
         auto nw_st_info = impl::transition_2error(this->info, in);
         //log(en_log_level::info, "[{{status.name}}] {{sinput.name}} -> {{transition.new_status.name}}", in, info, nw_st_info);
         {% for action in transition.actions -%}
-        act_{{action}}(this->info, in, nw_st_info);
+        impl::act_{{action}}(this->info, in, nw_st_info);
         {% endfor %}
         return std::make_shared<{{transition.new_status.name}}>(nw_st_info);
         {% endif %}

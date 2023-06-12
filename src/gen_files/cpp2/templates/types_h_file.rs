@@ -18,7 +18,7 @@ namespace fsm_{{in_file.stem_name}} {
   //  status info types
 
   {% for st in ast -%}
-  struct st_{{st.name}}_t{};
+  struct St{{st.name | ToCamel}}{};
   {% endfor -%}
   {{""}}
 
@@ -27,13 +27,13 @@ namespace fsm_{{in_file.stem_name}} {
 
     //  provisinal code, delete it when replace the nexts usings
       {% for input in inputs -%}
-      struct provisinal_in_{{input}}_t{};
+      struct Provisional_In{{input | ToCamel }}{};
       {% endfor -%}
       {{""}}
 
     //  usings
     {% for input in inputs -%}
-    using in_{{input}}_t = provisinal_in_{{input}}_t;
+    using In{{input  | ToCamel }} = Provisional_In{{input  | ToCamel }};
     {% endfor -%}
     {{""}}
 

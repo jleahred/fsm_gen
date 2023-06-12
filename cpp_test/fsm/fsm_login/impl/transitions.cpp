@@ -3,7 +3,7 @@
 //  This file will not be updated by generator
 //  It's created just the first time as a reference
 //
-//    generated on 2023-06-11 23:28:39
+//    generated on 2023-06-12 18:54:48
 
 
 #include "transitions.h"
@@ -17,288 +17,288 @@ namespace fsm_login {
 
 
 //  status change functions
-std::variant<st_init_t, st_error_t> transition_2init(const st_init_t& /*from*/, const in_timer_t& /*input*/)
+std::variant<StInit, StError> transition_2init(const StInit& /*from*/, const InTimer& /*input*/)
 {
   //  pending
-  return st_init_t{};
+  return StInit{};
 }
-std::variant<st_init_t, st_error_t> transition_2init(const st_testing_t& /*from*/, const in_heartbeat_t& /*input*/)
+std::variant<StInit, StError> transition_2init(const StTesting& /*from*/, const InHeartbeat& /*input*/)
 {
   //  pending
-  return st_init_t{};
+  return StInit{};
 }
-std::variant<st_init_t, st_error_t> transition_2init(const st_testing_t& /*from*/, const in_rq_key_t& /*input*/)
+std::variant<StInit, StError> transition_2init(const StTesting& /*from*/, const InRqKey& /*input*/)
 {
   //  pending
-  return st_init_t{};
+  return StInit{};
 }
-std::variant<st_init_t, st_error_t> transition_2init(const st_testing_t& /*from*/, const in_rq_login_t& /*input*/)
+std::variant<StInit, StError> transition_2init(const StTesting& /*from*/, const InRqLogin& /*input*/)
 {
   //  pending
-  return st_init_t{};
+  return StInit{};
 }
-std::variant<st_init_t, st_error_t> transition_2init(const st_testing_t& /*from*/, const in_rq_logout_t& /*input*/)
+std::variant<StInit, StError> transition_2init(const StTesting& /*from*/, const InRqLogout& /*input*/)
 {
   //  pending
-  return st_init_t{};
+  return StInit{};
 }
-std::variant<st_init_t, st_error_t> transition_2init(const st_testing_t& /*from*/, const in_timer_t& /*input*/)
+std::variant<StInit, StError> transition_2init(const StTesting& /*from*/, const InTimer& /*input*/)
 {
   //  pending
-  return st_init_t{};
+  return StInit{};
 }
-std::variant<st_login_t, st_error_t> transition_2login(const st_login_t& /*from*/, const in_heartbeat_t& /*input*/)
+std::variant<StLogin, StError> transition_2login(const StLogin& /*from*/, const InHeartbeat& /*input*/)
 {
   //  pending
-  return st_login_t{};
+  return StLogin{};
 }
-std::variant<st_login_t, st_error_t> transition_2login(const st_login_t& /*from*/, const in_timer_t& /*input*/)
+std::variant<StLogin, StError> transition_2login(const StLogin& /*from*/, const InTimer& /*input*/)
 {
   //  pending
-  return st_login_t{};
+  return StLogin{};
 }
-std::variant<st_login_t, st_error_t> transition_2login(const st_testing_t& /*from*/, const in_heartbeat_t& /*input*/)
+std::variant<StLogin, StError> transition_2login(const StTesting& /*from*/, const InHeartbeat& /*input*/)
 {
   //  pending
-  return st_login_t{};
+  return StLogin{};
 }
-std::variant<st_login_t, st_error_t> transition_2login(const st_testing_t& /*from*/, const in_rq_key_t& /*input*/)
+std::variant<StLogin, StError> transition_2login(const StTesting& /*from*/, const InRqKey& /*input*/)
 {
   //  pending
-  return st_login_t{};
+  return StLogin{};
 }
-std::variant<st_login_t, st_error_t> transition_2login(const st_testing_t& /*from*/, const in_rq_login_t& /*input*/)
+std::variant<StLogin, StError> transition_2login(const StTesting& /*from*/, const InRqLogin& /*input*/)
 {
   //  pending
-  return st_login_t{};
+  return StLogin{};
 }
-std::variant<st_login_t, st_error_t> transition_2login(const st_testing_t& /*from*/, const in_rq_logout_t& /*input*/)
+std::variant<StLogin, StError> transition_2login(const StTesting& /*from*/, const InRqLogout& /*input*/)
 {
   //  pending
-  return st_login_t{};
+  return StLogin{};
 }
-std::variant<st_login_t, st_error_t> transition_2login(const st_testing_t& /*from*/, const in_timer_t& /*input*/)
+std::variant<StLogin, StError> transition_2login(const StTesting& /*from*/, const InTimer& /*input*/)
 {
   //  pending
-  return st_login_t{};
+  return StLogin{};
 }
-std::variant<st_login_t, st_error_t> transition_2login(const st_w_login_t& /*from*/, const in_rq_login_t& /*input*/)
+std::variant<StLogin, StError> transition_2login(const StWLogin& /*from*/, const InRqLogin& /*input*/)
 {
   //  pending
-  return st_login_t{};
+  return StLogin{};
 }
-std::variant<st_logout_t, st_error_t> transition_2logout(const st_login_t& /*from*/, const in_rq_logout_t& /*input*/)
+std::variant<StLogout, StError> transition_2logout(const StLogin& /*from*/, const InRqLogout& /*input*/)
 {
   //  pending
-  return st_logout_t{};
+  return StLogout{};
 }
-std::variant<st_logout_t, st_error_t> transition_2logout(const st_login_t& /*from*/, const in_timer_t& /*input*/)
+std::variant<StLogout, StError> transition_2logout(const StLogin& /*from*/, const InTimer& /*input*/)
 {
   //  pending
-  return st_logout_t{};
+  return StLogout{};
 }
-std::variant<st_logout_t, st_error_t> transition_2logout(const st_logout_t& /*from*/, const in_timer_t& /*input*/)
+std::variant<StLogout, StError> transition_2logout(const StLogout& /*from*/, const InTimer& /*input*/)
 {
   //  pending
-  return st_logout_t{};
+  return StLogout{};
 }
-std::variant<st_logout_t, st_error_t> transition_2logout(const st_testing_t& /*from*/, const in_rq_key_t& /*input*/)
+std::variant<StLogout, StError> transition_2logout(const StTesting& /*from*/, const InRqKey& /*input*/)
 {
   //  pending
-  return st_logout_t{};
+  return StLogout{};
 }
-std::variant<st_testing_t, st_error_t> transition_2testing(const st_logout_t& /*from*/, const in_heartbeat_t& /*input*/)
+std::variant<StTesting, StError> transition_2testing(const StLogout& /*from*/, const InHeartbeat& /*input*/)
 {
   //  pending
-  return st_testing_t{};
+  return StTesting{};
 }
-std::variant<st_testing_t, st_error_t> transition_2testing(const st_logout_t& /*from*/, const in_rq_key_t& /*input*/)
+std::variant<StTesting, StError> transition_2testing(const StLogout& /*from*/, const InRqKey& /*input*/)
 {
   //  pending
-  return st_testing_t{};
+  return StTesting{};
 }
-std::variant<st_testing_t, st_error_t> transition_2testing(const st_logout_t& /*from*/, const in_rq_login_t& /*input*/)
+std::variant<StTesting, StError> transition_2testing(const StLogout& /*from*/, const InRqLogin& /*input*/)
 {
   //  pending
-  return st_testing_t{};
+  return StTesting{};
 }
-std::variant<st_testing_t, st_error_t> transition_2testing(const st_logout_t& /*from*/, const in_rq_logout_t& /*input*/)
+std::variant<StTesting, StError> transition_2testing(const StLogout& /*from*/, const InRqLogout& /*input*/)
 {
   //  pending
-  return st_testing_t{};
+  return StTesting{};
 }
-std::variant<st_testing_t, st_error_t> transition_2testing(const st_logout_t& /*from*/, const in_timer_t& /*input*/)
+std::variant<StTesting, StError> transition_2testing(const StLogout& /*from*/, const InTimer& /*input*/)
 {
   //  pending
-  return st_testing_t{};
+  return StTesting{};
 }
-std::variant<st_testing_t, st_error_t> transition_2testing(const st_testing_t& /*from*/, const in_rq_key_t& /*input*/)
+std::variant<StTesting, StError> transition_2testing(const StTesting& /*from*/, const InRqKey& /*input*/)
 {
   //  pending
-  return st_testing_t{};
+  return StTesting{};
 }
-std::variant<st_w_login_t, st_error_t> transition_2w_login(const st_init_t& /*from*/, const in_rq_key_t& /*input*/)
+std::variant<StWLogin, StError> transition_2w_login(const StInit& /*from*/, const InRqKey& /*input*/)
 {
   //  pending
-  return st_w_login_t{};
+  return StWLogin{};
 }
-std::variant<st_w_login_t, st_error_t> transition_2w_login(const st_w_login_t& /*from*/, const in_timer_t& /*input*/)
+std::variant<StWLogin, StError> transition_2w_login(const StWLogin& /*from*/, const InTimer& /*input*/)
 {
   //  pending
-  return st_w_login_t{};
+  return StWLogin{};
 }
 
 
 //  status change functions 2 error
-st_error_t transition_2error(const st_error_t& /*from*/, const in_heartbeat_t& /*input*/)
+StError transition_2error(const StError& /*from*/, const InHeartbeat& /*input*/)
 {
   //  pending
-  return st_error_t{};
+  return StError{};
 }
-st_error_t transition_2error(const st_error_t& /*from*/, const in_rq_key_t& /*input*/)
+StError transition_2error(const StError& /*from*/, const InRqKey& /*input*/)
 {
   //  pending
-  return st_error_t{};
+  return StError{};
 }
-st_error_t transition_2error(const st_error_t& /*from*/, const in_rq_login_t& /*input*/)
+StError transition_2error(const StError& /*from*/, const InRqLogin& /*input*/)
 {
   //  pending
-  return st_error_t{};
+  return StError{};
 }
-st_error_t transition_2error(const st_error_t& /*from*/, const in_rq_logout_t& /*input*/)
+StError transition_2error(const StError& /*from*/, const InRqLogout& /*input*/)
 {
   //  pending
-  return st_error_t{};
+  return StError{};
 }
-st_error_t transition_2error(const st_error_t& /*from*/, const in_timer_t& /*input*/)
+StError transition_2error(const StError& /*from*/, const InTimer& /*input*/)
 {
   //  pending
-  return st_error_t{};
+  return StError{};
 }
-st_error_t transition_2error(const st_init_t& /*from*/, const in_heartbeat_t& /*input*/)
+StError transition_2error(const StInit& /*from*/, const InHeartbeat& /*input*/)
 {
   //  pending
-  return st_error_t{};
+  return StError{};
 }
-st_error_t transition_2error(const st_init_t& /*from*/, const in_rq_key_t& /*input*/)
+StError transition_2error(const StInit& /*from*/, const InRqKey& /*input*/)
 {
   //  pending
-  return st_error_t{};
+  return StError{};
 }
-st_error_t transition_2error(const st_init_t& /*from*/, const in_rq_login_t& /*input*/)
+StError transition_2error(const StInit& /*from*/, const InRqLogin& /*input*/)
 {
   //  pending
-  return st_error_t{};
+  return StError{};
 }
-st_error_t transition_2error(const st_init_t& /*from*/, const in_rq_logout_t& /*input*/)
+StError transition_2error(const StInit& /*from*/, const InRqLogout& /*input*/)
 {
   //  pending
-  return st_error_t{};
+  return StError{};
 }
-st_error_t transition_2error(const st_init_t& /*from*/, const in_timer_t& /*input*/)
+StError transition_2error(const StInit& /*from*/, const InTimer& /*input*/)
 {
   //  pending
-  return st_error_t{};
+  return StError{};
 }
-st_error_t transition_2error(const st_login_t& /*from*/, const in_heartbeat_t& /*input*/)
+StError transition_2error(const StLogin& /*from*/, const InHeartbeat& /*input*/)
 {
   //  pending
-  return st_error_t{};
+  return StError{};
 }
-st_error_t transition_2error(const st_login_t& /*from*/, const in_rq_key_t& /*input*/)
+StError transition_2error(const StLogin& /*from*/, const InRqKey& /*input*/)
 {
   //  pending
-  return st_error_t{};
+  return StError{};
 }
-st_error_t transition_2error(const st_login_t& /*from*/, const in_rq_login_t& /*input*/)
+StError transition_2error(const StLogin& /*from*/, const InRqLogin& /*input*/)
 {
   //  pending
-  return st_error_t{};
+  return StError{};
 }
-st_error_t transition_2error(const st_login_t& /*from*/, const in_rq_logout_t& /*input*/)
+StError transition_2error(const StLogin& /*from*/, const InRqLogout& /*input*/)
 {
   //  pending
-  return st_error_t{};
+  return StError{};
 }
-st_error_t transition_2error(const st_login_t& /*from*/, const in_timer_t& /*input*/)
+StError transition_2error(const StLogin& /*from*/, const InTimer& /*input*/)
 {
   //  pending
-  return st_error_t{};
+  return StError{};
 }
-st_error_t transition_2error(const st_logout_t& /*from*/, const in_heartbeat_t& /*input*/)
+StError transition_2error(const StLogout& /*from*/, const InHeartbeat& /*input*/)
 {
   //  pending
-  return st_error_t{};
+  return StError{};
 }
-st_error_t transition_2error(const st_logout_t& /*from*/, const in_rq_key_t& /*input*/)
+StError transition_2error(const StLogout& /*from*/, const InRqKey& /*input*/)
 {
   //  pending
-  return st_error_t{};
+  return StError{};
 }
-st_error_t transition_2error(const st_logout_t& /*from*/, const in_rq_login_t& /*input*/)
+StError transition_2error(const StLogout& /*from*/, const InRqLogin& /*input*/)
 {
   //  pending
-  return st_error_t{};
+  return StError{};
 }
-st_error_t transition_2error(const st_logout_t& /*from*/, const in_rq_logout_t& /*input*/)
+StError transition_2error(const StLogout& /*from*/, const InRqLogout& /*input*/)
 {
   //  pending
-  return st_error_t{};
+  return StError{};
 }
-st_error_t transition_2error(const st_logout_t& /*from*/, const in_timer_t& /*input*/)
+StError transition_2error(const StLogout& /*from*/, const InTimer& /*input*/)
 {
   //  pending
-  return st_error_t{};
+  return StError{};
 }
-st_error_t transition_2error(const st_testing_t& /*from*/, const in_heartbeat_t& /*input*/)
+StError transition_2error(const StTesting& /*from*/, const InHeartbeat& /*input*/)
 {
   //  pending
-  return st_error_t{};
+  return StError{};
 }
-st_error_t transition_2error(const st_testing_t& /*from*/, const in_rq_key_t& /*input*/)
+StError transition_2error(const StTesting& /*from*/, const InRqKey& /*input*/)
 {
   //  pending
-  return st_error_t{};
+  return StError{};
 }
-st_error_t transition_2error(const st_testing_t& /*from*/, const in_rq_login_t& /*input*/)
+StError transition_2error(const StTesting& /*from*/, const InRqLogin& /*input*/)
 {
   //  pending
-  return st_error_t{};
+  return StError{};
 }
-st_error_t transition_2error(const st_testing_t& /*from*/, const in_rq_logout_t& /*input*/)
+StError transition_2error(const StTesting& /*from*/, const InRqLogout& /*input*/)
 {
   //  pending
-  return st_error_t{};
+  return StError{};
 }
-st_error_t transition_2error(const st_testing_t& /*from*/, const in_timer_t& /*input*/)
+StError transition_2error(const StTesting& /*from*/, const InTimer& /*input*/)
 {
   //  pending
-  return st_error_t{};
+  return StError{};
 }
-st_error_t transition_2error(const st_w_login_t& /*from*/, const in_heartbeat_t& /*input*/)
+StError transition_2error(const StWLogin& /*from*/, const InHeartbeat& /*input*/)
 {
   //  pending
-  return st_error_t{};
+  return StError{};
 }
-st_error_t transition_2error(const st_w_login_t& /*from*/, const in_rq_key_t& /*input*/)
+StError transition_2error(const StWLogin& /*from*/, const InRqKey& /*input*/)
 {
   //  pending
-  return st_error_t{};
+  return StError{};
 }
-st_error_t transition_2error(const st_w_login_t& /*from*/, const in_rq_login_t& /*input*/)
+StError transition_2error(const StWLogin& /*from*/, const InRqLogin& /*input*/)
 {
   //  pending
-  return st_error_t{};
+  return StError{};
 }
-st_error_t transition_2error(const st_w_login_t& /*from*/, const in_rq_logout_t& /*input*/)
+StError transition_2error(const StWLogin& /*from*/, const InRqLogout& /*input*/)
 {
   //  pending
-  return st_error_t{};
+  return StError{};
 }
-st_error_t transition_2error(const st_w_login_t& /*from*/, const in_timer_t& /*input*/)
+StError transition_2error(const StWLogin& /*from*/, const InTimer& /*input*/)
 {
   //  pending
-  return st_error_t{};
+  return StError{};
 }
 
 

@@ -4,7 +4,7 @@
 //  It's created just the first time as a reference
 //
 //
-//    generated on 2023-06-11 23:28:39
+//    generated on 2023-06-12 18:54:48
 
 
 #pragma once
@@ -16,31 +16,31 @@ namespace fsm_login {
 
   //  status info types
 
-  struct st_init_t{};
-  struct st_w_login_t{};
-  struct st_login_t{};
-  struct st_logout_t{};
-  struct st_error_t{};
-  struct st_testing_t{};
+  struct StInit{};
+  struct StWLogin{};
+  struct StLogin{};
+  struct StLogout{};
+  struct StError{};
+  struct StTesting{};
   
 
 
   //  input types
 
     //  provisinal code, delete it when replace the nexts usings
-      struct provisinal_in_heartbeat_t{};
-      struct provisinal_in_rq_key_t{};
-      struct provisinal_in_rq_login_t{};
-      struct provisinal_in_rq_logout_t{};
-      struct provisinal_in_timer_t{};
+      struct Provisional_InHeartbeat{};
+      struct Provisional_InRqKey{};
+      struct Provisional_InRqLogin{};
+      struct Provisional_InRqLogout{};
+      struct Provisional_InTimer{};
       
 
     //  usings
-    using in_heartbeat_t = provisinal_in_heartbeat_t;
-    using in_rq_key_t = provisinal_in_rq_key_t;
-    using in_rq_login_t = provisinal_in_rq_login_t;
-    using in_rq_logout_t = provisinal_in_rq_logout_t;
-    using in_timer_t = provisinal_in_timer_t;
+    using InHeartbeat = Provisional_InHeartbeat;
+    using InRqKey = Provisional_InRqKey;
+    using InRqLogin = Provisional_InRqLogin;
+    using InRqLogout = Provisional_InRqLogout;
+    using InTimer = Provisional_InTimer;
     
 
 

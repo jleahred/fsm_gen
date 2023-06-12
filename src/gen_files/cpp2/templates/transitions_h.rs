@@ -20,13 +20,13 @@ namespace fsm_{{in_file.stem_name}} {
 
   //  status change functions
   {% for t in transition_from_input_to -%}
-    std::variant<st_{{t.to}}_t, st_error_t> transition_2{{t.to}}(const st_{{t.from}}_t& /*from*/, const in_{{t.input}}_t& /*input*/);
+    std::variant<St{{ t.to | ToCamel }}, StError> transition_2{{t.to}}(const St{{ t.from | ToCamel }}& /*from*/, const In{{ t.input | ToCamel }}& /*input*/);
   {% endfor -%}
   {{""}}
 
   //  status change functions 2 error
   {% for t in transition_from_input_to_error -%}
-    st_error_t transition_2{{t.to}}(const st_{{t.from}}_t& /*from*/, const in_{{t.input}}_t& /*input*/);
+    StError transition_2{{t.to}}(const St{{ t.from | ToCamel }}& /*from*/, const In{{ t.input | ToCamel }}& /*input*/);
   {% endfor -%}
   {{""}}
 

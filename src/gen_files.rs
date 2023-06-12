@@ -17,12 +17,18 @@ pub(crate) fn process(path: &PathBuf, config: &Config) -> std::result::Result<()
     dbg!(&ast);
     let context = Context::new(ast, path)?;
 
+    let fn_gen_file_if_missing = if config.force {
+        sup::generate_file
+    } else {
+        sup::generate_file_if_missing
+    };
+
     match config.templ {
         crate::cli_params::Templ::Cpp1 => {
-            cpp1::generate_files(&context).map_err(|e| e.to_string())?
+            cpp1::generate_files(&context, fn_gen_file_if_missing).map_err(|e| e.to_string())?
         }
         crate::cli_params::Templ::Cpp2 => {
-            cpp2::generate_files(&context).map_err(|e| e.to_string())?
+            cpp2::generate_files(&context, fn_gen_file_if_missing).map_err(|e| e.to_string())?
         }
     }
 

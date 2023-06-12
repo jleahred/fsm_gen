@@ -29,12 +29,17 @@ fn main() {
         eprintln!("No files provied!!! If doubt,  --help");
     } else {
         configure_rayon(opt.n_threads);
-        process_files(&opt.fsm_files, opt.templ, opt.dot);
+        process_files(&opt.fsm_files, opt.templ, opt.dot, opt.force);
     }
 }
 
-fn process_files(fsm_files: &Vec<std::path::PathBuf>, templ: cli_params::Templ, dot: bool) {
-    let config = Config { templ, dot };
+fn process_files(
+    fsm_files: &Vec<std::path::PathBuf>,
+    templ: cli_params::Templ,
+    dot: bool,
+    force: bool,
+) {
+    let config = Config { templ, dot, force };
 
     let _ = fsm_files
         .par_iter()

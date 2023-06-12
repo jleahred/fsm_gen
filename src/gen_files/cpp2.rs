@@ -1,4 +1,4 @@
-use crate::gen_files::sup::*;
+use crate::gen_files::sup::generate_file;
 use crate::gen_files::Context;
 
 mod cpp_gen_file;
@@ -15,7 +15,10 @@ mod transitions_h;
 mod types_h_file;
 mod types_h_file_forward_gen;
 
-pub(super) fn generate_files(context: &Context) -> std::result::Result<(), String> {
+pub(super) fn generate_files(
+    context: &Context,
+    gen_file_if_missing: fn(&Context, &str, &str) -> Result<(), String>,
+) -> std::result::Result<(), String> {
     {
         let folder = format!("{}/fsm_{}", context.in_file.dir, context.in_file.stem_name);
         match std::fs::create_dir_all(folder) {
@@ -54,25 +57,25 @@ pub(super) fn generate_files(context: &Context) -> std::result::Result<(), Strin
     )?;
 
     // generate_file(
-    generate_file_if_missing(
+    gen_file_if_missing(
         context,
         &types_h_file::get_full_name(context),
         templates::types_h_file::t(),
     )?;
 
-    generate_file_if_missing(
+    gen_file_if_missing(
         context,
         &guards_cpp::get_full_name(context),
         templates::guards_cpp::t(),
     )?;
 
-    generate_file_if_missing(
+    gen_file_if_missing(
         context,
         &guards_h::get_full_name(context),
         templates::guards_h::t(),
     )?;
 
-    generate_file_if_missing(
+    gen_file_if_missing(
         context,
         &actions_cpp::get_full_name(context),
         templates::actions_cpp::t(),
@@ -84,13 +87,13 @@ pub(super) fn generate_files(context: &Context) -> std::result::Result<(), Strin
         templates::actions_h::t(),
     )?;
 
-    generate_file_if_missing(
+    gen_file_if_missing(
         context,
         &transitions_cpp::get_full_name(context),
         templates::transitions_cpp::t(),
     )?;
 
-    generate_file_if_missing(
+    gen_file_if_missing(
         context,
         &transitions_h::get_full_name(context),
         templates::transitions_h::t(),

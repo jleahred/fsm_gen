@@ -24,10 +24,10 @@ pub(crate) struct Opt {
     #[structopt(short = "t", long = "templ", default_value = "cpp2")]
     pub(crate) templ: Templ,
 
-    // /// Generate all files regardless of change date
-    // #[structopt(short = "f", long = "force")]
-    // force: bool,
-    //
+    /// Generate all files regardless of change date
+    #[structopt(short = "f", long = "force")]
+    pub(crate) force: bool,
+
     /// Number of threads to use. 0 means one per core  ;-)
     #[structopt(short = "T", long = "threads", default_value = "0")]
     pub(crate) n_threads: usize,

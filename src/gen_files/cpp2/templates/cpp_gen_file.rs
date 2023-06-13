@@ -67,16 +67,16 @@ SState {{status.name}}::input(const In{{ input| ToCamel}}& in) {
       {% for transition in sinput.transitions -%}
       {% if transition.new_status.name != status.name or transition.actions  or true %}
       if(true
-        {%- for guard in transition.guards %} && {% if not guard.positiv %}!{%endif%}impl::is_{{guard.name}}(info, in)
+        {%- for guard in transition.guards %} && {% if not guard.positiv %}!{%endif%}impl::guard::is_{{guard.name}}(info, in)
         {%- endfor -%}
              ){
         {% if transition.new_status.name != "error" %}
-        auto nw_st_info_or_error = impl::transition_2{{transition.new_status.name}}(this->info, in);
+        auto nw_st_info_or_error = impl::trans::to_{{transition.new_status.name}}(this->info, in);
         if(auto nw_st_info = std::get_if<St{{ transition.new_status.name | ToCamel}}>(&nw_st_info_or_error))
         {
           //log(en_log_level::info, "[{{status.name}}] {{sinput.name}} -> {{transition.new_status.name}}", in, info, nw_st_info);
           {% for action in transition.actions -%}
-          impl::act_{{action}}(this->info, in, *nw_st_info);
+          impl::act::{{action}}(this->info, in, *nw_st_info);
           {% endfor %}
           return std::make_shared<{{transition.new_status.name}}>(*nw_st_info);
         } else if(auto nw_st_info = std::get_if<StError>(&nw_st_info_or_error)){
@@ -84,10 +84,10 @@ SState {{status.name}}::input(const In{{ input| ToCamel}}& in) {
             return std::make_shared<error>(*nw_st_info);
         }
         {% else %}
-        auto nw_st_info = impl::transition_2error(this->info, in);
+        auto nw_st_info = impl::trans::to_error(this->info, in);
         //log(en_log_level::info, "[{{status.name}}] {{sinput.name}} -> {{transition.new_status.name}}", in, info, nw_st_info);
         {% for action in transition.actions -%}
-        impl::act_{{action}}(this->info, in, nw_st_info);
+        impl::act::{{action}}(this->info, in, nw_st_info);
         {% endfor %}
         return std::make_shared<{{transition.new_status.name}}>(nw_st_info);
         {% endif %}
@@ -98,7 +98,7 @@ SState {{status.name}}::input(const In{{ input| ToCamel}}& in) {
       {% endfor %}
   } catch (...) {}
 
-  auto nw_st_info = impl::transition_2error(this->info, in);
+  auto nw_st_info = impl::trans::to_error(this->info, in);
   //log(en_log_level::critic, "[{{status.name}}] {{input}} error/default -> error", in, info, nw_st_info);
   return std::make_shared<error>(nw_st_info);
 }

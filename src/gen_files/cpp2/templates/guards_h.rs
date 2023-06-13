@@ -14,12 +14,14 @@ pub(crate) fn t() -> &'static str {
 
 namespace fsm_{{in_file.stem_name}} {
     namespace impl {
+    struct guard {      //  struct instead of namespace, trick to detect dead code
   
     {% for gi in guard_from_input -%}
-    bool is_{{gi.guard}}(const St{{ gi.from | ToCamel }}& /*from*/, const In{{ gi.input  | ToCamel }}& /*{{gi.input}}*/);
+    static bool is_{{gi.guard}}(const St{{ gi.from | ToCamel }}& /*from*/, const In{{ gi.input  | ToCamel }}& /*{{gi.input}}*/);
     {% endfor -%}
     {{""}}
 
+    };  //  struct guard
     } // namespace impl
 } // namespace {{in_file.stem_name}}
 

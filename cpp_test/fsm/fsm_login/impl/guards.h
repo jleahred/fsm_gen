@@ -3,7 +3,7 @@
 //  This file will not be updated by generator
 //  It's created just the first time as a reference
 //
-//    generated on 2023-06-12 21:01:03
+//    generated on 2023-06-13 20:58:55
 
 
 #pragma once
@@ -13,17 +13,19 @@
 
 namespace fsm_login {
     namespace impl {
+    struct guard {      //  struct instead of namespace, trick to detect dead code
   
-    bool is_hia(const StTesting& /*from*/, const InHeartbeat& /*heartbeat*/);
-    bool is_hia(const StTesting& /*from*/, const InRqKey& /*rq_key*/);
-    bool is_hia(const StTesting& /*from*/, const InRqLogin& /*rq_login*/);
-    bool is_hia(const StTesting& /*from*/, const InRqLogout& /*rq_logout*/);
-    bool is_hia(const StTesting& /*from*/, const InTimer& /*timer*/);
-    bool is_ho(const StTesting& /*from*/, const InRqKey& /*rq_key*/);
-    bool is_timeout(const StLogin& /*from*/, const InTimer& /*timer*/);
-    bool is_timeout(const StWLogin& /*from*/, const InTimer& /*timer*/);
+    static bool is_hia(const StTesting& /*from*/, const InHeartbeat& /*heartbeat*/);
+    static bool is_hia(const StTesting& /*from*/, const InRqKey& /*rq_key*/);
+    static bool is_hia(const StTesting& /*from*/, const InRqLogin& /*rq_login*/);
+    static bool is_hia(const StTesting& /*from*/, const InRqLogout& /*rq_logout*/);
+    static bool is_hia(const StTesting& /*from*/, const InTimer& /*timer*/);
+    static bool is_ho(const StTesting& /*from*/, const InRqKey& /*rq_key*/);
+    static bool is_timeout(const StLogin& /*from*/, const InTimer& /*timer*/);
+    static bool is_timeout(const StWLogin& /*from*/, const InTimer& /*timer*/);
     
 
+    };  //  struct guard
     } // namespace impl
 } // namespace login
 

@@ -31,6 +31,7 @@ namespace fsm_{{in_file.stem_name}} {
       {% endfor -%}
       {{""}}
 
+    
     //  usings
     {% for input in inputs -%}
     using In{{input  | ToCamel }} = Provisional_In{{input  | ToCamel }};
@@ -38,6 +39,14 @@ namespace fsm_{{in_file.stem_name}} {
     {{""}}
 
 
+    //  transformers types
+    namespace transf {
+      {% for t in transformers -%}
+      struct {{t | ToCamel }} {};
+      {% endfor -%}
+      {{""}}
+    }
+  
 } // namespace {{in_file.stem_name}}
 
 "#

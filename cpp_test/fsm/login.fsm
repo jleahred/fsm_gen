@@ -2,31 +2,31 @@
 //  on server side
 
 [init]
-    rq_key          ->  w_login     /   send_key        //  this is a comment
-    timer           ->  init
+    rq_key              ->  w_login     /   send_key        //  this is a comment
+    timer               ->  init
 
 [w_login]
-    rq_login        ->  login       /   send_login
+    rq_login            ->  login       /   send_login
     timer
-        & timeout   ->  error
-                    ->  w_login
+        & timeout       ->  error
+                        ->  w_login
 [login]
-    rq_logout       ->  logout      /   send_logout
-    heartbeat       ->  login       /   update_hb
+    rq_logout           ->  logout      /   send_logout
+    heartbeat           ->  login       /   update_hb
     timer
-        & timeout   ->  logout
-                    ->  login
+        & timeout       ->  logout
+                        ->  login
 
 [logout]
-    timer           ->  logout
-    _               ->  testing
+    timer               ->  logout
+    _                   ->  testing     /   send_logout
 
 [error]
-    _               ->  error
+    _                   ->  error
 
 
 [testing]
-    rq_key  & ho    ->  logout
-                    ->  testing
-    _     & hia     ->  login
-                    ->  init
+    rq_key  & ho        ->  logout
+                        ->  testing
+    _     & hia         ->  login
+                        ->  init

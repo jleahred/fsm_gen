@@ -1,8 +1,7 @@
 pub(crate) fn t() -> &'static str {
     r#"
-//  Code generated automatically to be filled manually
-//  This file will not be updated by generator
-//  It's created just the first time as a reference
+//  Code generated automatically
+//  DO NOT modif. It will be rewritten on each generation
 //
 //    generated on {{gen_time}}
 

@@ -15,7 +15,15 @@ namespace fsm_{{in_file.stem_name}} {
   //  status info types
 
   {% for st in ast -%}
-  struct st_{{st.name}}_t;
+  struct {{st.name | ToCamel}};
+  {% endfor -%}
+  {{""}}
+
+
+  //  transformers types
+
+  {% for t in transformers -%}
+  struct {{t | ToCamel }};
   {% endfor -%}
   {{""}}
 

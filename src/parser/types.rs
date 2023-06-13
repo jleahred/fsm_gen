@@ -1,7 +1,7 @@
 mod expand_ast;
 
 use idata::cont::IVec;
-use peg::parser;
+// use peg::parser;
 use serde::{Deserialize, Serialize};
 use std::collections::{BTreeMap, BTreeSet};
 use std::result::Result;
@@ -90,6 +90,10 @@ pub(crate) struct InputName(pub(crate) String);
 pub(crate) struct GuardName(pub(crate) String);
 #[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Ord, Eq, Clone, Hash)]
 pub(crate) struct ActionName(pub(crate) String);
+
+#[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Ord, Eq, Clone, Hash)]
+pub(crate) struct Transformer(pub(crate) String);
+
 #[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Ord, Eq, Clone)]
 pub(crate) struct StatusRef {
     pub(crate) name: StatusName,
@@ -112,13 +116,21 @@ pub(crate) struct Input_ {
 pub(crate) struct Guard {
     pub(crate) name: GuardName,
     pub(crate) positiv: bool,
+    pub(crate) transformer: Option<Transformer>,
+}
+
+#[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Ord, Eq, Clone)]
+pub(crate) struct Action {
+    pub(crate) name: ActionName,
+    pub(crate) transformer: Option<Transformer>,
 }
 
 #[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Ord, Eq, Clone)]
 pub(crate) struct Transition {
     pub(crate) guards: Vec<Guard>,
-    pub(crate) actions: Vec<ActionName>,
+    pub(crate) actions: Vec<Action>,
     pub(crate) new_status: StatusRef,
+    pub(crate) transformer: Option<Transformer>,
 }
 
 fn get_status(ast: &Ast) -> (BTreeSet<StatusName>, BTreeMap<StatusName, usize>) {
@@ -140,68 +152,65 @@ fn get_status(ast: &Ast) -> (BTreeSet<StatusName>, BTreeMap<StatusName, usize>) 
     (status, status_refs)
 }
 
-parser! {
-    grammar fsm_peg() for str {
-        pub(crate)  rule  compile() -> Ast
-            =  st:status()+ { Ast(st) }
+// parser! {
+//     grammar fsm_peg() for str {
+//         pub(crate)  rule  compile() -> Ast
+//             =  st:status()+ { Ast(st) }
 
-        rule status() -> Status
-            =   __()  "["  name: status_name()  "]"  __()
-                inputs:input()+  __()
-                { Status { name, inputs: inputs } }
+//         rule status() -> Status
+//             =   __()  "["  name: status_name()  "]"  __()
+//                 inputs:input()+  __()
+//                 { Status { name, inputs: inputs } }
 
-        rule input() -> Input_
-            =   _()  name:InputName()  _()  endl()?   transitions:transition()+  __()
-                { Input_{name, transitions} }
+//         rule input() -> Input_
+//             =   _()  name:InputName()  _()  endl()?   transitions:transition()+  __()
+//                 { Input_{name, transitions} }
 
-        rule transition() -> Transition
-            =   _()  guards:guard()*  _() "->"  _()  new_status:status_ref()  _()  actions:actions()  __endl()
-                { Transition {guards, actions, new_status} }
+//         rule transition() -> Transition
+//             =   _()  guards:guard()*  _() "->"  _()  new_status:status_ref()  _()  actions:actions()  __endl()
+//                 { Transition {guards, actions, new_status} }
 
+//         rule guard() -> Guard
+//             =   _ "&" _  "!" name:guard_name()   {  Guard{name, positiv: false}  }
+//             /   _ "&" _      name:guard_name()   {  Guard{name, positiv: true }  }
 
-        rule guard() -> Guard
-            =   _ "&" _  "!" name:guard_name()   {  Guard{name, positiv: false}  }
-            /   _ "&" _      name:guard_name()   {  Guard{name, positiv: true }  }
+//         rule actions() -> Vec<ActionName>
+//             =   "/"  actions:action_name()*     { actions }
+//             /                                   { vec![]  }
 
+//         rule action_name() -> ActionName
+//             =   _()  name:id()
+//                 {  ActionName(name.to_string())  }
+//         rule guard_name() -> GuardName
+//             =   name:id()
+//                 {  GuardName(name.to_string())  }
+//         rule InputName() -> InputName
+//             =   name:id()
+//                 {  InputName(name.to_string())  }
 
-        rule actions() -> Vec<ActionName>
-            =   "/"  actions:action_name()*     { actions }
-            /                                   { vec![]  }
+//         rule status_name() -> StatusName
+//             =   name:id()
+//                 {  StatusName(name.to_string())  }
+//         rule status_ref() -> StatusRef
+//             =   name:id() pos:position!()
+//                 {  StatusRef{name: StatusName(name.to_string()), pos}  }
 
-        rule action_name() -> ActionName
-            =   _()  name:id()
-                {  ActionName(name.to_string())  }
-        rule guard_name() -> GuardName
-            =   name:id()
-                {  GuardName(name.to_string())  }
-        rule InputName() -> InputName
-            =   name:id()
-                {  InputName(name.to_string())  }
+//         rule id()    ->  String
+//             =   id:$( ['a'..='z' | 'Z'..='Z' | '_']
+//                       ['a'..='z' | 'Z'..='Z' | '_' | '0'..='9']*)
+//                 { id.to_string() }
 
-        rule status_name() -> StatusName
-            =   name:id()
-                {  StatusName(name.to_string())  }
-        rule status_ref() -> StatusRef
-            =   name:id() pos:position!()
-                {  StatusRef{name: StatusName(name.to_string()), pos}  }
+//         rule _()        = quiet!{[' ' | '\t']*}
+//         rule comment()  = "//" (!endl() [_])*
+//         rule __()       = ([' ' | '\t' | '\n'] / comment())*
+//         rule __endl()   = _() endl()   __()
+//                         / _() comment()   __()
 
-        rule id()    ->  String
-            =   id:$( ['a'..='z' | 'Z'..='Z' | '_']
-                      ['a'..='z' | 'Z'..='Z' | '_' | '0'..='9']*)
-                { id.to_string() }
-
-        rule _()        = quiet!{[' ' | '\t']*}
-        rule comment()  = "//" (!endl() [_])*
-        rule __()       = ([' ' | '\t' | '\n'] / comment())*
-        rule __endl()   = _() endl()   __()
-                        / _() comment()   __()
-
-
-        rule _endls()   = quiet!{ [' ' | '\t' | '\n']* }
-        rule endl()     = quiet!{ ['\n'] }
-        rule endls()    = quiet!{ endl()* }
-    }
-}
+//         rule _endls()   = quiet!{ [' ' | '\t' | '\n']* }
+//         rule endl()     = quiet!{ ['\n'] }
+//         rule endls()    = quiet!{ endl()* }
+//     }
+// }
 
 fn get_line_from_pos(txt: &str, pos: usize) -> String {
     let res = txt

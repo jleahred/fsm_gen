@@ -60,7 +60,7 @@ pub(super) fn generate_files(
         templates::guards_cpp::t(),
     )?;
 
-    gen_file_if_missing(
+    generate_file(
         context,
         &guards_h::get_full_name(context),
         templates::guards_h::t(),
@@ -84,7 +84,7 @@ pub(super) fn generate_files(
         templates::transitions_cpp::t(),
     )?;
 
-    gen_file_if_missing(
+    generate_file(
         context,
         &transitions_h::get_full_name(context),
         templates::transitions_h::t(),

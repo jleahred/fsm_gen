@@ -1,7 +1,7 @@
 
 // clang-format off
 
-//  generated automatically  2023-06-13 20:58:55
+//  generated automatically  2023-06-14 00:06:31
 //  do not modify it manually
 
 #include "login.h"
@@ -161,7 +161,7 @@ SState init::input(const InRqKey& in) {
         if(auto nw_st_info = std::get_if<StWLogin>(&nw_st_info_or_error))
         {
           //log(en_log_level::info, "[init] rq_key -> w_login", in, info, nw_st_info);
-          impl::act::send_key(this->info, in, *nw_st_info);
+          impl::act::send_key(*nw_st_info);  
           
           return std::make_shared<w_login>(*nw_st_info);
         } else if(auto nw_st_info = std::get_if<StError>(&nw_st_info_or_error)){
@@ -243,7 +243,7 @@ SState w_login::input(const InRqLogin& in) {
         if(auto nw_st_info = std::get_if<StLogin>(&nw_st_info_or_error))
         {
           //log(en_log_level::info, "[w_login] rq_login -> login", in, info, nw_st_info);
-          impl::act::send_login(this->info, in, *nw_st_info);
+          impl::act::send_login(*nw_st_info);  
           
           return std::make_shared<login>(*nw_st_info);
         } else if(auto nw_st_info = std::get_if<StError>(&nw_st_info_or_error)){
@@ -310,7 +310,7 @@ SState login::input(const InHeartbeat& in) {
         if(auto nw_st_info = std::get_if<StLogin>(&nw_st_info_or_error))
         {
           //log(en_log_level::info, "[login] heartbeat -> login", in, info, nw_st_info);
-          impl::act::update_hb(this->info, in, *nw_st_info);
+          impl::act::update_hb(*nw_st_info);  
           
           return std::make_shared<login>(*nw_st_info);
         } else if(auto nw_st_info = std::get_if<StError>(&nw_st_info_or_error)){
@@ -351,7 +351,7 @@ SState login::input(const InRqLogout& in) {
         if(auto nw_st_info = std::get_if<StLogout>(&nw_st_info_or_error))
         {
           //log(en_log_level::info, "[login] rq_logout -> logout", in, info, nw_st_info);
-          impl::act::send_logout(this->info, in, *nw_st_info);
+          impl::act::send_logout(*nw_st_info);  
           
           return std::make_shared<logout>(*nw_st_info);
         } else if(auto nw_st_info = std::get_if<StError>(&nw_st_info_or_error)){
@@ -416,6 +416,7 @@ SState logout::input(const InHeartbeat& in) {
         if(auto nw_st_info = std::get_if<StTesting>(&nw_st_info_or_error))
         {
           //log(en_log_level::info, "[logout] heartbeat -> testing", in, info, nw_st_info);
+          impl::act::send_logout(*nw_st_info);  
           
           return std::make_shared<testing>(*nw_st_info);
         } else if(auto nw_st_info = std::get_if<StError>(&nw_st_info_or_error)){
@@ -440,6 +441,7 @@ SState logout::input(const InRqKey& in) {
         if(auto nw_st_info = std::get_if<StTesting>(&nw_st_info_or_error))
         {
           //log(en_log_level::info, "[logout] rq_key -> testing", in, info, nw_st_info);
+          impl::act::send_logout(*nw_st_info);  
           
           return std::make_shared<testing>(*nw_st_info);
         } else if(auto nw_st_info = std::get_if<StError>(&nw_st_info_or_error)){
@@ -464,6 +466,7 @@ SState logout::input(const InRqLogin& in) {
         if(auto nw_st_info = std::get_if<StTesting>(&nw_st_info_or_error))
         {
           //log(en_log_level::info, "[logout] rq_login -> testing", in, info, nw_st_info);
+          impl::act::send_logout(*nw_st_info);  
           
           return std::make_shared<testing>(*nw_st_info);
         } else if(auto nw_st_info = std::get_if<StError>(&nw_st_info_or_error)){
@@ -488,6 +491,7 @@ SState logout::input(const InRqLogout& in) {
         if(auto nw_st_info = std::get_if<StTesting>(&nw_st_info_or_error))
         {
           //log(en_log_level::info, "[logout] rq_logout -> testing", in, info, nw_st_info);
+          impl::act::send_logout(*nw_st_info);  
           
           return std::make_shared<testing>(*nw_st_info);
         } else if(auto nw_st_info = std::get_if<StError>(&nw_st_info_or_error)){
@@ -528,6 +532,7 @@ SState logout::input(const InTimer& in) {
         if(auto nw_st_info = std::get_if<StTesting>(&nw_st_info_or_error))
         {
           //log(en_log_level::info, "[logout] timer -> testing", in, info, nw_st_info);
+          impl::act::send_logout(*nw_st_info);  
           
           return std::make_shared<testing>(*nw_st_info);
         } else if(auto nw_st_info = std::get_if<StError>(&nw_st_info_or_error)){

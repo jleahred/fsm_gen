@@ -14,7 +14,7 @@ pub(crate) struct GuardInput {
 
 #[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Ord, Eq, Clone)]
 pub(crate) struct ActionInput {
-    action: parser::ActionName,
+    action: parser::Action,
     input: parser::InputName,
 }
 
@@ -25,12 +25,13 @@ pub(crate) struct TransitionToFromInput {
     input: parser::InputName,
 }
 
+#[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Ord, Eq, Clone, Hash)]
+pub(crate) struct StatusNameOrTransform(pub(crate) String);
+
 #[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Ord, Eq, Clone)]
-pub(crate) struct ActionFromInputTo {
+pub(crate) struct ActionTo {
     action: parser::ActionName,
-    from: parser::StatusName,
-    input: parser::InputName,
-    to: parser::StatusName,
+    to: StatusNameOrTransform,
 }
 
 #[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Ord, Eq, Clone)]
@@ -45,11 +46,12 @@ pub(crate) struct Context {
     pub(crate) ast: parser::Ast,
     pub(crate) inputs: Vec<parser::InputName>,
     pub(crate) guard_inputs: Vec<GuardInput>,
-    pub(crate) action_init_param_to: Vec<ActionFromInputTo>,
+    pub(crate) action_to: Vec<ActionTo>,
     pub(crate) action_inputs: Vec<ActionInput>,
     pub(crate) guard_from_input: Vec<GuardFromInput>,
     pub(crate) transition_from_input_to: Vec<TransitionToFromInput>,
     pub(crate) transition_from_input_to_error: Vec<TransitionToFromInput>,
+    pub(crate) transformers: Vec<parser::Transformer>,
     pub(crate) gen_time: String,
     pub(crate) in_file: InFile,
 }
@@ -60,20 +62,22 @@ impl Context {
         let inputs = get_inputs(&ast);
         let guard_inputs = get_guard_inputs(&ast);
         let action_inputs = get_action_inputs(&ast);
-        let action_init_param_to = get_action_from_input_to(&ast);
+        let action_to = get_action_from_input_to(&ast);
         let guard_from_input = get_guard_from_input(&ast);
         let transition_from_input_to = get_transition_from_input_to(&ast);
         let transition_from_input_to_error = get_transition_from_input_to_error(&ast);
+        let transformers = get_transformers(&ast);
 
         Ok(Context {
             ast,
             inputs,
             guard_inputs,
             action_inputs,
-            action_init_param_to,
+            action_to,
             guard_from_input,
             transition_from_input_to,
             transition_from_input_to_error,
+            transformers,
             gen_time: Local::now().format("%Y-%m-%d %H:%M:%S").to_string(),
             in_file: InFile { dir, stem_name },
         })

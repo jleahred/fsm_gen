@@ -4,7 +4,7 @@
 //  forward declaration of types
 //
 //  do not modify it manually!!!
-//    generated on 2023-06-13 20:58:55
+//    generated on 2023-06-14 00:06:31
 
 #pragma once
 
@@ -13,12 +13,17 @@ namespace fsm_login {
 
   //  status info types
 
-  struct st_init_t;
-  struct st_w_login_t;
-  struct st_login_t;
-  struct st_logout_t;
-  struct st_error_t;
-  struct st_testing_t;
+  struct Init;
+  struct WLogin;
+  struct Login;
+  struct Logout;
+  struct Error;
+  struct Testing;
+  
+
+
+  //  transformers types
+
   
 
 } // namespace login

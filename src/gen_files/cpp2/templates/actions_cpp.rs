@@ -16,8 +16,8 @@ namespace fsm_{{in_file.stem_name}} {
     namespace impl {
 
     //  actions
-    {% for ai in action_init_param_to -%}
-    void act::{{ai.action}}(const St{{ ai.from  | ToCamel }}& /*from*/, const In{{ ai.input  | ToCamel }}& /*{{ai.input}}*/, const St{{ ai.to  | ToCamel }}& /*to*/)
+    {% for ai in action_to -%}
+    void act::{{ai.action}}(const St{{ ai.to  | ToCamel }}& /*to*/)
     {
     }
     {% endfor -%}

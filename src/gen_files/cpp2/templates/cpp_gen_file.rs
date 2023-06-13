@@ -76,7 +76,11 @@ SState {{status.name}}::input(const In{{ input| ToCamel}}& in) {
         {
           //log(en_log_level::info, "[{{status.name}}] {{sinput.name}} -> {{transition.new_status.name}}", in, info, nw_st_info);
           {% for action in transition.actions -%}
-          impl::act::{{action}}(this->info, in, *nw_st_info);
+          {% if not action.transformer -%}
+          impl::act::{{action.name}}(*nw_st_info);  
+          {% else -%}
+          impl::act::{{action.name}}(transf::{{action.transformer | ToCamel}}{*nw_st_info});
+          {% endif -%}
           {% endfor %}
           return std::make_shared<{{transition.new_status.name}}>(*nw_st_info);
         } else if(auto nw_st_info = std::get_if<StError>(&nw_st_info_or_error)){
@@ -87,8 +91,12 @@ SState {{status.name}}::input(const In{{ input| ToCamel}}& in) {
         auto nw_st_info = impl::trans::to_error(this->info, in);
         //log(en_log_level::info, "[{{status.name}}] {{sinput.name}} -> {{transition.new_status.name}}", in, info, nw_st_info);
         {% for action in transition.actions -%}
-        impl::act::{{action}}(this->info, in, nw_st_info);
-        {% endfor %}
+        {% if not action.transformer -%}
+        impl::act::{{action.name}}(nw_st_info);
+        {% else -%}
+        impl::act::{{action.name}}(transf::{{action.transformer | ToCamel}}{nw_st_info});
+        {% endif -%}
+      {% endfor %}
         return std::make_shared<{{transition.new_status.name}}>(nw_st_info);
         {% endif %}
       }

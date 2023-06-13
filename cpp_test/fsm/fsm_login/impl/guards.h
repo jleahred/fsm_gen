@@ -1,9 +1,8 @@
 
-//  Code generated automatically to be filled manually
-//  This file will not be updated by generator
-//  It's created just the first time as a reference
+//  Code generated automatically
+//  DO NOT modif. It will be rewritten on each generation
 //
-//    generated on 2023-06-13 20:58:55
+//    generated on 2023-06-14 00:06:31
 
 
 #pragma once

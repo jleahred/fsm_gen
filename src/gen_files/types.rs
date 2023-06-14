@@ -1,9 +1,10 @@
 mod support;
 
-use crate::parser::types as parser;
+use crate::parser::types::{self as parser, StatusName, TransformerName};
 use chrono::prelude::*;
 use serde::{Deserialize, Serialize};
-use std::path::PathBuf;
+use std::collections::BTreeMap;
+use std::{collections::BTreeSet, path::PathBuf};
 use support::*;
 
 #[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Ord, Eq, Clone)]
@@ -25,13 +26,12 @@ pub(crate) struct TransitionToFromInput {
     input: parser::InputName,
 }
 
-#[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Ord, Eq, Clone, Hash)]
-pub(crate) struct StatusNameOrTransform(pub(crate) String);
-
 #[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Ord, Eq, Clone)]
-pub(crate) struct ActionTo {
-    action: parser::ActionName,
-    to: StatusNameOrTransform,
+pub(crate) struct ActionFromInputTo {
+    action: parser::Action,
+    from: parser::StatusName,
+    input: parser::InputName,
+    to: StatusName,
 }
 
 #[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Ord, Eq, Clone)]
@@ -41,17 +41,52 @@ pub(crate) struct GuardFromInput {
     input: parser::InputName,
 }
 
+#[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Ord, Eq, Clone)]
+pub(crate) struct ParamName(String);
+// #[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Ord, Eq, Clone)]
+// pub(crate) struct Transformer {
+//     name: parser::TransformerName,
+//     params: Vec<ParamName>,
+// }
+#[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Ord, Eq, Clone)]
+pub(crate) enum ParamKind {
+    Status,
+    Input,
+}
+
+#[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Ord, Eq, Clone)]
+pub(crate) struct Param {
+    name: ParamName,
+    kind: ParamKind,
+}
+
+#[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Ord, Eq, Clone)]
+pub(crate) struct Params(Vec<Param>);
+
+// #[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Ord, Eq, Clone)]
+// pub(crate) struct Transformer {
+//     name: TransformerName,
+//     params: Vec<Param>,
+// }
+
+#[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Ord, Eq, Clone)]
+pub(crate) struct Transformers {
+    actions: BTreeMap<TransformerName, Vec<Params>>,
+    guards: BTreeMap<TransformerName, Vec<Params>>,
+    transitions: BTreeMap<TransformerName, Vec<Params>>,
+}
+
 #[derive(Serialize, Deserialize)]
 pub(crate) struct Context {
     pub(crate) ast: parser::Ast,
     pub(crate) inputs: Vec<parser::InputName>,
     pub(crate) guard_inputs: Vec<GuardInput>,
-    pub(crate) action_to: Vec<ActionTo>,
+    pub(crate) action_init_param_to: Vec<ActionFromInputTo>,
     pub(crate) action_inputs: Vec<ActionInput>,
     pub(crate) guard_from_input: Vec<GuardFromInput>,
     pub(crate) transition_from_input_to: Vec<TransitionToFromInput>,
     pub(crate) transition_from_input_to_error: Vec<TransitionToFromInput>,
-    pub(crate) transformers: Vec<parser::Transformer>,
+    pub(crate) transformers: Transformers,
     pub(crate) gen_time: String,
     pub(crate) in_file: InFile,
 }
@@ -62,7 +97,7 @@ impl Context {
         let inputs = get_inputs(&ast);
         let guard_inputs = get_guard_inputs(&ast);
         let action_inputs = get_action_inputs(&ast);
-        let action_to = get_action_from_input_to(&ast);
+        let action_init_param_to = get_action_from_input_to(&ast);
         let guard_from_input = get_guard_from_input(&ast);
         let transition_from_input_to = get_transition_from_input_to(&ast);
         let transition_from_input_to_error = get_transition_from_input_to_error(&ast);
@@ -73,7 +108,7 @@ impl Context {
             inputs,
             guard_inputs,
             action_inputs,
-            action_to,
+            action_init_param_to,
             guard_from_input,
             transition_from_input_to,
             transition_from_input_to_error,

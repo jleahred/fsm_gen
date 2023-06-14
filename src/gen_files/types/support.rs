@@ -1,9 +1,7 @@
 use super::*;
-use crate::parser::types::{self as parser, Transformer};
+use crate::parser::types::{self as parser};
 
 pub(crate) fn get_inputs(ast: &parser::Ast) -> Vec<parser::InputName> {
-    use std::collections::BTreeSet;
-
     let input_set = {
         let mut input_set = BTreeSet::new();
         for st in &ast.0 {
@@ -23,8 +21,6 @@ pub(crate) fn get_inputs(ast: &parser::Ast) -> Vec<parser::InputName> {
 }
 
 pub(crate) fn get_guard_inputs(ast: &parser::Ast) -> Vec<GuardInput> {
-    use std::collections::BTreeSet;
-
     let set = {
         let mut set = BTreeSet::new();
         for st in &ast.0 {
@@ -49,8 +45,6 @@ pub(crate) fn get_guard_inputs(ast: &parser::Ast) -> Vec<GuardInput> {
 }
 
 pub(crate) fn get_action_inputs(ast: &parser::Ast) -> Vec<ActionInput> {
-    use std::collections::BTreeSet;
-
     let set = {
         let mut set = BTreeSet::new();
         for st in &ast.0 {
@@ -74,41 +68,33 @@ pub(crate) fn get_action_inputs(ast: &parser::Ast) -> Vec<ActionInput> {
     })
 }
 
-pub(crate) fn get_action_from_input_to(ast: &parser::Ast) -> Vec<ActionTo> {
-    use std::collections::BTreeSet;
-
-    let set: BTreeSet<ActionTo> = {
-        let mut set = BTreeSet::new();
+pub(crate) fn get_action_from_input_to(ast: &parser::Ast) -> Vec<ActionFromInputTo> {
+    let action_set: BTreeSet<ActionFromInputTo> = {
+        let mut action_set = BTreeSet::new();
         for st in &ast.0 {
             for input in &st.inputs {
                 for trans in &input.transitions {
                     for action in &trans.actions {
-                        if let Some(transformer) = action.transformer.clone() {
-                            set.insert(ActionTo {
-                                action: action.name.clone(),
-                                to: StatusNameOrTransform(transformer.0.to_owned()),
-                            });
-                        } else {
-                            set.insert(ActionTo {
-                                action: action.name.clone(),
-                                to: StatusNameOrTransform(trans.new_status.name.0.clone()),
-                            });
-                        }
+                        action_set.insert(ActionFromInputTo {
+                            action: action.clone(),
+                            from: st.name.clone(),
+                            input: input.name.clone(),
+                            to: trans.new_status.name.clone(),
+                        });
                     }
                 }
             }
         }
-        set
+        action_set
     };
-    set.iter().fold(vec![], |mut acc, ai| {
+
+    action_set.iter().fold(vec![], |mut acc, ai| {
         acc.push(ai.clone());
         acc
     })
 }
 
 pub(crate) fn get_guard_from_input(ast: &parser::Ast) -> Vec<GuardFromInput> {
-    use std::collections::BTreeSet;
-
     let set: BTreeSet<GuardFromInput> = {
         let mut set = BTreeSet::new();
         for st in &ast.0 {
@@ -134,8 +120,6 @@ pub(crate) fn get_guard_from_input(ast: &parser::Ast) -> Vec<GuardFromInput> {
 }
 
 pub(crate) fn get_transition_from_input_to(ast: &parser::Ast) -> Vec<TransitionToFromInput> {
-    use std::collections::BTreeSet;
-
     #[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Ord, Eq, Clone)]
     struct FromInput {
         from: parser::StatusName,
@@ -220,8 +204,6 @@ pub(crate) fn get_transition_from_input_to(ast: &parser::Ast) -> Vec<TransitionT
 }
 
 pub(crate) fn get_transition_from_input_to_error(ast: &parser::Ast) -> Vec<TransitionToFromInput> {
-    use std::collections::BTreeSet;
-
     #[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Ord, Eq, Clone)]
     struct FromInput {
         from: parser::StatusName,
@@ -300,35 +282,52 @@ pub(crate) fn get_dir_stem_name(orig_path: &PathBuf) -> Result<(String, String),
     ))
 }
 
-pub(crate) fn get_transformers(ast: &parser::Ast) -> Vec<Transformer> {
-    use std::collections::BTreeSet;
+pub(crate) fn get_transformers(ast: &parser::Ast) -> Transformers {
+    let mut transformers = Transformers {
+        actions: BTreeMap::new(),
+        guards: BTreeMap::new(),
+        transitions: BTreeMap::new(),
+    };
 
-    let set: BTreeSet<Transformer> = {
-        let mut set = BTreeSet::new();
-        for st in &ast.0 {
-            for input in &st.inputs {
-                for trans in &input.transitions {
-                    if let Some(t) = trans.transformer.clone() {
-                        set.insert(t);
+    for st in &ast.0 {
+        for input in &st.inputs {
+            for trans in &input.transitions {
+                if let Some(name) = trans.transformer_name.clone() {
+                    let params = vec![];
+                    transformers.transitions.insert(name, params);
+                }
+                for guard in &trans.guards {
+                    if let Some(name) = guard.transformer_name.clone() {
+                        let params = vec![];
+                        transformers.guards.insert(name, params);
                     }
-                    for guard in &trans.guards {
-                        if let Some(t) = guard.transformer.clone() {
-                            set.insert(t);
-                        }
-                    }
-                    for action in &trans.actions {
-                        if let Some(t) = action.transformer.clone() {
-                            set.insert(t);
-                        }
+                }
+                for action in &trans.actions {
+                    if let Some(name) = action.transformer_name.clone() {
+                        let params = vec![
+                            Param {
+                                name: ParamName(st.name.0.clone()),
+                                kind: ParamKind::Status,
+                            },
+                            Param {
+                                name: ParamName(input.name.0.clone()),
+                                kind: ParamKind::Input,
+                            },
+                            Param {
+                                name: ParamName(trans.new_status.name.0.clone()),
+                                kind: ParamKind::Status,
+                            },
+                        ];
+                        transformers
+                            .actions
+                            .entry(name)
+                            .or_insert(vec![])
+                            .push(Params(params));
                     }
                 }
             }
         }
-        set
-    };
+    }
 
-    set.iter().fold(vec![], |mut acc, ai| {
-        acc.push(ai.clone());
-        acc
-    })
+    transformers
 }

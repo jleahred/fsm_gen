@@ -92,7 +92,10 @@ pub(crate) struct GuardName(pub(crate) String);
 pub(crate) struct ActionName(pub(crate) String);
 
 #[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Ord, Eq, Clone, Hash)]
-pub(crate) struct Transformer(pub(crate) String);
+pub(crate) struct TransformerName(pub(crate) String);
+
+#[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Ord, Eq, Clone, Hash)]
+pub(crate) struct Param(pub(crate) String);
 
 #[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Ord, Eq, Clone)]
 pub(crate) struct StatusRef {
@@ -116,13 +119,13 @@ pub(crate) struct Input_ {
 pub(crate) struct Guard {
     pub(crate) name: GuardName,
     pub(crate) positiv: bool,
-    pub(crate) transformer: Option<Transformer>,
+    pub(crate) transformer_name: Option<TransformerName>,
 }
 
 #[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Ord, Eq, Clone)]
 pub(crate) struct Action {
     pub(crate) name: ActionName,
-    pub(crate) transformer: Option<Transformer>,
+    pub(crate) transformer_name: Option<TransformerName>,
 }
 
 #[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Ord, Eq, Clone)]
@@ -130,7 +133,7 @@ pub(crate) struct Transition {
     pub(crate) guards: Vec<Guard>,
     pub(crate) actions: Vec<Action>,
     pub(crate) new_status: StatusRef,
-    pub(crate) transformer: Option<Transformer>,
+    pub(crate) transformer_name: Option<TransformerName>,
 }
 
 fn get_status(ast: &Ast) -> (BTreeSet<StatusName>, BTreeMap<StatusName, usize>) {

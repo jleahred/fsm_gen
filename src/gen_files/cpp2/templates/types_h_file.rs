@@ -1,52 +1,62 @@
 pub(crate) fn t() -> &'static str {
     r#"
-//  Code generated automatically to be filled manually
-//  This file will not be updated by generator
-//  It's created just the first time as a reference
+//  Code generated automatically
+//  
+//  forward declaration of types
 //
-//
+//  do not modify it manually!!!
 //    generated on {{gen_time}}
-
 
 #pragma once
 
 
-// #include "types_forward.h"
-
 namespace fsm_{{in_file.stem_name}} {
 
-  //  status info types
+//  status info types
 
-  {% for st in ast -%}
-  struct St{{st.name | ToCamel}}{};
+{% for st in ast -%}
+struct St{{st.name | ToCamel}}{};
+{% endfor -%}
+{{""}}
+
+
+//  input types
+
+  //  provisinal code, delete it when replace the nexts usings
+    {% for input in inputs -%}
+    struct Provisional_In{{input | ToCamel }}{};
+    {% endfor -%}
+    {{""}}
+
+  
+  //  usings
+  {% for input in inputs -%}
+  using In{{input  | ToCamel }} = Provisional_In{{input  | ToCamel }};
   {% endfor -%}
   {{""}}
 
 
-  //  input types
+//  transformers types
+namespace transf {
+namespace act {
 
-    //  provisinal code, delete it when replace the nexts usings
-      {% for input in inputs -%}
-      struct Provisional_In{{input | ToCamel }}{};
-      {% endfor -%}
-      {{""}}
+{% for k, vparams in transformers.actions -%}
+struct {{k | ToCamel -}} {
+  {% for vp in vparams -%} 
+    {{k | ToCamel -}}({% for p in vp -%} 
+    const {% if p.kind == "Status" -%}
+    St{{p.name | ToCamel -}}& {% else -%}
+    In{{p.name | ToCamel -}}&{% endif -%}{% if not loop.last%}, {% endif -%}{% endfor -%}
+  ) {};
+  {% endfor -%}
+};
+{% endfor -%}
+{{""}}
 
-    
-    //  usings
-    {% for input in inputs -%}
-    using In{{input  | ToCamel }} = Provisional_In{{input  | ToCamel }};
-    {% endfor -%}
-    {{""}}
+}   //  namespace act
+} //  namespace transf
 
 
-    //  transformers types
-    namespace transf {
-      {% for t in transformers -%}
-      struct {{t | ToCamel }} {};
-      {% endfor -%}
-      {{""}}
-    }
-  
 } // namespace {{in_file.stem_name}}
 
 "#

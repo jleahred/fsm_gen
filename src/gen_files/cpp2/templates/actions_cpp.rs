@@ -16,16 +16,19 @@ namespace fsm_{{in_file.stem_name}} {
     namespace impl {
     
         //  actions
+
         {% for ai in action_init_param_to -%}
-        {% if not ai.action.transformer_name -%}
-        void act::{{ai.action.name}}(const St{{ ai.from | ToCamel }}& /*from*/, const In{{ai.input | ToCamel }}& /*{{ai.input}}*/, const St{{ ai.to  | ToCamel }}& /*to*/)
+        static void act::{{ai.action.name}}(const St{{ ai.from | ToCamel }}& from, const In{{ai.input | ToCamel }}& {{ai.input}}, const St{{ ai.to  | ToCamel }}& to)
         {
         }
-        {% else -%}
-        void act::{{ai.action.name}}(const transf::act::{{ai.action.transformer_name | ToCamel}}& /*p*/)
+        {% endfor -%}
+        {{""}}
+    
+        //  with transformers
+        {% for at in action_transformers -%}
+        static void act::{{at.action_name}}(const transf::{{at.transformer_name | ToCamel}}& /*{{at.transformer_name}}*/)
         {
         }
-        {% endif -%}
         {% endfor -%}
         {{""}}
     

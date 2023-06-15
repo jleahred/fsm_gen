@@ -79,7 +79,7 @@ try {
         {% if not action.transformer_name -%}
         impl::act::{{action.name}}(this->info, in, *nw_st_info);
         {% else -%}
-        impl::act::{{action.name}}(transf::act::{{action.transformer_name | ToCamel}}{this->info, in, *nw_st_info});
+        impl::act::{{action.name}}(transf::{{action.transformer_name | ToCamel}}{this->info, in, *nw_st_info});
         {% endif -%}
         {% endfor %}
         return std::make_shared<{{transition.new_status.name}}>(*nw_st_info);
@@ -94,7 +94,7 @@ try {
       {% if not action.transformer_name -%}
       impl::act::{{action.name}}(this->info, in, nw_st_info);
       {% else -%}
-      impl::act::{{action.name}}(transf::act::{{action.transformer_name | ToCamel}}{this->info, in, nw_st_info});
+      impl::act::{{action.name}}(transf::{{action.transformer_name | ToCamel}}{this->info, in, nw_st_info});
       {% endif -%}
     {% endfor %}
       return std::make_shared<{{transition.new_status.name}}>(nw_st_info);

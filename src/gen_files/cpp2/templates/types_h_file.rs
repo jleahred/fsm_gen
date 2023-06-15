@@ -37,9 +37,8 @@ struct St{{st.name | ToCamel}}{};
 
 //  transformers types
 namespace transf {
-namespace act {
 
-{% for k, vparams in transformers.actions -%}
+{% for k, vparams in transformers -%}
 struct {{k | ToCamel -}} {
   {% for vp in vparams -%} 
     {{k | ToCamel -}}({% for p in vp -%} 
@@ -52,7 +51,6 @@ struct {{k | ToCamel -}} {
 {% endfor -%}
 {{""}}
 
-}   //  namespace act
 } //  namespace transf
 
 

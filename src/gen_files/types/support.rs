@@ -297,23 +297,27 @@ pub(crate) fn get_dir_stem_name(orig_path: &PathBuf) -> Result<(String, String),
 }
 
 pub(crate) fn get_transformers(ast: &parser::Ast) -> Transformers {
-    let mut transformers = Transformers {
-        actions: BTreeMap::new(),
-        guards: BTreeMap::new(),
-        transitions: BTreeMap::new(),
-    };
+    let mut transformers = Transformers(BTreeMap::new());
 
     for st in &ast.0 {
         for input in &st.inputs {
             for trans in &input.transitions {
                 if let Some(name) = trans.transformer_name.clone() {
                     let params = vec![];
-                    transformers.transitions.insert(name, params);
+                    transformers
+                        .0
+                        .entry(name)
+                        .or_insert(BTreeSet::new())
+                        .insert(Params(params));
                 }
                 for guard in &trans.guards {
                     if let Some(name) = guard.transformer_name.clone() {
                         let params = vec![];
-                        transformers.guards.insert(name, params);
+                        transformers
+                            .0
+                            .entry(name)
+                            .or_insert(BTreeSet::new())
+                            .insert(Params(params));
                     }
                 }
                 for action in &trans.actions {
@@ -333,10 +337,10 @@ pub(crate) fn get_transformers(ast: &parser::Ast) -> Transformers {
                             },
                         ];
                         transformers
-                            .actions
+                            .0
                             .entry(name)
-                            .or_insert(vec![])
-                            .push(Params(params));
+                            .or_insert(BTreeSet::new())
+                            .insert(Params(params));
                     }
                 }
             }

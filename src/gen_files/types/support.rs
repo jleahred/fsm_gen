@@ -68,13 +68,13 @@ pub(crate) fn get_action_inputs(ast: &parser::Ast) -> Vec<ActionInput> {
     })
 }
 
-pub(crate) fn get_action_from_input_to(ast: &parser::Ast) -> Vec<ActionFromInputTo> {
-    let action_set: BTreeSet<ActionFromInputTo> = {
-        let mut action_set = BTreeSet::new();
-        for st in &ast.0 {
-            for input in &st.inputs {
-                for trans in &input.transitions {
-                    for action in &trans.actions {
+pub(crate) fn get_action_from_input_to(ast: &parser::Ast) -> BTreeSet<ActionFromInputTo> {
+    let mut action_set = BTreeSet::new();
+    for st in &ast.0 {
+        for input in &st.inputs {
+            for trans in &input.transitions {
+                for action in &trans.actions {
+                    if action.transformer_name.is_none() {
                         action_set.insert(ActionFromInputTo {
                             action: action.clone(),
                             from: st.name.clone(),
@@ -85,13 +85,27 @@ pub(crate) fn get_action_from_input_to(ast: &parser::Ast) -> Vec<ActionFromInput
                 }
             }
         }
-        action_set
-    };
+    }
+    action_set
+}
 
-    action_set.iter().fold(vec![], |mut acc, ai| {
-        acc.push(ai.clone());
-        acc
-    })
+pub(crate) fn get_action_transformers(ast: &parser::Ast) -> BTreeSet<ActionTransformer> {
+    let mut action_set = BTreeSet::new();
+    for st in &ast.0 {
+        for input in &st.inputs {
+            for trans in &input.transitions {
+                for action in &trans.actions {
+                    if let Some(transformer_name) = &action.transformer_name {
+                        action_set.insert(ActionTransformer {
+                            action_name: action.name.clone(),
+                            transformer_name: transformer_name.clone(),
+                        });
+                    }
+                }
+            }
+        }
+    }
+    action_set
 }
 
 pub(crate) fn get_guard_from_input(ast: &parser::Ast) -> Vec<GuardFromInput> {

@@ -1,12 +1,11 @@
 pub(crate) fn t() -> &'static str {
     r#"
-//  Code generated automatically
-//  
-//  forward declaration of types
+//  Code generated automatically to be filled manually
+//  This file will not be updated by generator
+//  It's created just the first time as a reference
 //
-//  do not modify it manually!!!
 //    generated on {{gen_time}}
-
+    
 #pragma once
 
 

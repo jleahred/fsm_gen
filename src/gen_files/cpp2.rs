@@ -31,20 +31,20 @@ pub(super) fn generate_files(
 
     generate_file(
         context,
-        &file_names::h_gen_file::get_full_name(context),
-        templates::h_gen_file::t(),
+        &file_names::fsm_h::get_full_name(context),
+        templates::fsm_h::t(),
     )?;
 
     generate_file(
         context,
-        &cpp_gen_file::get_full_name(context),
-        templates::cpp_gen_file::t(),
+        &fsm_cpp::get_full_name(context),
+        templates::fsm_cpp::t(),
     )?;
 
     generate_file(
         context,
-        &types_h_file_forward_gen::get_full_name(context),
-        templates::types_h_file_forward_gen::t(),
+        &types_h_reference::get_full_name(context),
+        templates::types_h_reference::t(),
     )?;
 
     // generate_file(

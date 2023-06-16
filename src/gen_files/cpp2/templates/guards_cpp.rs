@@ -14,15 +14,22 @@ pub(crate) fn t() -> &'static str {
 namespace fsm_{{in_file.stem_name}} {
     namespace impl {
 
-    {% for gi in guard_from_input -%}
-    bool guard::is_{{gi.guard}}(const St{{ gi.from  | ToCamel }}& /*from*/, const In{{ gi.input | ToCamel }}& /*{{gi.input}}*/)
-    {
-        //  pending
-        return true;
-    }
-    {% endfor -%}
-    {{""}}
-
+        {% for gi in guard_from_input -%}
+        static bool is_{{gi.guard}}(const St{{ gi.from | ToCamel }}& /*from*/, const In{{ gi.input  | ToCamel }}& /*{{gi.input}}*/){
+            return true;        //  pending!
+        }
+        {% endfor -%}
+        {{""}}
+    
+        //  with transformers
+        {% for gt in guard_transformers -%}
+        static bool is_{{gt.guard_name}}(const transf::{{gt.transformer_name | ToCamel}}& /*{{gt.transformer_name}}*/)
+        {
+            return true;        //  pending!
+        }
+        {% endfor -%}
+        {{""}}
+    
     } // namespace impl
 } // namespace {{in_file.stem_name}}
 

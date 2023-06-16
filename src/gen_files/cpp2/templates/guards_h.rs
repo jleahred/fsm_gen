@@ -20,6 +20,12 @@ namespace fsm_{{in_file.stem_name}} {
     {% endfor -%}
     {{""}}
 
+    //  with transformers
+    {% for gt in guard_transformers -%}
+    static bool is_{{gt.guard_name}}(const transf::{{gt.transformer_name | ToCamel}}& /*{{gt.transformer_name}}*/);
+    {% endfor -%}
+    {{""}}
+
     };  //  struct guard
     } // namespace impl
 } // namespace {{in_file.stem_name}}

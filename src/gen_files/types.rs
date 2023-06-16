@@ -41,6 +41,12 @@ pub(crate) struct ActionTransformer {
 }
 
 #[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Ord, Eq, Clone)]
+pub(crate) struct GuardTransformer {
+    guard_name: parser::GuardName,
+    transformer_name: parser::TransformerName,
+}
+
+#[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Ord, Eq, Clone)]
 pub(crate) struct GuardFromInput {
     guard: parser::GuardName,
     from: parser::StatusName,
@@ -87,6 +93,7 @@ pub(crate) struct Context {
     pub(crate) action_inputs: Vec<ActionInput>,
     pub(crate) action_transformers: BTreeSet<ActionTransformer>,
     pub(crate) guard_from_input: Vec<GuardFromInput>,
+    pub(crate) guard_transformers: BTreeSet<GuardTransformer>,
     pub(crate) transition_from_input_to: Vec<TransitionToFromInput>,
     pub(crate) transition_from_input_to_error: Vec<TransitionToFromInput>,
     pub(crate) transformers: Transformers,
@@ -103,6 +110,7 @@ impl Context {
         let action_init_param_to = get_action_from_input_to(&ast);
         let action_transformers = get_action_transformers(&ast);
         let guard_from_input = get_guard_from_input(&ast);
+        let guard_transformers = get_guard_transformers(&ast);
         let transition_from_input_to = get_transition_from_input_to(&ast);
         let transition_from_input_to_error = get_transition_from_input_to_error(&ast);
         let transformers = get_transformers(&ast);
@@ -115,6 +123,7 @@ impl Context {
             action_init_param_to,
             action_transformers,
             guard_from_input,
+            guard_transformers,
             transition_from_input_to,
             transition_from_input_to_error,
             transformers,

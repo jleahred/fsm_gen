@@ -115,11 +115,13 @@ pub(crate) fn get_guard_from_input(ast: &parser::Ast) -> Vec<GuardFromInput> {
             for input in &st.inputs {
                 for trans in &input.transitions {
                     for guard in &trans.guards {
-                        set.insert(GuardFromInput {
-                            guard: guard.name.clone(),
-                            from: st.name.clone(),
-                            input: input.name.clone(),
-                        });
+                        if guard.transformer_name.is_none() {
+                            set.insert(GuardFromInput {
+                                guard: guard.name.clone(),
+                                from: st.name.clone(),
+                                input: input.name.clone(),
+                            });
+                        }
                     }
                 }
             }
@@ -131,6 +133,25 @@ pub(crate) fn get_guard_from_input(ast: &parser::Ast) -> Vec<GuardFromInput> {
         acc.push(ai.clone());
         acc
     })
+}
+
+pub(crate) fn get_guard_transformers(ast: &parser::Ast) -> BTreeSet<GuardTransformer> {
+    let mut action_set = BTreeSet::new();
+    for st in &ast.0 {
+        for input in &st.inputs {
+            for trans in &input.transitions {
+                for guard in &trans.guards {
+                    if let Some(transformer_name) = &guard.transformer_name {
+                        action_set.insert(GuardTransformer {
+                            guard_name: guard.name.clone(),
+                            transformer_name: transformer_name.clone(),
+                        });
+                    }
+                }
+            }
+        }
+    }
+    action_set
 }
 
 pub(crate) fn get_transition_from_input_to(ast: &parser::Ast) -> Vec<TransitionToFromInput> {
@@ -303,7 +324,20 @@ pub(crate) fn get_transformers(ast: &parser::Ast) -> Transformers {
         for input in &st.inputs {
             for trans in &input.transitions {
                 if let Some(name) = trans.transformer_name.clone() {
-                    let params = vec![];
+                    let params = vec![
+                        Param {
+                            name: ParamName(st.name.0.clone()),
+                            kind: ParamKind::Status,
+                        },
+                        Param {
+                            name: ParamName(input.name.0.clone()),
+                            kind: ParamKind::Input,
+                        },
+                        Param {
+                            name: ParamName(trans.new_status.name.0.clone()),
+                            kind: ParamKind::Status,
+                        },
+                    ];
                     transformers
                         .0
                         .entry(name)
@@ -312,7 +346,16 @@ pub(crate) fn get_transformers(ast: &parser::Ast) -> Transformers {
                 }
                 for guard in &trans.guards {
                     if let Some(name) = guard.transformer_name.clone() {
-                        let params = vec![];
+                        let params = vec![
+                            Param {
+                                name: ParamName(st.name.0.clone()),
+                                kind: ParamKind::Status,
+                            },
+                            Param {
+                                name: ParamName(input.name.0.clone()),
+                                kind: ParamKind::Input,
+                            },
+                        ];
                         transformers
                             .0
                             .entry(name)

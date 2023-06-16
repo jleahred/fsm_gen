@@ -11,7 +11,7 @@ pub(crate) fn t() -> &'static str {
 
 namespace fsm_{{in_file.stem_name}} {
 
-//  status info types
+  //  status info types    -----------------------------------------------
 
 {% for st in ast -%}
 struct St{{st.name | ToCamel}}{};
@@ -19,7 +19,7 @@ struct St{{st.name | ToCamel}}{};
 {{""}}
 
 
-//  input types
+//  input types   ------------------------------------------------------
 
   //  provisinal code, delete it when replace the nexts usings
     {% for input in inputs -%}
@@ -35,7 +35,7 @@ struct St{{st.name | ToCamel}}{};
   {{""}}
 
 
-//  transformers types
+  //  transformers types   -----------------------------------------------
 namespace transf {
 
 {% for k, vparams in transformers -%}

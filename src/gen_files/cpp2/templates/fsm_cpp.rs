@@ -67,7 +67,14 @@ try {
     {% for transition in sinput.transitions -%}
     {% if transition.new_status.name != status.name or transition.actions  or true %}
     if(true
-      {%- for guard in transition.guards %} && {% if not guard.positiv %}!{%endif%}impl::guard::is_{{guard.name}}(info, in)
+      {%- for guard in transition.guards %} 
+      {% if not guard.transformer_name -%}
+          {% if not guard.positiv -%}!{% endif -%}
+          && impl::guard::is_{{guard.name}}(info, in)
+      {% else -%}
+          {% if not guard.positiv -%}!{% endif -%}
+          && impl::guard::is_{{guard.name}}(transf::{{guard.transformer_name | ToCamel}}{info, in})
+      {% endif -%}
       {%- endfor -%}
            ){
       {% if transition.new_status.name != "error" %}

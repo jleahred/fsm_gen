@@ -23,6 +23,14 @@ namespace fsm_{{in_file.stem_name}} {
   {% endfor -%}
   {{""}}
 
+
+  //  with transformers
+  {% for t in transition_transformers -%}
+  static std::variant<St{{ t.to | ToCamel }}, StError> to_{{t.to}}(const transf::{{t.transformer_name | ToCamel}}& /*{{t.transformer_name}}*/);
+  {% endfor -%}
+  {{""}}
+
+
   //  status change functions 2 error
   {% for t in transition_from_input_to_error -%}
     static StError to_{{t.to}}(const St{{ t.from | ToCamel }}& /*from*/, const In{{ t.input | ToCamel }}& /*{{t.input}}*/);

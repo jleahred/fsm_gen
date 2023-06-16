@@ -84,6 +84,11 @@ pub(crate) struct Params(Vec<Param>);
 #[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Ord, Eq, Clone)]
 pub(crate) struct Transformers(BTreeMap<TransformerName, BTreeSet<Params>>);
 
+#[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Ord, Eq, Clone)]
+pub(crate) struct TransitionTransformer {
+    pub(crate) to: parser::StatusName,
+    pub(crate) transformer_name: TransformerName,
+}
 #[derive(Serialize, Deserialize)]
 pub(crate) struct Context {
     pub(crate) ast: parser::Ast,
@@ -95,6 +100,7 @@ pub(crate) struct Context {
     pub(crate) guard_from_input: Vec<GuardFromInput>,
     pub(crate) guard_transformers: BTreeSet<GuardTransformer>,
     pub(crate) transition_from_input_to: Vec<TransitionToFromInput>,
+    pub(crate) transition_transformers: BTreeSet<TransitionTransformer>,
     pub(crate) transition_from_input_to_error: Vec<TransitionToFromInput>,
     pub(crate) transformers: Transformers,
     pub(crate) gen_time: String,
@@ -112,6 +118,7 @@ impl Context {
         let guard_from_input = get_guard_from_input(&ast);
         let guard_transformers = get_guard_transformers(&ast);
         let transition_from_input_to = get_transition_from_input_to(&ast);
+        let transition_transformers = get_transitions_transformers(&ast);
         let transition_from_input_to_error = get_transition_from_input_to_error(&ast);
         let transformers = get_transformers(&ast);
 
@@ -125,6 +132,7 @@ impl Context {
             guard_from_input,
             guard_transformers,
             transition_from_input_to,
+            transition_transformers,
             transition_from_input_to_error,
             transformers,
             gen_time: Local::now().format("%Y-%m-%d %H:%M:%S").to_string(),

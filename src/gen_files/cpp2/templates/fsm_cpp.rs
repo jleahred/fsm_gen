@@ -78,7 +78,11 @@ try {
       {%- endfor -%}
            ){
       {% if transition.new_status.name != "error" %}
+      {% if not transition.transformer_name -%}
       auto nw_st_info_or_error = impl::trans::to_{{transition.new_status.name}}(this->info, in);
+      {% else -%}
+      auto nw_st_info_or_error = impl::trans::to_{{transition.new_status.name}}(transf::{{transition.transformer_name | ToCamel}}{this->info, in});
+      {% endif -%}
       if(auto nw_st_info = std::get_if<St{{ transition.new_status.name | ToCamel}}>(&nw_st_info_or_error))
       {
         //log(en_log_level::info, "[{{status.name}}] {{sinput.name}} -> {{transition.new_status.name}}", in, info, nw_st_info);

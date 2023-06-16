@@ -193,16 +193,18 @@ pub(crate) fn get_transition_from_input_to(ast: &parser::Ast) -> Vec<TransitionT
         for st in &ast.0 {
             for input in &st.inputs {
                 for trans in &input.transitions {
-                    if input.name.0 != "_" && trans.new_status.name.0 != "error" {
-                        set.insert(TransitionToFromInput {
-                            to: trans.new_status.name.clone(),
-                            from: st.name.clone(),
-                            input: input.name.clone(),
-                        });
-                        set_consumed_from_input.insert(FromInput {
-                            from: st.name.clone(),
-                            input: input.name.clone(),
-                        });
+                    if trans.transformer_name.is_none() {
+                        if input.name.0 != "_" && trans.new_status.name.0 != "error" {
+                            set.insert(TransitionToFromInput {
+                                to: trans.new_status.name.clone(),
+                                from: st.name.clone(),
+                                input: input.name.clone(),
+                            });
+                            set_consumed_from_input.insert(FromInput {
+                                from: st.name.clone(),
+                                input: input.name.clone(),
+                            });
+                        }
                     }
                 }
             }
@@ -211,17 +213,19 @@ pub(crate) fn get_transition_from_input_to(ast: &parser::Ast) -> Vec<TransitionT
         for st in &ast.0 {
             for input in &st.inputs {
                 for trans in &input.transitions {
-                    if input.name.0 == "_" && trans.new_status.name.0 != "error" {
-                        for i in &set_inputs {
-                            if !set_consumed_from_input.contains(&FromInput {
-                                from: st.name.clone(),
-                                input: input.name.clone(),
-                            }) {
-                                set.insert(TransitionToFromInput {
-                                    to: trans.new_status.name.clone(),
+                    if trans.transformer_name.is_none() {
+                        if input.name.0 == "_" && trans.new_status.name.0 != "error" {
+                            for i in &set_inputs {
+                                if !set_consumed_from_input.contains(&FromInput {
                                     from: st.name.clone(),
-                                    input: i.clone(),
-                                });
+                                    input: input.name.clone(),
+                                }) {
+                                    set.insert(TransitionToFromInput {
+                                        to: trans.new_status.name.clone(),
+                                        from: st.name.clone(),
+                                        input: i.clone(),
+                                    });
+                                }
                             }
                         }
                     }
@@ -236,6 +240,72 @@ pub(crate) fn get_transition_from_input_to(ast: &parser::Ast) -> Vec<TransitionT
         acc.push(ai.clone());
         acc
     })
+}
+
+pub(crate) fn get_transitions_transformers(ast: &parser::Ast) -> BTreeSet<TransitionTransformer> {
+    #[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Ord, Eq, Clone)]
+    struct FromInput {
+        from: parser::StatusName,
+        input: parser::InputName,
+    }
+
+    let set_inputs: BTreeSet<parser::InputName> = {
+        let mut set = BTreeSet::new();
+        for st in &ast.0 {
+            for input in &st.inputs {
+                if input.name.0 != "_" {
+                    set.insert(input.name.clone());
+                }
+            }
+        }
+        set
+    };
+
+    let mut set = BTreeSet::new();
+    let mut set_consumed_from_input = BTreeSet::new();
+
+    for st in &ast.0 {
+        for input in &st.inputs {
+            for trans in &input.transitions {
+                if let Some(transformer_name) = trans.transformer_name.clone() {
+                    if input.name.0 != "_" && trans.new_status.name.0 != "error" {
+                        set.insert(TransitionTransformer {
+                            to: trans.new_status.name.clone(),
+                            transformer_name,
+                        });
+                        set_consumed_from_input.insert(FromInput {
+                            from: st.name.clone(),
+                            input: input.name.clone(),
+                        });
+                    }
+                }
+            }
+        }
+    }
+
+    for st in &ast.0 {
+        for input in &st.inputs {
+            for trans in &input.transitions {
+                if let Some(transformer_name) = trans.transformer_name.clone() {
+                    if input.name.0 == "_" && trans.new_status.name.0 != "error" {
+                        for i in &set_inputs {
+                            if !set_consumed_from_input.contains(&FromInput {
+                                from: st.name.clone(),
+                                input: i.clone(),
+                            }) {
+                                set.insert(TransitionTransformer {
+                                    to: trans.new_status.name.clone(),
+                                    transformer_name: transformer_name.clone(),
+                                });
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    set
 }
 
 pub(crate) fn get_transition_from_input_to_error(ast: &parser::Ast) -> Vec<TransitionToFromInput> {
@@ -333,10 +403,10 @@ pub(crate) fn get_transformers(ast: &parser::Ast) -> Transformers {
                             name: ParamName(input.name.0.clone()),
                             kind: ParamKind::Input,
                         },
-                        Param {
-                            name: ParamName(trans.new_status.name.0.clone()),
-                            kind: ParamKind::Status,
-                        },
+                        // Param {
+                        //     name: ParamName(trans.new_status.name.0.clone()),
+                        //     kind: ParamKind::Status,
+                        // },
                     ];
                     transformers
                         .0

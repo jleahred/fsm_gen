@@ -73,41 +73,55 @@ try {
           && impl::guard::is_{{guard.name}}(info, in)
       {% else -%}
           {% if not guard.positiv -%}!{% endif -%}
-          && impl::guard::is_{{guard.name}}(transf::{{guard.transformer_name | ToCamel}}{info, in})
+          && impl::guard::is_{{guard.name}}(transf::guard::{{guard.transformer_name | ToCamel}}{info, in})
       {% endif -%}
       {%- endfor -%}
            ){
-      {% if transition.new_status.name != "error" %}
+      {% if transition.new_status.name != "error"  %}
+      {% if transition.new_status.name != "_"  %}
       {% if not transition.transformer_name -%}
       auto nw_st_info_or_error = impl::trans::to_{{transition.new_status.name}}(this->info, in);
       {% else -%}
-      auto nw_st_info_or_error = impl::trans::to_{{transition.new_status.name}}(transf::{{transition.transformer_name | ToCamel}}{this->info, in});
+      auto nw_st_info_or_error = impl::trans::to_{{transition.new_status.name}}(transf::trans::{{transition.transformer_name | ToCamel}}{this->info, in});
       {% endif -%}
+      {% endif -%}
+      {% if transition.new_status.name != "_"  %}
       if(auto nw_st_info = std::get_if<St{{ transition.new_status.name | ToCamel}}>(&nw_st_info_or_error))
       {
+      {% endif -%}
         //log(en_log_level::info, "[{{status.name}}] {{sinput.name}} -> {{transition.new_status.name}}", in, info, nw_st_info);
         {% for action in transition.actions -%}
         {% if not action.transformer_name -%}
-        impl::act::{{action.name}}(this->info, in, *nw_st_info);
-        {% else -%}
-        impl::act::{{action.name}}(transf::{{action.transformer_name | ToCamel}}{this->info, in, *nw_st_info});
+        impl::act::{{action.name}}(this->info, in 
+          {%- if transition.new_status.name != "_"  -%}, *nw_st_info{%- else  %} {%- endif -%}
+        );
+        {%- else -%}
+        impl::act::{{action.name}}(transf::act::{{action.transformer_name | ToCamel}}{this->info, in, 
+        {%- if transition.new_status.name != "_"  -%}*nw_st_info{%- else -%}this->info{%- endif -%}
+        });
         {% endif -%}
         {% endfor %}
-        return std::make_shared<{{transition.new_status.name}}>(*nw_st_info);
+        return std::make_shared<
+        {%- if transition.new_status.name != "_"  -%}{{transition.new_status.name}}{%- else -%}{{status.name}}{%- endif -%}                  
+        >(
+          {%- if transition.new_status.name != "_"  -%}*nw_st_info{%- else -%}this->info{%- endif -%}          
+        );
+      {% if transition.new_status.name != "_"  %}
       } else if(auto nw_st_info = std::get_if<StError>(&nw_st_info_or_error)){
           //log(en_log_level::info, "[init] rq_key -> error", in, info, nw_st_info);
           return std::make_shared<error>(*nw_st_info);
       }
-      {% else %}
+      {% endif -%}
+      {% else -%}
       auto nw_st_info = impl::trans::to_error(this->info, in);
       //log(en_log_level::info, "[{{status.name}}] {{sinput.name}} -> {{transition.new_status.name}}", in, info, nw_st_info);
       {% for action in transition.actions -%}
       {% if not action.transformer_name -%}
       impl::act::{{action.name}}(this->info, in, nw_st_info);
       {% else -%}
-      impl::act::{{action.name}}(transf::{{action.transformer_name | ToCamel}}{this->info, in, nw_st_info});
+      impl::act::{{action.name}}(transf::act::{{action.transformer_name | ToCamel}}{this->info, in, nw_st_info});
       {% endif -%}
-    {% endfor %}
+      {% endfor %}
       return std::make_shared<{{transition.new_status.name}}>(nw_st_info);
       {% endif %}
     }

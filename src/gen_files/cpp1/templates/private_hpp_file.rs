@@ -50,7 +50,7 @@ namespace {
 
     //  status change functions
     {% for st in ast -%}
-    {% if st.name != "error" %}
+    {% if st.name != "error" and st.name != "_"%}
     template <typename FROM, typename IN>
     std::variant<st_{{st.name}}_t, st_error_t> fromin2_{{st.name}}(const FROM &, const IN &) {
         //  you can specialize or overload this generic function (not both)

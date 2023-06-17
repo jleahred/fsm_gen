@@ -55,7 +55,7 @@ impl Ast {
             Err(format!("status not referenced\n{:#?}", status_no_refs))
         } else {
             let status_refs_non_exists = status_refs.iter().fold(vec![], |acc, (k, v)| {
-                if !status.contains(k) {
+                if !status.contains(k) && *k != StatusName("_".to_string()) {
                     acc.ipush((k, v))
                 } else {
                     acc

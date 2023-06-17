@@ -26,7 +26,7 @@ namespace fsm_{{in_file.stem_name}} {
     
         //  with transformers
         {% for at in action_transformers -%}
-        static void act::{{at.action_name}}(const transf::{{at.transformer_name | ToCamel}}& /*{{at.transformer_name}}*/)
+        static void act::{{at.action_name}}(const transf::act::{{at.transformer_name | ToCamel}}& /*{{at.transformer_name}}*/)
         {
         }
         {% endfor -%}

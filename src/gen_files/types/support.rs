@@ -388,7 +388,11 @@ pub(crate) fn get_dir_stem_name(orig_path: &PathBuf) -> Result<(String, String),
 }
 
 pub(crate) fn get_transformers(ast: &parser::Ast) -> Transformers {
-    let mut transformers = Transformers(BTreeMap::new());
+    let mut transformers = Transformers {
+        actions: BTreeMap::new(),
+        guards: BTreeMap::new(),
+        transitions: BTreeMap::new(),
+    };
 
     for st in &ast.0 {
         for input in &st.inputs {
@@ -409,7 +413,7 @@ pub(crate) fn get_transformers(ast: &parser::Ast) -> Transformers {
                         // },
                     ];
                     transformers
-                        .0
+                        .transitions
                         .entry(name)
                         .or_insert(BTreeSet::new())
                         .insert(Params(params));
@@ -427,7 +431,7 @@ pub(crate) fn get_transformers(ast: &parser::Ast) -> Transformers {
                             },
                         ];
                         transformers
-                            .0
+                            .guards
                             .entry(name)
                             .or_insert(BTreeSet::new())
                             .insert(Params(params));
@@ -450,7 +454,7 @@ pub(crate) fn get_transformers(ast: &parser::Ast) -> Transformers {
                             },
                         ];
                         transformers
-                            .0
+                            .actions
                             .entry(name)
                             .or_insert(BTreeSet::new())
                             .insert(Params(params));

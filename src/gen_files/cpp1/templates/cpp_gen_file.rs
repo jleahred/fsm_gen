@@ -68,7 +68,7 @@ SState {{status.name}}::input(const in_{{input}}_t& in) {
         {%- for guard in transition.guards %} && {% if not guard.positiv %}!{%endif%}{{guard.name}}(in, info)
         {%- endfor -%}
              ){
-        {% if transition.new_status.name != "error" %}
+        {% if transition.new_status.name != "error"%}
         auto nw_st_info_or_error = fromin2_{{transition.new_status.name}}<st_{{status.name}}_t, in_{{sinput.name}}_t>(this->info, in);
         if(auto nw_st_info = std::get_if<st_{{transition.new_status.name}}_t>(&nw_st_info_or_error))
         {

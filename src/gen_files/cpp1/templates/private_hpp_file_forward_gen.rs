@@ -27,7 +27,7 @@ namespace {
     //  status change functions
     //  you can specialize this generic functions
     {% for st in ast -%}
-    {% if st.name != "error" %}
+    {% if st.name != "error" and st.name != "_"%}
     template <typename FROM_ST, typename IN>
     std::variant<st_{{st.name}}_t, st_error_t> fromin2_{{st.name}}(const FROM_ST &, const IN &);
     {% endif %}

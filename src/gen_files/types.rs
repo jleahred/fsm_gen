@@ -82,7 +82,11 @@ pub(crate) struct Params(Vec<Param>);
 // }
 
 #[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Ord, Eq, Clone)]
-pub(crate) struct Transformers(BTreeMap<TransformerName, BTreeSet<Params>>);
+pub(crate) struct Transformers {
+    actions: BTreeMap<TransformerName, BTreeSet<Params>>,
+    guards: BTreeMap<TransformerName, BTreeSet<Params>>,
+    transitions: BTreeMap<TransformerName, BTreeSet<Params>>,
+}
 
 #[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Ord, Eq, Clone)]
 pub(crate) struct TransitionTransformer {

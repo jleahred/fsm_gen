@@ -13,7 +13,7 @@ pub(crate) fn t() -> &'static str {
 #include<variant>
 
 #include"../types.h"
-#include"../types_transformers_forward.h"
+#include"../types_adapters_forward.h"
 
 namespace fsm_{{in_file.stem_name}} {
   namespace impl {
@@ -28,9 +28,9 @@ namespace fsm_{{in_file.stem_name}} {
   {{""}}
 
 
-  //  with transformers
-  {% for t in transition_transformers -%}
-  static std::variant<St{{ t.to | ToCamel }}, StError> to_{{t.to}}(const transf::trans::{{t.transformer_name | ToCamel}}& /*{{t.transformer_name}}*/);
+  //  with adapters
+  {% for t in transition_adapters -%}
+  static std::variant<St{{ t.to | ToCamel }}, StError> to_{{t.to}}(const adap::trans::{{t.adapter_name | ToCamel}}& /*{{t.adapter_name}}*/);
   {% endfor -%}
   {{""}}
 

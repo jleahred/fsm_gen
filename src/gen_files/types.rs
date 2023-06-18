@@ -1,6 +1,6 @@
 mod support;
 
-use crate::parser::types::{self as parser, StatusName, TransformerName};
+use crate::parser::types::{self as parser, AdapterName, StatusName};
 use chrono::prelude::*;
 use serde::{Deserialize, Serialize};
 use std::collections::BTreeMap;
@@ -35,15 +35,15 @@ pub(crate) struct ActionFromInputTo {
 }
 
 #[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Ord, Eq, Clone)]
-pub(crate) struct ActionTransformer {
+pub(crate) struct ActionAdapter {
     action_name: parser::ActionName,
-    transformer_name: parser::TransformerName,
+    adapter_name: parser::AdapterName,
 }
 
 #[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Ord, Eq, Clone)]
-pub(crate) struct GuardTransformer {
+pub(crate) struct GuardAdapter {
     guard_name: parser::GuardName,
-    transformer_name: parser::TransformerName,
+    adapter_name: parser::AdapterName,
 }
 
 #[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Ord, Eq, Clone)]
@@ -56,8 +56,8 @@ pub(crate) struct GuardFromInput {
 #[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Ord, Eq, Clone)]
 pub(crate) struct ParamName(String);
 // #[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Ord, Eq, Clone)]
-// pub(crate) struct Transformer {
-//     name: parser::TransformerName,
+// pub(crate) struct Adapter {
+//     name: parser::AdapterName,
 //     params: Vec<ParamName>,
 // }
 #[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Ord, Eq, Clone)]
@@ -76,22 +76,22 @@ pub(crate) struct Param {
 pub(crate) struct Params(Vec<Param>);
 
 // #[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Ord, Eq, Clone)]
-// pub(crate) struct Transformer {
-//     name: TransformerName,
+// pub(crate) struct Adapter {
+//     name: AdapterName,
 //     params: Vec<Param>,
 // }
 
 #[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Ord, Eq, Clone)]
-pub(crate) struct Transformers {
-    actions: BTreeMap<TransformerName, BTreeSet<Params>>,
-    guards: BTreeMap<TransformerName, BTreeSet<Params>>,
-    transitions: BTreeMap<TransformerName, BTreeSet<Params>>,
+pub(crate) struct Adapters {
+    actions: BTreeMap<AdapterName, BTreeSet<Params>>,
+    guards: BTreeMap<AdapterName, BTreeSet<Params>>,
+    transitions: BTreeMap<AdapterName, BTreeSet<Params>>,
 }
 
 #[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Ord, Eq, Clone)]
-pub(crate) struct TransitionTransformer {
+pub(crate) struct TransitionAdapter {
     pub(crate) to: parser::StatusName,
-    pub(crate) transformer_name: TransformerName,
+    pub(crate) adapter_name: AdapterName,
 }
 #[derive(Serialize, Deserialize)]
 pub(crate) struct Context {
@@ -100,13 +100,13 @@ pub(crate) struct Context {
     pub(crate) guard_inputs: Vec<GuardInput>,
     pub(crate) action_init_param_to: BTreeSet<ActionFromInputTo>,
     pub(crate) action_inputs: Vec<ActionInput>,
-    pub(crate) action_transformers: BTreeSet<ActionTransformer>,
+    pub(crate) action_adapters: BTreeSet<ActionAdapter>,
     pub(crate) guard_from_input: Vec<GuardFromInput>,
-    pub(crate) guard_transformers: BTreeSet<GuardTransformer>,
+    pub(crate) guard_adapters: BTreeSet<GuardAdapter>,
     pub(crate) transition_from_input_to: Vec<TransitionToFromInput>,
-    pub(crate) transition_transformers: BTreeSet<TransitionTransformer>,
+    pub(crate) transition_adapters: BTreeSet<TransitionAdapter>,
     pub(crate) transition_from_input_to_error: Vec<TransitionToFromInput>,
-    pub(crate) transformers: Transformers,
+    pub(crate) adapters: Adapters,
     pub(crate) gen_time: String,
     pub(crate) in_file: InFile,
 }
@@ -118,13 +118,13 @@ impl Context {
         let guard_inputs = get_guard_inputs(&ast);
         let action_inputs = get_action_inputs(&ast);
         let action_init_param_to = get_action_from_input_to(&ast);
-        let action_transformers = get_action_transformers(&ast);
+        let action_adapters = get_action_adapters(&ast);
         let guard_from_input = get_guard_from_input(&ast);
-        let guard_transformers = get_guard_transformers(&ast);
+        let guard_adapters = get_guard_adapters(&ast);
         let transition_from_input_to = get_transition_from_input_to(&ast);
-        let transition_transformers = get_transitions_transformers(&ast);
+        let transition_adapters = get_transitions_adapters(&ast);
         let transition_from_input_to_error = get_transition_from_input_to_error(&ast);
-        let transformers = get_transformers(&ast);
+        let adapters = get_adapters(&ast);
 
         Ok(Context {
             ast,
@@ -132,13 +132,13 @@ impl Context {
             guard_inputs,
             action_inputs,
             action_init_param_to,
-            action_transformers,
+            action_adapters,
             guard_from_input,
-            guard_transformers,
+            guard_adapters,
             transition_from_input_to,
-            transition_transformers,
+            transition_adapters,
             transition_from_input_to_error,
-            transformers,
+            adapters,
             gen_time: Local::now().format("%Y-%m-%d %H:%M:%S").to_string(),
             in_file: InFile { dir, stem_name },
         })

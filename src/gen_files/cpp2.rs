@@ -56,14 +56,14 @@ pub(super) fn generate_files(
 
     generate_file(
         context,
-        &types_transformers_forward_h_file::get_full_name(context),
-        templates::types_transformers_forward_h::t(),
+        &types_adapters_forward_h_file::get_full_name(context),
+        templates::types_adapters_forward_h::t(),
     )?;
 
     gen_file_if_missing(
         context,
-        &types_transformers_h_file::get_full_name(context),
-        templates::types_transformers_h::t(),
+        &types_adapters_h_file::get_full_name(context),
+        templates::types_adapters_h::t(),
     )?;
 
     gen_file_if_missing(

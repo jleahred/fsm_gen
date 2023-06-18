@@ -35,13 +35,13 @@ parser! {
                 { Input_{name, transitions} }
 
         rule transition() -> Transition
-            =   _()  guards:guard()*  _() "->"  _()  new_status:status_ref() transformer_name:transformer_name()?  _()  actions:actions()  __endl()
-                { Transition {guards, actions, new_status, transformer_name} }
+            =   _()  guards:guard()*  _() "->"  _()  new_status:status_ref() adapter_name:adapter_name()?  _()  actions:actions()  __endl()
+                { Transition {guards, actions, new_status, adapter_name} }
 
 
         rule guard() -> Guard
-            =   _ "&" _  "!" name:guard_name()  transformer_name:transformer_name()?    {  Guard{name, positiv: false, transformer_name}  }
-            /   _ "&" _      name:guard_name()  transformer_name:transformer_name()?    {  Guard{name, positiv: true , transformer_name}  }
+            =   _ "&" _  "!" name:guard_name()  adapter_name:adapter_name()?    {  Guard{name, positiv: false, adapter_name}  }
+            /   _ "&" _      name:guard_name()  adapter_name:adapter_name()?    {  Guard{name, positiv: true , adapter_name}  }
 
 
         rule actions() -> Vec<Action>
@@ -49,7 +49,7 @@ parser! {
             /                                   { vec![]  }
 
         rule action() -> Action
-            =   name:action_name() transformer_name:transformer_name()? { Action{ name, transformer_name} }
+            =   name:action_name() adapter_name:adapter_name()? { Action{ name, adapter_name} }
 
         rule action_name() -> ActionName
             =   _()  name:id()
@@ -68,8 +68,8 @@ parser! {
             =   name:id() pos:position!()
                 {  StatusRef{name: StatusName(name.to_string()), pos}  }
 
-        rule transformer_name() -> TransformerName
-            =   "|" _() name:id()  { TransformerName(name) }
+        rule adapter_name() -> AdapterName
+            =   "|" _() name:id()  { AdapterName(name) }
 
         rule id()    ->  String
             =   id:$( ['a'..='z' | 'Z'..='Z' | '_']

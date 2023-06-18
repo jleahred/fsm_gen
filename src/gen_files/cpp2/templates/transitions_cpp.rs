@@ -8,7 +8,7 @@ pub(crate) fn t() -> &'static str {
 
 
 #include "transitions.h"
-#include "../types_transformers.h"
+#include "../types_adapters.h"
 
 #include<variant>
 

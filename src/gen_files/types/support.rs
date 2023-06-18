@@ -74,7 +74,7 @@ pub(crate) fn get_action_from_input_to(ast: &parser::Ast) -> BTreeSet<ActionFrom
         for input in &st.inputs {
             for trans in &input.transitions {
                 for action in &trans.actions {
-                    if action.transformer_name.is_none() {
+                    if action.adapter_name.is_none() {
                         action_set.insert(ActionFromInputTo {
                             action: action.clone(),
                             from: st.name.clone(),
@@ -89,16 +89,16 @@ pub(crate) fn get_action_from_input_to(ast: &parser::Ast) -> BTreeSet<ActionFrom
     action_set
 }
 
-pub(crate) fn get_action_transformers(ast: &parser::Ast) -> BTreeSet<ActionTransformer> {
+pub(crate) fn get_action_adapters(ast: &parser::Ast) -> BTreeSet<ActionAdapter> {
     let mut action_set = BTreeSet::new();
     for st in &ast.0 {
         for input in &st.inputs {
             for trans in &input.transitions {
                 for action in &trans.actions {
-                    if let Some(transformer_name) = &action.transformer_name {
-                        action_set.insert(ActionTransformer {
+                    if let Some(adapter_name) = &action.adapter_name {
+                        action_set.insert(ActionAdapter {
                             action_name: action.name.clone(),
-                            transformer_name: transformer_name.clone(),
+                            adapter_name: adapter_name.clone(),
                         });
                     }
                 }
@@ -115,7 +115,7 @@ pub(crate) fn get_guard_from_input(ast: &parser::Ast) -> Vec<GuardFromInput> {
             for input in &st.inputs {
                 for trans in &input.transitions {
                     for guard in &trans.guards {
-                        if guard.transformer_name.is_none() {
+                        if guard.adapter_name.is_none() {
                             set.insert(GuardFromInput {
                                 guard: guard.name.clone(),
                                 from: st.name.clone(),
@@ -135,16 +135,16 @@ pub(crate) fn get_guard_from_input(ast: &parser::Ast) -> Vec<GuardFromInput> {
     })
 }
 
-pub(crate) fn get_guard_transformers(ast: &parser::Ast) -> BTreeSet<GuardTransformer> {
+pub(crate) fn get_guard_adapters(ast: &parser::Ast) -> BTreeSet<GuardAdapter> {
     let mut action_set = BTreeSet::new();
     for st in &ast.0 {
         for input in &st.inputs {
             for trans in &input.transitions {
                 for guard in &trans.guards {
-                    if let Some(transformer_name) = &guard.transformer_name {
-                        action_set.insert(GuardTransformer {
+                    if let Some(adapter_name) = &guard.adapter_name {
+                        action_set.insert(GuardAdapter {
                             guard_name: guard.name.clone(),
-                            transformer_name: transformer_name.clone(),
+                            adapter_name: adapter_name.clone(),
                         });
                     }
                 }
@@ -193,7 +193,7 @@ pub(crate) fn get_transition_from_input_to(ast: &parser::Ast) -> Vec<TransitionT
         for st in &ast.0 {
             for input in &st.inputs {
                 for trans in &input.transitions {
-                    if trans.transformer_name.is_none() {
+                    if trans.adapter_name.is_none() {
                         if input.name.0 != "_" && trans.new_status.name.0 != "error" {
                             set.insert(TransitionToFromInput {
                                 to: trans.new_status.name.clone(),
@@ -213,7 +213,7 @@ pub(crate) fn get_transition_from_input_to(ast: &parser::Ast) -> Vec<TransitionT
         for st in &ast.0 {
             for input in &st.inputs {
                 for trans in &input.transitions {
-                    if trans.transformer_name.is_none() {
+                    if trans.adapter_name.is_none() {
                         if input.name.0 == "_" && trans.new_status.name.0 != "error" {
                             for i in &set_inputs {
                                 if !set_consumed_from_input.contains(&FromInput {
@@ -242,7 +242,7 @@ pub(crate) fn get_transition_from_input_to(ast: &parser::Ast) -> Vec<TransitionT
     })
 }
 
-pub(crate) fn get_transitions_transformers(ast: &parser::Ast) -> BTreeSet<TransitionTransformer> {
+pub(crate) fn get_transitions_adapters(ast: &parser::Ast) -> BTreeSet<TransitionAdapter> {
     #[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Ord, Eq, Clone)]
     struct FromInput {
         from: parser::StatusName,
@@ -267,11 +267,11 @@ pub(crate) fn get_transitions_transformers(ast: &parser::Ast) -> BTreeSet<Transi
     for st in &ast.0 {
         for input in &st.inputs {
             for trans in &input.transitions {
-                if let Some(transformer_name) = trans.transformer_name.clone() {
+                if let Some(adapter_name) = trans.adapter_name.clone() {
                     if input.name.0 != "_" && trans.new_status.name.0 != "error" {
-                        set.insert(TransitionTransformer {
+                        set.insert(TransitionAdapter {
                             to: trans.new_status.name.clone(),
-                            transformer_name,
+                            adapter_name,
                         });
                         set_consumed_from_input.insert(FromInput {
                             from: st.name.clone(),
@@ -286,16 +286,16 @@ pub(crate) fn get_transitions_transformers(ast: &parser::Ast) -> BTreeSet<Transi
     for st in &ast.0 {
         for input in &st.inputs {
             for trans in &input.transitions {
-                if let Some(transformer_name) = trans.transformer_name.clone() {
+                if let Some(adapter_name) = trans.adapter_name.clone() {
                     if input.name.0 == "_" && trans.new_status.name.0 != "error" {
                         for i in &set_inputs {
                             if !set_consumed_from_input.contains(&FromInput {
                                 from: st.name.clone(),
                                 input: i.clone(),
                             }) {
-                                set.insert(TransitionTransformer {
+                                set.insert(TransitionAdapter {
                                     to: trans.new_status.name.clone(),
-                                    transformer_name: transformer_name.clone(),
+                                    adapter_name: adapter_name.clone(),
                                 });
                             }
                         }
@@ -387,8 +387,8 @@ pub(crate) fn get_dir_stem_name(orig_path: &PathBuf) -> Result<(String, String),
     ))
 }
 
-pub(crate) fn get_transformers(ast: &parser::Ast) -> Transformers {
-    let mut transformers = Transformers {
+pub(crate) fn get_adapters(ast: &parser::Ast) -> Adapters {
+    let mut adapters = Adapters {
         actions: BTreeMap::new(),
         guards: BTreeMap::new(),
         transitions: BTreeMap::new(),
@@ -397,7 +397,7 @@ pub(crate) fn get_transformers(ast: &parser::Ast) -> Transformers {
     for st in &ast.0 {
         for input in &st.inputs {
             for trans in &input.transitions {
-                if let Some(name) = trans.transformer_name.clone() {
+                if let Some(name) = trans.adapter_name.clone() {
                     let params = vec![
                         Param {
                             name: ParamName(st.name.0.clone()),
@@ -412,14 +412,14 @@ pub(crate) fn get_transformers(ast: &parser::Ast) -> Transformers {
                         //     kind: ParamKind::Status,
                         // },
                     ];
-                    transformers
+                    adapters
                         .transitions
                         .entry(name)
                         .or_insert(BTreeSet::new())
                         .insert(Params(params));
                 }
                 for guard in &trans.guards {
-                    if let Some(name) = guard.transformer_name.clone() {
+                    if let Some(name) = guard.adapter_name.clone() {
                         let params = vec![
                             Param {
                                 name: ParamName(st.name.0.clone()),
@@ -430,7 +430,7 @@ pub(crate) fn get_transformers(ast: &parser::Ast) -> Transformers {
                                 kind: ParamKind::Input,
                             },
                         ];
-                        transformers
+                        adapters
                             .guards
                             .entry(name)
                             .or_insert(BTreeSet::new())
@@ -438,7 +438,7 @@ pub(crate) fn get_transformers(ast: &parser::Ast) -> Transformers {
                     }
                 }
                 for action in &trans.actions {
-                    if let Some(name) = action.transformer_name.clone() {
+                    if let Some(name) = action.adapter_name.clone() {
                         let params = vec![
                             Param {
                                 name: ParamName(st.name.0.clone()),
@@ -460,7 +460,7 @@ pub(crate) fn get_transformers(ast: &parser::Ast) -> Transformers {
                                 }
                             },
                         ];
-                        transformers
+                        adapters
                             .actions
                             .entry(name)
                             .or_insert(BTreeSet::new())
@@ -471,5 +471,5 @@ pub(crate) fn get_transformers(ast: &parser::Ast) -> Transformers {
         }
     }
 
-    transformers
+    adapters
 }

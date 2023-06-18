@@ -8,7 +8,7 @@ pub(crate) fn t() -> &'static str {
 
 
 #include "guards.h"
-#include "../types_transformers.h"
+#include "../types_adapters.h"
 
 namespace fsm_{{in_file.stem_name}} {
     namespace impl {
@@ -20,9 +20,9 @@ namespace fsm_{{in_file.stem_name}} {
         {% endfor -%}
         {{""}}
     
-        //  with transformers
-        {% for gt in guard_transformers -%}
-        static bool is_{{gt.guard_name}}(const transf::guard::{{gt.transformer_name | ToCamel}}& /*{{gt.transformer_name}}*/)
+        //  with adapters
+        {% for gt in guard_adapters -%}
+        static bool is_{{gt.guard_name}}(const adap::guard::{{gt.adapter_name | ToCamel}}& /*{{gt.adapter_name}}*/)
         {
             return true;        //  pending!
         }

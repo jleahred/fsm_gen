@@ -9,7 +9,7 @@ pub(crate) fn t() -> &'static str {
 
 #include "actions.h"
 
-#include "../types_transformers.h"
+#include "../types_adapters.h"
 
 namespace fsm_{{in_file.stem_name}} {
     namespace impl {
@@ -23,9 +23,9 @@ namespace fsm_{{in_file.stem_name}} {
         {% endfor -%}
         {{""}}
     
-        //  with transformers
-        {% for at in action_transformers -%}
-        static void act::{{at.action_name}}(const transf::act::{{at.transformer_name | ToCamel}}& /*{{at.transformer_name}}*/)
+        //  with adapters
+        {% for at in action_adapters -%}
+        static void act::{{at.action_name}}(const adap::act::{{at.adapter_name | ToCamel}}& /*{{at.adapter_name}}*/)
         {
         }
         {% endfor -%}

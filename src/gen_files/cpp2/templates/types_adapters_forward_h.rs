@@ -10,13 +10,13 @@ pub(crate) fn t() -> &'static str {
 
 namespace fsm_{{in_file.stem_name}} {
 
-  //  transformers types  forward decl -----------------------------------------
-  namespace transf {
+  //  adapters types  forward decl -----------------------------------------
+  namespace adap {
   
   //  -------------------------------------------------------
   namespace act {
   
-  {% for k, vparams in transformers.actions -%}
+  {% for k, vparams in adapters.actions -%}
   struct {{k | ToCamel -}};
   {% endfor -%}
   } //  namespace act
@@ -24,7 +24,7 @@ namespace fsm_{{in_file.stem_name}} {
   //  -------------------------------------------------------
   namespace guard {
   
-  {% for k, vparams in transformers.guards -%}
+  {% for k, vparams in adapters.guards -%}
   struct {{k | ToCamel -}};
   {% endfor -%}
   } //  namespace guard
@@ -32,12 +32,12 @@ namespace fsm_{{in_file.stem_name}} {
   //  -------------------------------------------------------
   namespace trans {
   
-  {% for k, vparams in transformers.transitions -%}
+  {% for k, vparams in adapters.transitions -%}
   struct {{k | ToCamel -}};
   {% endfor -%}
   } //  namespace trans
   
-  } //  namespace transf
+  } //  namespace adap
 
 } // namespace {{in_file.stem_name}}
 

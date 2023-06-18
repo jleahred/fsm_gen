@@ -35,13 +35,13 @@ struct St{{st.name | ToCamel}}{};
   {{""}}
 
 
-//  transformers types   -----------------------------------------------
-namespace transf {
+//  adapters types   -----------------------------------------------
+namespace adap {
 
 //  -------------------------------------------------------
 namespace act {
 
-{% for k, vparams in transformers.actions -%}
+{% for k, vparams in adapters.actions -%}
 struct {{k | ToCamel -}} {
   {% for vp in vparams -%} 
     {{k | ToCamel -}}({% for p in vp -%} 
@@ -58,7 +58,7 @@ struct {{k | ToCamel -}} {
 //  -------------------------------------------------------
 namespace guard {
 
-{% for k, vparams in transformers.guards -%}
+{% for k, vparams in adapters.guards -%}
 struct {{k | ToCamel -}} {
   {% for vp in vparams -%} 
     {{k | ToCamel -}}({% for p in vp -%} 
@@ -74,7 +74,7 @@ struct {{k | ToCamel -}} {
 //  -------------------------------------------------------
 namespace trans {
 
-{% for k, vparams in transformers.transitions -%}
+{% for k, vparams in adapters.transitions -%}
 struct {{k | ToCamel -}} {
   {% for vp in vparams -%} 
     {{k | ToCamel -}}({% for p in vp -%} 
@@ -87,7 +87,7 @@ struct {{k | ToCamel -}} {
 {% endfor -%}
 } //  namespace trans
 
-} //  namespace transf
+} //  namespace adap
 
 } // namespace {{in_file.stem_name}}
 

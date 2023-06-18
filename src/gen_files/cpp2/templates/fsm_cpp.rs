@@ -96,8 +96,8 @@ try {
           {%- if transition.new_status.name != "_"  -%}, *nw_st_info{%- else  %} {%- endif -%}
         );
         {%- else -%}
-        impl::act::{{action.name}}(transf::act::{{action.transformer_name | ToCamel}}{this->info, in, 
-        {%- if transition.new_status.name != "_"  -%}*nw_st_info{%- else -%}this->info{%- endif -%}
+        impl::act::{{action.name}}(transf::act::{{action.transformer_name | ToCamel}}{this->info, in,
+        {%- if transition.new_status.name != "_"  -%} *nw_st_info{%- else -%} this->info{%- endif -%}
         });
         {% endif -%}
         {% endfor %}

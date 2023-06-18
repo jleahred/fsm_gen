@@ -46,7 +46,8 @@ struct {{k | ToCamel -}} {
   {% for vp in vparams -%} 
     {{k | ToCamel -}}({% for p in vp -%} 
     const {% if p.kind == "Status" -%}
-    St{{p.name | ToCamel -}}& {% else -%}
+    St{{p.name | ToCamel -}}& 
+    {%- else -%}
     In{{p.name | ToCamel -}}&{% endif -%}{% if not loop.last%}, {% endif -%}{% endfor -%}
   ) {};
   {% endfor -%}

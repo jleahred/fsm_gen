@@ -448,9 +448,16 @@ pub(crate) fn get_transformers(ast: &parser::Ast) -> Transformers {
                                 name: ParamName(input.name.0.clone()),
                                 kind: ParamKind::Input,
                             },
-                            Param {
-                                name: ParamName(trans.new_status.name.0.clone()),
-                                kind: ParamKind::Status,
+                            if trans.new_status.name.0 != "_" {
+                                Param {
+                                    name: ParamName(trans.new_status.name.0.clone()),
+                                    kind: ParamKind::Status,
+                                }
+                            } else {
+                                Param {
+                                    name: ParamName(st.name.0.clone()),
+                                    kind: ParamKind::Status,
+                                }
                             },
                         ];
                         transformers

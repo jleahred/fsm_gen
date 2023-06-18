@@ -8,8 +8,7 @@ pub(crate) fn t() -> &'static str {
 
 
 #include "guards.h"
-
-#include "../types.h"
+#include "../types_transformers.h"
 
 namespace fsm_{{in_file.stem_name}} {
     namespace impl {

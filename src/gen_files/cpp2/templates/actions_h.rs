@@ -14,6 +14,7 @@ pub(crate) fn t() -> &'static str {
 
 
 #include "../types.h"
+#include"../types_transformers_forward.h"
 
 //  actions     ----------------------------------------------
 

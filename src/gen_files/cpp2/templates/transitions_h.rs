@@ -11,7 +11,9 @@ pub(crate) fn t() -> &'static str {
 // clang-format off
 
 #include<variant>
+
 #include"../types.h"
+#include"../types_transformers_forward.h"
 
 namespace fsm_{{in_file.stem_name}} {
   namespace impl {

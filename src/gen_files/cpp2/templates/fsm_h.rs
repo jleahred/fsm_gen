@@ -12,6 +12,7 @@ pub(crate) fn t() -> &'static str {
 
 #include "types.h"
 
+
 namespace fsm_{{ in_file.stem_name }} {
 
 class BaseState;

@@ -54,6 +54,18 @@ pub(super) fn generate_files(
         templates::types_h_file::t(),
     )?;
 
+    generate_file(
+        context,
+        &types_transformers_forward_h_file::get_full_name(context),
+        templates::types_transformers_forward_h::t(),
+    )?;
+
+    gen_file_if_missing(
+        context,
+        &types_transformers_h_file::get_full_name(context),
+        templates::types_transformers_h::t(),
+    )?;
+
     gen_file_if_missing(
         context,
         &guards_cpp::get_full_name(context),

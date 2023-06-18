@@ -11,7 +11,7 @@ pub(crate) fn t() -> &'static str {
 
 namespace fsm_{{in_file.stem_name}} {
 
-//  status info types    -----------------------------------------------
+  //  status info types    -----------------------------------------------
 
 {% for st in ast -%}
 struct St{{st.name | ToCamel}}{};
@@ -38,7 +38,27 @@ struct St{{st.name | ToCamel}}{};
 //  transformers types   -----------------------------------------------
 namespace transf {
 
-{% for k, vparams in transformers -%}
+//  -------------------------------------------------------
+namespace act {
+
+{% for k, vparams in transformers.actions -%}
+struct {{k | ToCamel -}} {
+  {% for vp in vparams -%} 
+    {{k | ToCamel -}}({% for p in vp -%} 
+    const {% if p.kind == "Status" -%}
+    St{{p.name | ToCamel -}}& 
+    {%- else -%}
+    In{{p.name | ToCamel -}}&{% endif -%}{% if not loop.last%}, {% endif -%}{% endfor -%}
+  ) {};
+  {% endfor -%}
+};
+{% endfor -%}
+} //  namespace act
+
+//  -------------------------------------------------------
+namespace guard {
+
+{% for k, vparams in transformers.guards -%}
 struct {{k | ToCamel -}} {
   {% for vp in vparams -%} 
     {{k | ToCamel -}}({% for p in vp -%} 
@@ -49,10 +69,25 @@ struct {{k | ToCamel -}} {
   {% endfor -%}
 };
 {% endfor -%}
-{{""}}
+} //  namespace guard
+
+//  -------------------------------------------------------
+namespace trans {
+
+{% for k, vparams in transformers.transitions -%}
+struct {{k | ToCamel -}} {
+  {% for vp in vparams -%} 
+    {{k | ToCamel -}}({% for p in vp -%} 
+    const {% if p.kind == "Status" -%}
+    St{{p.name | ToCamel -}}& {% else -%}
+    In{{p.name | ToCamel -}}&{% endif -%}{% if not loop.last%}, {% endif -%}{% endfor -%}
+  ) {};
+  {% endfor -%}
+};
+{% endfor -%}
+} //  namespace trans
 
 } //  namespace transf
-
 
 } // namespace {{in_file.stem_name}}
 

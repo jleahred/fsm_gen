@@ -10,6 +10,7 @@ pub(crate) fn t() -> &'static str {
 #include "impl/actions.h"
 #include "impl/guards.h"
 #include "impl/transitions.h"
+#include "types_transformers.h"
 
 #include <variant>
 

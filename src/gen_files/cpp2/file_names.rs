@@ -8,3 +8,5 @@ pub(crate) mod transitions_cpp;
 pub(crate) mod transitions_h;
 pub(crate) mod types_h_file;
 pub(crate) mod types_h_reference;
+pub(crate) mod types_transformers_forward_h_file;
+pub(crate) mod types_transformers_h_file;

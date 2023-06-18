@@ -9,7 +9,7 @@ pub(crate) fn t() -> &'static str {
 #pragma once
 
 #include "../types.h"
-
+#include"../types_transformers_forward.h"
 
 namespace fsm_{{in_file.stem_name}} {
     namespace impl {

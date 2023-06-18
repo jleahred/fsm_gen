@@ -1,8 +1,8 @@
 pub(crate) fn t() -> &'static str {
     r#"
-//  Code generated automatically to be filled manually
-//  This file will not be updated by generator
-//  It's created just the first time as a reference
+//  Code generated automatically as reference file
+//  Do not modify manually, it will be generated on each execution
+//  This file will  be updated by generator
 //
 //    generated on {{gen_time}}
     
@@ -35,7 +35,7 @@ struct St{{st.name | ToCamel}}{};
   {{""}}
 
 
-  //  transformers types   -----------------------------------------------
+//  transformers types   -----------------------------------------------
 namespace transf {
 
 //  -------------------------------------------------------

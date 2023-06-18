@@ -99,7 +99,7 @@ In addition to communicating with the outside world through `input/output`, it i
 
 These two elements are fundamental in computer systems.
 
-That's why I developed two external DSLs several years ago to simplify these concepts (which I still use in production and find very helpful).
+That's why I developed two external DSLs several years ago to simplify working with these concepts (which I still use in production and find very helpful).
 
 In this repository, I have rewritten one of them: a code generator for state machines.
 
@@ -109,7 +109,7 @@ To explain the system, I will use the example in [cpp_test/fsm](cpp_test/fsm).
 
 This example is about building a system that handles login requests.
 
-The diagram would look like this:
+The _state_ diagram would look like this:
 
 ![Basic diagram](basic_diagram.png)
 
@@ -132,7 +132,9 @@ The DSL representation of this definition would be:
     timer               ->  init
 
 [w_login]
-    rq_login            ->  login       /   send_login
+    rq_login
+        &  ok           ->  login       /   send_login
+                        ->  error
     timer
         & timeout       ->  error
                         ->  w_login
@@ -144,17 +146,12 @@ The DSL representation of this definition would be:
                         ->  login
 
 [logout]
-    timer               ->  logout
+    timer               ->  _
     _                   ->  testing     /   send_logout
 
 [error]
     _                   ->  error
 
-[testing]
-    rq_key  & ho        ->  logout
-                        ->  testing
-    _     & hia         ->  login
-                        ->  init
 ```
 
 This program also generates the displayed diagram before using the `DSL`.
@@ -440,5 +437,322 @@ soon more detaills
 
 -----
 
+
+## Basic elements
+
+Diseccionemos ahora los elementos que definen una máquina de estado
+
+Una máquina de estados especifica los estados y las transiciones en función de los inputs recibidos
+
+### State
+
+La máquina siempre estará en un estado, y para cada input recibido y la información de contexto del estado actual, pasaremos a otro estado pudiendo realizar alguna acción.
+
+Por tanto, en cada estado, habrá una información de contexto específica de cada estado
+
+
+### Transición
+
+```txt
+[w_login]
+    rq_login            ->  login       /   send_login
+```
+
+Partiendo del estado _w_login_ (waitting request login), si recibimos la petición de login, pasamos al estado _login_ y enviamos la confirmación de login _send_login_
+
+En esta sencilla transición podemos ver varios de los elementos
+
+```txt
+initial estate
+    v
+[w_login]
+
+      INPUT                FINAL STATE         ACTION
+        v                     v                  v
+    rq_login            ->  login       /   send_login
+```
+
+
+
+### Estado inicial
+
+Estado inicial
+
+```txt
+[init]
+```
+
+* Entre corchetes
+* Al inicio de la línea
+
+
+### Input
+
+Elemento recibido
+
+```txt
+[w_login]
+
+      INPUT
+        v
+    rq_login            ->  login       /   send_login
+```
+
+
+### Estado final
+
+```txt
+[w_login]
+
+                         FINAL STATE         
+                              v                   
+    rq_login            ->  login       /   send_login
+```
+
+Dónde quedará la máquina situada para el procesamiento del siguiente _input_
+
+
+### Acción
+
+```txt
+[w_login]
+
+                                             ACTION
+                                               v
+    rq_login            ->  login       /   send_login
+```
+
+Además de cambiar al nuevo estado, qué debemos hacer en cada transición
+
+Se puede definir más de una acción para cada transición separándolas por espacio
+
+```txt
+[w_login]
+    rq_login            ->  login       /   send_login   write_log
+```
+
+
+
+
+### Guards
+
+El cambio de estado podría requerir hacer una validación con la información del estado actual más el input recibido.
+
+Para ello están las guardas
+
+```txt
+[w_login]
+    rq_login
+        &  ok           ->  login       /   send_login
+            ^           ->  error
+          GUARD
+```
+
+Se puede tener más de una guarda por transición
+
+Se puede poner en forma "negada"
+
+```txt
+[w_login]
+    rq_login
+        &  ok  & system ready   ->  login       /   send_login
+            ^        ^          ->  error
+          GUARD    GUARD
+```
+
+```txt
+[w_login]
+    rq_login
+        &  !system_ready        ->  error
+           ^     ^
+          NEGATED GUARD
+        &  ok                   ->  login       /   send_login
+            ^                   ->  error
+          GUARD    
+```
+
+En la siguiente transición
+
+```txt
+[w_login]
+    rq_login
+        &  !system_ready        ->  error
+        &  ok                   ->  login       /   send_login
+                                ->  error
+```
+
+Estamos en el estado esperando petición de login
+
+Si recibimos dicha petición, pero el sistema no está listo, pasamos a estado de error
+En otro caso, si la petición es correcta (ok) pasamos al estado de login
+
+En cualquier otro caso, pasamos al estado de error
+
+
+### Special input
+
+En la siguiente transición, tenemos un input _extraño_  "_"
+
+```txt
+[logout]
+    _                   ->  testing     /   send_logout
+    ^
+  SPECIAL INPUT
+```
+
+El símbolo "_" se utilizará para indicar que se debe generar una transción con las reglas definidas en esta con el input "_" para el resto de inptus no especificados
+
+
+### Special final state
+
+```txt
+[logout]
+    timer               ->  _
+                            ^
+                          SPECIAL FINAL STATE
+
+    _                   ->  testing     /   send_logout
+```
+
+Un estado final con el símbolo "_" indica que no hay cambio de estado
+
+No sólo seguimos en el mismo estado, sino que no cambian los datos de contexto del estado
+
+
+### **error** status and implicit transitions
+
+`error` is a special status
+
+You can move to `error` status explicitly.
+
+Any transition no defined, will finish on error status.
+
+You can also put some verifications on transiction funcion, and incase
+of fail, you can move to error (even when is not explicitly writted on `fsm`)
+
+This is so, because checking the params, is so commont that adding guards for it, would generate a lot of sound
+
+
+In our example...
+
+```peg
+[init]
+    rq_key          ->  w_login     /   send_key
+    timer           ->  init
+```
+
+There are no transations for `rq_login` and `rq_logout`. Both are implicit and is
+equivalent to...
+
+```peg
+[init]
+    rq_key          ->  w_login     /   send_key
+    timer           ->  init
+    _               ->  error
+```
+
+
+## Adapters
+
+_Adapters_ can be placed at the _input_, _guards_, and _transition_ levels.
+
+In the case of _transitions_, they will be placed in the final state.
+
+
+```
+[init]
+    rq_key                      ->  w_login     /   send_key|adapter
+    timer                       ->  init
+    _                           ->  logout      /   log_err
+```
+
+The adapters will help us extract common funcionalities, reducing the number of functions to be filled in, or add context information to make the generated code more readable.
+
+### Comments
+
+Comments starts at `//` and continues to the end of line
+
+
+
+## Usage
+
+To get help...
+
+```bash
+fsm_gen --help
+```
+
+```txt
+> fsm_gen -h
+
+fsm_gen 0.6.1
+jleahred
+
+    Generate code from a simple fsm file
+    To check the supported templates  --show_templs
+    
+
+USAGE:
+    fsm_gen [FLAGS] [OPTIONS] [fsm_files]...
+
+FLAGS:
+    -d, --dot-graphviz    Generate graphviz dot file
+    -h, --help            Prints help information
+        --help-cpp        Give me some information about generating cpp files
+    -s, --show-templs     Show supported template generators
+    -V, --version         Prints version information
+
+OPTIONS:
+    -T, --threads <n_threads>    Number of threads to use. 0 means one per core  ;-) [default: 0]
+    -t, --templ <templ>          Template to generate code (show available --show-templs) [default: cpp]
+
+ARGS:
+    <fsm_files>...    List of fsm files to be processed
+```
+
+The default template is `c++` (and at the moment the only one)
+
+You can run:
+
+```bash
+fsm_gen login.fsm
+```
+
+And it will generate the `c++`
+
+You can pass a list of `fsm` files
+
+```bash
+fsm_gen login.fsm  test/seller.fsm test/test2/lift.fsm
+```
+
+The code will be generated on same directory of original `.fsm` file
+
+If your shell supports it, you could run...
+
+```bash
+fsm_gen **/*.fsm
+```
+
+## C++ code generation
+
+It will also generate the files _types.h_, _types_adapters.h_, and _types_forward.h_.
+
+The _types_reference.h_ file serves as a reference for everything generated in the types files.
+
+The _types.h_ file is initially created and will not be overwritten in subsequent executions.
+
+This file will be used to customize the "types".
+
+Directories will be created for `actions`, `guards`, and `transitions`.
+
+The header files will be rewritten and will help avoid "dead code" and provide the new functions to be filled in.
+
+
+The adapters will be C++ structs with constructors based on the context.
+
+In these types, we have the opportunity to add direct or processed information.
+
+The adapters will help us extract common factors, reducing the number of functions to be filled in, or add context information to make the generated code more readable.
 
 

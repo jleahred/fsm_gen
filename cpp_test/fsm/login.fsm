@@ -8,7 +8,7 @@
 [w_login]
     rq_login            ->  login       /   send_login
     timer
-        & timeout|tr    ->  error
+        & timeout      ->  error
                         ->  w_login
 [login]
     rq_logout           ->  logout      /   send_logout

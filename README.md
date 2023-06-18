@@ -16,7 +16,6 @@ cargo install --path . -f
 
 ## TODO
 
-- cpp2 CamelNames for structs
 
 - revisit dot
 - generate mermaid
@@ -26,8 +25,6 @@ cargo install --path . -f
 - Inprove exceptions control
 - web ui for templates
 - read template from file
-
-- Update idata in order to use ispush with btrees and more
 
 - Complete the cpp example and update on README.md
 - Check fsm format
@@ -41,6 +38,7 @@ cargo install --path . -f
 
 ### 0.8
 - New cpp generator with no c++ template<> code
+- cpp template with CamelNames for structs
 
 ### 0.7
 
@@ -93,144 +91,149 @@ cargo install --path . -f
 - Add comments support on fsm grammar
 
 
-## Aim
+## Objective
 
-All computing processes consist of receiving an input and processing it by generating an output. From the simplest to the most complex.
+All computer systems interact with the external world by receiving information, processing it, and generating a result.
 
-Sometimes, the process depends on the context and it is necessary to manage a state.
+In addition to communicating with the outside world through `input/output`, it is common for a system to manage a `state`.
 
-Messages and state management, therefore, are two fundamental elements of any software process.
+These two elements are fundamental in computer systems.
 
-That's why I wrote two external DSLs long time ago for both elements (which I still use in production and are a great help).
+That's why I developed two external DSLs several years ago to simplify these concepts (which I still use in production and find very helpful).
 
-In this repository I rewrite one of them, the code generator for a state machine.
+In this repository, I have rewritten one of them: a code generator for state machines.
 
-At the moment it generates C++ code (my most immediate target in production).
+Currently, it generates C++ code (the most practical to me at the moment ;-).
 
-> You can have data (fields) on inputs structs, and also on each status
+To explain the system, I will use the example in [cpp_test/fsm](cpp_test/fsm).
 
-To explain the system, I will use the example in [cpp_test/fsm](cpp_test/fsm)
-
-This example is about writing a system that will handle login requests.
-
-First the server will be asked for a password.
-
-This key will be used to encode the username and password (this one will be passed through a hash function) in the login request.
-
-This encoding will be irreversible (hash function). The server will perform the same operation (starting from the hash of the password) to verify the validity.
-
-If it is OK, it will send a login confirmation.
+This example is about building a system that handles login requests.
 
 The diagram would look like this:
 
 ![Basic diagram](basic_diagram.png)
 
-A list of transitions could be written as:
+First, the client will require a key to send a request login with a coded password.
 
-```peg
-//  Example of fsm to manage login
-//  on server side
+This key will be used to encrypt the username and password (the password will go through a hash function) in the login request.
+
+This encryption is irreversible (hash function). The server will perform the same operation (starting from the password hash) to verify its validity.
+
+If it is correct, a login confirmation will be sent.
+
+The DSL representation of this definition would be:
+
+```txt
+// Example of an FSM for managing login
+// on the server side
 
 [init]
-    rq_key          ->  w_login     /   send_key
-    timer           ->  init
+    rq_key              ->  w_login     /   send_key           // this is a comment
+    timer               ->  init
 
 [w_login]
-    rq_login        ->  login       /   send_login
+    rq_login            ->  login       /   send_login
     timer
-        & timeout   ->  error
-                    ->  w_login
+        & timeout       ->  error
+                        ->  w_login
 [login]
-    rq_logout       ->  logout      /   send_logout
-    heartbeat       ->  login       /   update_hb
+    rq_logout           ->  logout      /   send_logout
+    heartbeat           ->  login       /   update_hbr
     timer
-        & timeout   ->  logout
-                    ->  login
+        & timeout       ->  logout
+                        ->  login
 
 [logout]
-    timer           ->  logout
+    timer               ->  logout
+    _                   ->  testing     /   send_logout
 
 [error]
-    _               ->  error
+    _                   ->  error
+
+[testing]
+    rq_key  & ho        ->  logout
+                        ->  testing
+    _     & hia         ->  login
+                        ->  init
 ```
 
-And this is the input for this tool to generate code
+This program also generates the displayed diagram before using the `DSL`.
 
-In fact, even the previous diagram has been generated from this `DSL` (it generated a `graphviz` dot file)
+
 
 ## Elements
 
 ### States
 
-```peg
+A `state`machine... you know
+
+### Initial state
+
+```
 [init]
-    ...
 ```
 
-**init**, **w_login**, **login** ... are the states
+init, w_login, login, and so on are the states.
 
 Depending on the input and the state (with its values as will be seen later), the system will change to a new state.
 
 ### Transition
-
-```peg
+```
     rq_key                  ->  w_login
 ```
 
-If we receive an input (in this case `rq_key`) we go to next state (`w_login`)
+If we receive an input (in this case _rq_key_), we go to the next state (_w_login_).
 
-### Input
+## Input
 
-The elements received by the status machine.
+The elements received by the state machine.
 
-```peg
+```
     INPUT
       v
     rq_key                  ->  w_login
 ```
 
-In the example they are **rq_key**, **rq_login**, **rq_logout**, **heartbeat** and **timer**.
+In the example, they are rq_key, rq_login, rq_logout, heartbeat, and timer.
 
 ### Guards
 
-Functions that will be called depending on the status and input to decide the way forward.
+Functions that will be called depending on the state and input to decide the way forward.
 
-```peg
+```
                     GUARD
                      v
     rq_login    &   valid   ->  login       /   send_login
+``` 
+
+You can have more than one guard.
+
 ```
-
-You can have more than one guard
-
-```peg
     rq_login    &   valid  &  guard2  ->  login       /   send_login
 ```
 
-When you apply different options guards (or combination)...
+In the example, we have valid, timeout, and ontime.
 
-In the example we have **valid**, **timeout**, **ontime**.
-
-```peg
+```
     rq_login
         &   valid   ->  login       /   send_login
                     ->  logout      /   log_err
 ```
 
-It could be written with negative guard
+It could be written with a negative guard.
 
-```peg
+```
     rq_login
         &   !valid  ->  logout      /   log_err
                     ->  login       /   send_login
 ```
 
-### Final status
+### Final state
 
-Behind the **->** arrow is the state we will change to.
+After the -> arrow is the state we will change to.
 
-```peg
-                               FINAL_STATUS
+```
+                               FINAL_STATE
                                    v
     rq_key                  ->  w_login
 ```
@@ -239,44 +242,70 @@ Behind the **->** arrow is the state we will change to.
 
 We can define an action to be performed when executing a transaction.
 
-This will be after the final state and '/'.
+This comes after the final state and '/'.
 
-```peg
+```
                                                 ACTION
                                                   v
     rq_login                ->  logout      /   log_err
 ```
 
-You can have more than one action
+You can have more than one action.
 
-```peg
+```
     rq_login                ->  logout      /   log_err  action2
 ```
 
-In this example we have **send_key**, **send_login**...
+In this example, we have _send_key_, _send_login_, and so on.
+
 
 ### Special transition
 
-In all states it is necessary to consider all inputs.
+In all states, it is necessary to consider all inputs.
 
 But it is very common that many transitions are the same (generally error cases).
 
-This is marked with the input \_
+This is marked with the input _.
 
-Consider the this example status:
+Consider the following example status:
 
-```peg
+```
 [init]
     rq_key                      ->  w_login     /   send_key
     timer                       ->  init
     _                           ->  logout      /   log_err
 ```
 
-\_ means... any other input...
+`_` means any other input.
 
-Therefore considering all possible inputs in this state
+Therefore, considering all possible inputs in this state, we have:
 
-## `error` status and implicit transitions
+```
+[init]
+    rq_key                      ->  w_login     /   send_key
+    timer                       ->  init
+    _                           ->  logout      /   log_err
+```
+
+
+## Adapters
+
+_Adapters_ can be placed at the _input_, _guards_, and _transition_ levels.
+
+In the case of _transitions_, they will be placed in the final state.
+
+
+```
+[init]
+    rq_key                      ->  w_login     /   send_key|adapter
+    timer                       ->  init
+    _                           ->  logout      /   log_err
+```
+
+The adapters will help us extract common funcionalities, reducing the number of functions to be filled in, or add context information to make the generated code more readable.
+
+
+## **error** status and implicit transitions
 
 `error` is a special status
 
@@ -307,38 +336,6 @@ equivalent to...
     timer           ->  init
     _               ->  error
 ```
-
-This is the transition function control (obiosly you can specialize as you wish)
-
-```cpp
-    //  status change functions
-    template <typename FROM, typename IN, typename TO>
-    std::variant<TO, st_error_t> fromin2(const FROM &, const IN &) {
-        //  here you could check the params and decide to go to error
-        //  instead to the programmed trasnsition
-        ...
-    }
-```
-
-And this is when you explicitly write a transition who finished on error status
-```cpp
-    template <typename FROM, typename IN>
-    st_error_t fromin2error(const FROM &, const IN &) {
-      return st_error_t{...};
-    }
-```
-
-Another way to end on error transition. If an exception is thrown while the input is being procesed...
-
-```cpp
-  [...]
-  } catch (...) {}
-
-  auto nw_st_info = fromin2error<st_init_t, in_rq_key_t>(this->info, in);
-  log("[init] rq_key error/default -> error", in, info, nw_st_info);
-  return std::make_shared<error>(nw_st_info);
-```
-
 
 ### Comments
 
@@ -406,238 +403,42 @@ fsm_gen **/*.fsm
 
 ## C++ code generation
 
-The c++ template is the first template to generate code
+It will also generate the files _types.h_, _types_adapters.h_, and _types_forward.h_.
 
-It will create a `finite state machine` with `RAII`
+The _types_reference.h_ file serves as a reference for everything generated in the types files.
 
-You can have data and status (like a socket, o a db connection...) on each status, and you can use the `destructor` to manage these resources
+The _types.h_ file is initially created and will not be overwritten in subsequent executions.
 
-Starting from the example `login.fsm` the system will create...
+This file will be used to customize the "types".
 
-```txt
-    gen_fsm_login.h
-    gen_fsm_login.cpp
-```
+Directories will be created for `actions`, `guards`, and `transitions`.
 
-You don't have to modify these files.
+The header files will be rewritten and will help avoid "dead code" and provide the new functions to be filled in.
 
-In fact, all files starting with `gen_` shouldn't by modified by hand
 
-You have to write your code
-on next files...
+The adapters will be C++ structs with constructors based on the context.
 
-```txt
-    fsm_login_types.h
-    fsm_login_private.hpp
-```
+In these types, we have the opportunity to add direct or processed information.
 
-There are two forward files for types and private. You can use them as reference to fill these files.
+The adapters will help us extract common factors, reducing the number of functions to be filled in, or add context information to make the generated code more readable.
 
-These two files will be created if don't exist as a reference
 
-Files dependency:
+---
 
-![cpp_files_depen](cpp_files_depen.png)
 
-### gen_fsm_login.h
+soon more detaills
 
-Full code on [cpp_test/fsm/gen_fsm_login.h](cpp_test/fsm/gen_fsm_login.h)
 
-We are informed on when it was created.
 
-This file is the starting point to use or extend the generated status machine
-in your program.
 
-```cpp
-//  generated automatically  2019-03-22 11:24:40
-//  do not modify it manually
-```
 
-Headers and `namespaces` based on filename
 
-```cpp
-#pragma once
 
-#include <iostream>
-#include <memory>
 
-namespace login {
-```
 
-Internal class forward declaration
 
-```cpp
-class BaseState;
-typedef std::shared_ptr<BaseState> SState;
-```
 
-The `fsm` class you have to instantiate or extend
+-----
 
-```cpp
-//  -------------------
-//      F S M
-class Fsm {
-public:
-  Fsm();
-  ~Fsm();
 
-  void process(const heartbeat_t& in);
-  void process(const rq_key_t& in);
-  void process(const rq_login_t& in);
-  void process(const rq_logout_t& in);
-  void process(const timer_t& in);
 
-  ...
-}
-```
-
-### gen_fsm_login.cpp
-
-Full code on [cpp_test/fsm/gen_fsm_login.cpp](cpp_test/fsm/gen_fsm_login.cpp)
-
-You must not modify this file, and it's not necessary to know much about it
-
-### fsm_login_types.h
-
-Full code on [cpp_test/fsm/fsm_login_types.h](cpp_test/fsm/fsm_login_types.h)
-
-In this file you have to declare the status info types, and input types
-
-If the file doesn't exist, it will be created with empty data types
-
-```cpp
-//  Code generated automatically to be filled manually
-//  This file will not be updated by generator
-//  It's created just the first time as a reference
-//
-//  new methods and so
-```
-
-On `namespace` based on fsm file, we have the two types to declare
-
-You can, of course, complete these types on cpp file if necessary
-
-```cpp
-namespace login {
-
-  //  status info types
-  struct st_init_t{};
-  struct st_w_login_t{};
-  struct st_login_t{};
-  struct st_logout_t{};
-  struct st_error_t{};
-
-
-  //  input types
-  struct in_heartbeat_t {};
-  struct in_rq_key_t {};
-  struct in_rq_login_t {};
-  struct in_rq_logout_t {};
-  struct in_timer_t {};
-
-
-} // namespace login
-#endif // FSM_LOGIN_H
-```
-
-### fsm_login_private.hpp
-
-Full code on [cpp_test/fsm/fsm_login_private.hpp](cpp_test/fsm/fsm_login_private.hpp)
-
-This is the other file you have to maintain by hand.
-
-```cpp
-
-//  Code generated automatically to be filled manually
-//  This file will not be updated by generator
-//  It's created just the first time as a reference
-//  
-//  This file will be included in gen_xxx.cpp
-//  (anywhere else)
-
-//  to make happy some IDEs
-#include "fsm_login_types.h"
-#include "gen_fsm_login.h"
-
-namespace {
-    using namespace login;
-```
-
-As you can see, it is on anonymous `namespace`.
-
-This file is private, it will be included by `genxxx.cpp`. Defining an anonymous
-`namespace`, we keep this implementation as private. Even more important, the compiler
-will alert us if we forget an implementation, also if one is not necessary.
-
-Log and status change transitions are templates.
-
-This is a log example:
-
-```cfg
-[init] rq_key -> w_login
-[w_login] rq_login(valid) -> login
-[login] rq_logout -> logout
-```
-
-In this way, you can specialize or generalize as much as you want.
-
-```cpp
-    //  log
-    template <typename IN, typename INIT_ST, typename END_ST>
-    void log(const std::string &txt_trans, const IN &, const INIT_ST &,
-            const END_ST &) {
-        std::cout << txt_trans << std::endl;
-    }
-
-    //  status change functions
-    template <typename FROM, typename IN, typename TO>
-    std::variant<TO, st_error_t> fromin2(const FROM &, const IN &) {
-        //  you can specialize or overload this generic function (not both)
-        return TO{};
-    }
-    template <typename FROM, typename IN>
-    st_error_t fromin2error(const FROM &, const IN &) {
-      return st_error_t{};
-    }
-```
-
-First parameter in log, is an string with transition change information (initial transition, input, guard if so, final transition)
-
-Next, we have the guards and actions functions.
-
-```cpp
-    //  guards
-    template<typename FROM_ST>
-    bool timeout(const in_timer_t& /*input*/, const FROM_ST&) { return true; }
-
-
-    //  actions
-    template<typename FROM_ST, typename TO_ST>
-    void act_update_hb(const FROM_ST&, const in_heartbeat_t& /*input*/, const TO_ST&) {}
-    template<typename FROM_ST, typename TO_ST>
-    void act_send_logout(const FROM_ST&, const in_rq_logout_t& /*input*/, const TO_ST&) {}
-    template<typename FROM_ST, typename TO_ST>
-    void act_send_key(const FROM_ST&, const in_rq_key_t& /*input*/, const TO_ST&) {}
-    template<typename FROM_ST, typename TO_ST>
-    void act_send_login(const FROM_ST&, const in_rq_login_t& /*input*/, const TO_ST&) {}
-
-
-
-} // namespace anonymous
-```
-
-## Diagrams source
-
-```dot
-digraph G {
-rankdir = BT;
-  node [shape=plaintext fontname="Arial"];
-
-main -> "gen_fsm_login.h"
-
-"gen_fsm_login.cpp" -> "gen_fsm_login.h"
-
-"gen_fsm_login.h" -> "fsm_login_types.h"
-
-}
-```

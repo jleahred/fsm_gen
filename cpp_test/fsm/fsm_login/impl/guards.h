@@ -2,7 +2,7 @@
 //  Code generated automatically
 //  DO NOT modif. It will be rewritten on each generation
 //
-//    generated on 2023-06-18 13:01:00
+//    generated on 2023-06-18 13:27:21
 
 
 #pragma once
@@ -21,10 +21,10 @@ namespace fsm_login {
     static bool is_hia(const StTesting& /*from*/, const InTimer& /*timer*/);
     static bool is_ho(const StTesting& /*from*/, const InRqKey& /*rq_key*/);
     static bool is_timeout(const StLogin& /*from*/, const InTimer& /*timer*/);
+    static bool is_timeout(const StWLogin& /*from*/, const InTimer& /*timer*/);
     
 
     //  with adapters
-    static bool is_timeout(const adapt::guard::Tr& /*tr*/);
     
 
     };  //  struct guard

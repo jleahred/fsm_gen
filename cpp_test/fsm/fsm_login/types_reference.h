@@ -3,7 +3,7 @@
 //  Do not modify manually, it will be generated on each execution
 //  This file will  be updated by generator
 //
-//    generated on 2023-06-18 13:01:00
+//    generated on 2023-06-18 13:27:21
     
 #pragma once
 
@@ -52,9 +52,6 @@ namespace act {
 //  -------------------------------------------------------
 namespace guard {
 
-struct Tr{
-  Tr(const StWLogin& , const InTimer&) {};
-  };
 } //  namespace guard
 
 //  -------------------------------------------------------

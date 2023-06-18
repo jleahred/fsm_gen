@@ -1,7 +1,7 @@
 
 // clang-format off
 
-//  generated automatically  2023-06-18 13:01:00
+//  generated automatically  2023-06-18 13:27:21
 //  do not modify it manually
 
 #include "login.h"
@@ -279,7 +279,7 @@ SState w_login::input(const InTimer& in) {
 try {
     
     if(true 
-      && impl::guard::is_timeout(adapt::guard::Tr{info, in})
+      && impl::guard::is_timeout(info, in)
       ){
       auto nw_st_info = impl::trans::to_error(this->info, in);
       //log(en_log_level::info, "[w_login] timer -> error", in, info, nw_st_info);

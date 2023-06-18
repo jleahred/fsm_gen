@@ -3,7 +3,7 @@
 //  This file will not be updated by generator
 //  It's created just the first time as a reference
 //
-//    generated on 2023-06-18 13:01:00
+//    generated on 2023-06-18 13:27:21
 
 
 #include "guards.h"
@@ -33,13 +33,12 @@ namespace fsm_login {
         bool guard::is_timeout(const StLogin& /*from*/, const InTimer& /*timer*/){
             return true;        //  pending!
         }
+        bool guard::is_timeout(const StWLogin& /*from*/, const InTimer& /*timer*/){
+            return true;        //  pending!
+        }
         
     
         //  with adapters
-        bool guard::is_timeout(const adapt::guard::Tr& /*tr*/)
-        {
-            return true;        //  pending!
-        }
         
     
     } // namespace impl

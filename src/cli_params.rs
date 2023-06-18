@@ -6,7 +6,6 @@ mod support;
 
 enum_str! {
     enum Templ {
-        Cpp1 = "cpp1",
         Cpp2 = "cpp2",
     }
 }
@@ -43,10 +42,6 @@ pub(crate) struct Opt {
     /// List of fsm files to be processed
     #[structopt(parse(from_os_str))]
     pub(crate) fsm_files: Vec<PathBuf>,
-
-    /// Give me some information about generating cpp files with templates
-    #[structopt(long = "help-cpp1")]
-    pub(crate) help_cpp1: bool,
 
     /// Give me some information about generating cpp files with no templates to fill
     #[structopt(long = "help-cpp2")]

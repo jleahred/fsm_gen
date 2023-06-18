@@ -14,7 +14,7 @@ namespace fsm_{{in_file.stem_name}} {
     namespace impl {
 
         {% for gi in guard_from_input -%}
-        static bool is_{{gi.guard}}(const St{{ gi.from | ToCamel }}& /*from*/, const In{{ gi.input  | ToCamel }}& /*{{gi.input}}*/){
+        bool guard::is_{{gi.guard}}(const St{{ gi.from | ToCamel }}& /*from*/, const In{{ gi.input  | ToCamel }}& /*{{gi.input}}*/){
             return true;        //  pending!
         }
         {% endfor -%}
@@ -22,7 +22,7 @@ namespace fsm_{{in_file.stem_name}} {
     
         //  with adapters
         {% for gt in guard_adapters -%}
-        static bool is_{{gt.guard_name}}(const adap::guard::{{gt.adapter_name | ToCamel}}& /*{{gt.adapter_name}}*/)
+        bool guard::is_{{gt.guard_name}}(const adapt::guard::{{gt.adapter_name | ToCamel}}& /*{{gt.adapter_name}}*/)
         {
             return true;        //  pending!
         }

@@ -1,14 +1,13 @@
-pub(crate) fn t() -> &'static str {
-    r#"
+
 //  Code generated automatically
 //  DO NOT modif. It will be rewritten on each generation
 //
-//    generated on {{gen_time}}
+//    generated on 2023-06-18 13:01:00
         
 #pragma once
 
 
-namespace fsm_{{in_file.stem_name}} {
+namespace fsm_login {
 
   //  adapters types  forward decl -----------------------------------------
   namespace adapt {
@@ -16,30 +15,20 @@ namespace fsm_{{in_file.stem_name}} {
   //  -------------------------------------------------------
   namespace act {
   
-  {% for k, vparams in adapters.actions -%}
-  struct {{k | ToCamel -}};
-  {% endfor -%}
   } //  namespace act
   
   //  -------------------------------------------------------
   namespace guard {
   
-  {% for k, vparams in adapters.guards -%}
-  struct {{k | ToCamel -}};
-  {% endfor -%}
+  struct Tr;
   } //  namespace guard
   
   //  -------------------------------------------------------
   namespace trans {
   
-  {% for k, vparams in adapters.transitions -%}
-  struct {{k | ToCamel -}};
-  {% endfor -%}
   } //  namespace trans
   
   } //  namespace adapt
 
-} // namespace {{in_file.stem_name}}
+} // namespace login
 
-"#
-}

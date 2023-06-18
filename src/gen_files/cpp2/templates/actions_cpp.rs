@@ -17,7 +17,7 @@ namespace fsm_{{in_file.stem_name}} {
         //  actions
 
         {% for ai in action_init_param_to -%}
-        static void act::{{ai.action.name}}(const St{{ ai.from | ToCamel }}& from, const In{{ai.input | ToCamel }}& {{ai.input}}, const St{{ ai.to  | ToCamel }}& to)
+        void act::{{ai.action.name}}(const St{{ ai.from | ToCamel }}& /*from*/, const In{{ai.input | ToCamel }}& /*{{ai.input}}*/, const St{{ ai.to  | ToCamel }}& /*to*/)
         {
         }
         {% endfor -%}
@@ -25,7 +25,7 @@ namespace fsm_{{in_file.stem_name}} {
     
         //  with adapters
         {% for at in action_adapters -%}
-        static void act::{{at.action_name}}(const adap::act::{{at.adapter_name | ToCamel}}& /*{{at.adapter_name}}*/)
+        void act::{{at.action_name}}(const adapt::act::{{at.adapter_name | ToCamel}}& /*{{at.adapter_name}}*/)
         {
         }
         {% endfor -%}

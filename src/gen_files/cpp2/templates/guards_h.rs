@@ -22,7 +22,7 @@ namespace fsm_{{in_file.stem_name}} {
 
     //  with adapters
     {% for gt in guard_adapters -%}
-    static bool is_{{gt.guard_name}}(const adap::guard::{{gt.adapter_name | ToCamel}}& /*{{gt.adapter_name}}*/);
+    static bool is_{{gt.guard_name}}(const adapt::guard::{{gt.adapter_name | ToCamel}}& /*{{gt.adapter_name}}*/);
     {% endfor -%}
     {{""}}
 

@@ -2,16 +2,16 @@
 //  on server side
 
 [init]
-    rq_key              ->  w_login|tr  /   send_key|tr        //  this is a comment
+    rq_key              ->  w_login     /   send_key           //  this is a comment
     timer               ->  init
 
 [w_login]
-    rq_login            ->  login       /   send_login|tr
+    rq_login            ->  login       /   send_login
     timer
         & timeout|tr    ->  error
                         ->  w_login
 [login]
-    rq_logout           ->  logout      /   send_logou|tr
+    rq_logout           ->  logout      /   send_logout
     heartbeat           ->  login       /   update_hbr
     timer
         & timeout       ->  logout

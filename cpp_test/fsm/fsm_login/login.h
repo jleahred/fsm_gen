@@ -1,7 +1,7 @@
 
 // clang-format off
 
-//  generated automatically  2023-06-15 00:20:20
+//  generated automatically  2023-06-18 13:01:00
 //  do not modify it manually
 
 #pragma once
@@ -10,6 +10,7 @@
 #include <memory>
 
 #include "types.h"
+
 
 namespace fsm_login {
 

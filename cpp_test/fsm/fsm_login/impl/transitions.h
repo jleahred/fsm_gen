@@ -2,7 +2,7 @@
 //  Code generated automatically
 //  DO NOT modif. It will be rewritten on each generation
 //
-//    generated on 2023-06-15 00:20:20
+//    generated on 2023-06-18 13:01:00
 
 
 #pragma once
@@ -10,11 +10,13 @@
 // clang-format off
 
 #include<variant>
+
 #include"../types.h"
+#include"../types_adapters_forward.h"
 
 namespace fsm_login {
   namespace impl {
-  struct trans {    //  struct insted namespace, trick to dected dead code
+  struct trans {    //  struct instead namespace, trick to dected dead code
 
   //  status change functions
   static std::variant<StInit, StError> to_init(const StInit& /*from*/, const InTimer& /*timer*/);
@@ -44,6 +46,11 @@ namespace fsm_login {
   static std::variant<StWLogin, StError> to_w_login(const StInit& /*from*/, const InRqKey& /*rq_key*/);
   static std::variant<StWLogin, StError> to_w_login(const StWLogin& /*from*/, const InTimer& /*timer*/);
   
+
+
+  //  with adapters
+  
+
 
   //  status change functions 2 error
   static StError to_error(const StError& /*from*/, const InHeartbeat& /*heartbeat*/);

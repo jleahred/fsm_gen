@@ -36,7 +36,7 @@ struct St{{st.name | ToCamel}}{};
 
 
 //  adapters types   -----------------------------------------------
-namespace adap {
+namespace adapt {
 
 //  -------------------------------------------------------
 namespace act {
@@ -87,7 +87,7 @@ struct {{k | ToCamel -}} {
 {% endfor -%}
 } //  namespace trans
 
-} //  namespace adap
+} //  namespace adapt
 
 } // namespace {{in_file.stem_name}}
 

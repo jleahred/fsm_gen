@@ -74,7 +74,7 @@ try {
           && impl::guard::is_{{guard.name}}(info, in)
       {% else -%}
           {% if not guard.positiv -%}!{% endif -%}
-          && impl::guard::is_{{guard.name}}(adap::guard::{{guard.adapter_name | ToCamel}}{info, in})
+          && impl::guard::is_{{guard.name}}(adapt::guard::{{guard.adapter_name | ToCamel}}{info, in})
       {% endif -%}
       {%- endfor -%}
            ){
@@ -83,7 +83,7 @@ try {
       {% if not transition.adapter_name -%}
       auto nw_st_info_or_error = impl::trans::to_{{transition.new_status.name}}(this->info, in);
       {% else -%}
-      auto nw_st_info_or_error = impl::trans::to_{{transition.new_status.name}}(adap::trans::{{transition.adapter_name | ToCamel}}{this->info, in});
+      auto nw_st_info_or_error = impl::trans::to_{{transition.new_status.name}}(adapt::trans::{{transition.adapter_name | ToCamel}}{this->info, in});
       {% endif -%}
       {% endif -%}
       {% if transition.new_status.name != "_"  %}
@@ -97,7 +97,7 @@ try {
           {%- if transition.new_status.name != "_"  -%}, *nw_st_info{%- else  %} {%- endif -%}
         );
         {%- else -%}
-        impl::act::{{action.name}}(adap::act::{{action.adapter_name | ToCamel}}{this->info, in,
+        impl::act::{{action.name}}(adapt::act::{{action.adapter_name | ToCamel}}{this->info, in,
         {%- if transition.new_status.name != "_"  -%} *nw_st_info{%- else -%} this->info{%- endif -%}
         });
         {% endif -%}
@@ -120,7 +120,7 @@ try {
       {% if not action.adapter_name -%}
       impl::act::{{action.name}}(this->info, in, nw_st_info);
       {% else -%}
-      impl::act::{{action.name}}(adap::act::{{action.adapter_name | ToCamel}}{this->info, in, nw_st_info});
+      impl::act::{{action.name}}(adapt::act::{{action.adapter_name | ToCamel}}{this->info, in, nw_st_info});
       {% endif -%}
       {% endfor %}
       return std::make_shared<{{transition.new_status.name}}>(nw_st_info);

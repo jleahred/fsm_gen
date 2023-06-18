@@ -13,7 +13,7 @@ pub(crate) fn t() -> &'static str {
 namespace fsm_{{in_file.stem_name}} {
 
   //  adapters types   -----------------------------------------------
-  namespace adap {
+  namespace adapt {
   
   //  -------------------------------------------------------
   namespace act {
@@ -64,7 +64,7 @@ namespace fsm_{{in_file.stem_name}} {
   {% endfor -%}
   } //  namespace trans
   
-  } //  namespace adap
+  } //  namespace adapt
 
 } // namespace {{in_file.stem_name}}
 

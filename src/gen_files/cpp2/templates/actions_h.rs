@@ -34,7 +34,7 @@ namespace fsm_{{in_file.stem_name}} {
 
     //  with adapters
     {% for at in action_adapters -%}
-    static void {{at.action_name}}(const adap::act::{{at.adapter_name | ToCamel}}& /*{{at.adapter_name}}*/);
+    static void {{at.action_name}}(const adapt::act::{{at.adapter_name | ToCamel}}& /*{{at.adapter_name}}*/);
     {% endfor -%}
     {{""}}
 

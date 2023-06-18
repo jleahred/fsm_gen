@@ -30,7 +30,7 @@ namespace fsm_{{in_file.stem_name}} {
 
   //  with adapters
   {% for t in transition_adapters -%}
-  static std::variant<St{{ t.to | ToCamel }}, StError> to_{{t.to}}(const adap::trans::{{t.adapter_name | ToCamel}}& /*{{t.adapter_name}}*/);
+  static std::variant<St{{ t.to | ToCamel }}, StError> to_{{t.to}}(const adapt::trans::{{t.adapter_name | ToCamel}}& /*{{t.adapter_name}}*/);
   {% endfor -%}
   {{""}}
 

@@ -1,7 +1,7 @@
 
-//  Code generated automatically to be filled manually
-//  This file will not be updated by generator
-//  It's created just the first time as a reference
+//  Code generated automatically as reference file
+//  Do not modify manually, it will be generated on each execution
+//  This file will  be updated by generator
 //
 //    generated on 2023-06-18 13:01:00
     
@@ -40,6 +40,29 @@ struct StTesting{};
   using InTimer = Provisional_InTimer;
   
 
+
+//  adapters types   -----------------------------------------------
+namespace adapt {
+
+//  -------------------------------------------------------
+namespace act {
+
+} //  namespace act
+
+//  -------------------------------------------------------
+namespace guard {
+
+struct Tr{
+  Tr(const StWLogin& , const InTimer&) {};
+  };
+} //  namespace guard
+
+//  -------------------------------------------------------
+namespace trans {
+
+} //  namespace trans
+
+} //  namespace adapt
 
 } // namespace login
 

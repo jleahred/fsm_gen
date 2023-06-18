@@ -1,7 +1,7 @@
 
 // clang-format off
 
-//  generated automatically  2023-06-15 00:20:20
+//  generated automatically  2023-06-18 13:01:00
 //  do not modify it manually
 
 #include "login.h"
@@ -9,6 +9,7 @@
 #include "impl/actions.h"
 #include "impl/guards.h"
 #include "impl/transitions.h"
+#include "types_adapters.h"
 
 #include <variant>
 
@@ -157,13 +158,15 @@ try {
     
     if(true){
       
+      
       auto nw_st_info_or_error = impl::trans::to_w_login(this->info, in);
+      
       if(auto nw_st_info = std::get_if<StWLogin>(&nw_st_info_or_error))
       {
-        //log(en_log_level::info, "[init] rq_key -> w_login", in, info, nw_st_info);
-        impl::act::send_key(transf::act::Tr{this->info, in, *nw_st_info});
-        
+      //log(en_log_level::info, "[init] rq_key -> w_login", in, info, nw_st_info);
+        impl::act::send_key(this->info, in, *nw_st_info);
         return std::make_shared<w_login>(*nw_st_info);
+      
       } else if(auto nw_st_info = std::get_if<StError>(&nw_st_info_or_error)){
           //log(en_log_level::info, "[init] rq_key -> error", in, info, nw_st_info);
           return std::make_shared<error>(*nw_st_info);
@@ -198,12 +201,15 @@ try {
     
     if(true){
       
+      
       auto nw_st_info_or_error = impl::trans::to_init(this->info, in);
+      
       if(auto nw_st_info = std::get_if<StInit>(&nw_st_info_or_error))
       {
-        //log(en_log_level::info, "[init] timer -> init", in, info, nw_st_info);
+      //log(en_log_level::info, "[init] timer -> init", in, info, nw_st_info);
         
         return std::make_shared<init>(*nw_st_info);
+      
       } else if(auto nw_st_info = std::get_if<StError>(&nw_st_info_or_error)){
           //log(en_log_level::info, "[init] rq_key -> error", in, info, nw_st_info);
           return std::make_shared<error>(*nw_st_info);
@@ -239,13 +245,15 @@ try {
     
     if(true){
       
+      
       auto nw_st_info_or_error = impl::trans::to_login(this->info, in);
+      
       if(auto nw_st_info = std::get_if<StLogin>(&nw_st_info_or_error))
       {
-        //log(en_log_level::info, "[w_login] rq_login -> login", in, info, nw_st_info);
-        impl::act::send_login(transf::act::Tr{this->info, in, *nw_st_info});
-        
+      //log(en_log_level::info, "[w_login] rq_login -> login", in, info, nw_st_info);
+        impl::act::send_login(this->info, in, *nw_st_info);
         return std::make_shared<login>(*nw_st_info);
+      
       } else if(auto nw_st_info = std::get_if<StError>(&nw_st_info_or_error)){
           //log(en_log_level::info, "[init] rq_key -> error", in, info, nw_st_info);
           return std::make_shared<error>(*nw_st_info);
@@ -270,8 +278,9 @@ return std::make_shared<error>(nw_st_info);
 SState w_login::input(const InTimer& in) {
 try {
     
-    if(true && impl::guard::is_timeout(info, in)){
-      
+    if(true 
+      && impl::guard::is_timeout(adapt::guard::Tr{info, in})
+      ){
       auto nw_st_info = impl::trans::to_error(this->info, in);
       //log(en_log_level::info, "[w_login] timer -> error", in, info, nw_st_info);
       
@@ -281,12 +290,15 @@ try {
     
     if(true){
       
+      
       auto nw_st_info_or_error = impl::trans::to_w_login(this->info, in);
+      
       if(auto nw_st_info = std::get_if<StWLogin>(&nw_st_info_or_error))
       {
-        //log(en_log_level::info, "[w_login] timer -> w_login", in, info, nw_st_info);
+      //log(en_log_level::info, "[w_login] timer -> w_login", in, info, nw_st_info);
         
         return std::make_shared<w_login>(*nw_st_info);
+      
       } else if(auto nw_st_info = std::get_if<StError>(&nw_st_info_or_error)){
           //log(en_log_level::info, "[init] rq_key -> error", in, info, nw_st_info);
           return std::make_shared<error>(*nw_st_info);
@@ -306,13 +318,15 @@ try {
     
     if(true){
       
+      
       auto nw_st_info_or_error = impl::trans::to_login(this->info, in);
+      
       if(auto nw_st_info = std::get_if<StLogin>(&nw_st_info_or_error))
       {
-        //log(en_log_level::info, "[login] heartbeat -> login", in, info, nw_st_info);
+      //log(en_log_level::info, "[login] heartbeat -> login", in, info, nw_st_info);
         impl::act::update_hbr(this->info, in, *nw_st_info);
-        
         return std::make_shared<login>(*nw_st_info);
+      
       } else if(auto nw_st_info = std::get_if<StError>(&nw_st_info_or_error)){
           //log(en_log_level::info, "[init] rq_key -> error", in, info, nw_st_info);
           return std::make_shared<error>(*nw_st_info);
@@ -347,13 +361,15 @@ try {
     
     if(true){
       
+      
       auto nw_st_info_or_error = impl::trans::to_logout(this->info, in);
+      
       if(auto nw_st_info = std::get_if<StLogout>(&nw_st_info_or_error))
       {
-        //log(en_log_level::info, "[login] rq_logout -> logout", in, info, nw_st_info);
-        impl::act::send_logou(transf::act::Tr{this->info, in, *nw_st_info});
-        
+      //log(en_log_level::info, "[login] rq_logout -> logout", in, info, nw_st_info);
+        impl::act::send_logout(this->info, in, *nw_st_info);
         return std::make_shared<logout>(*nw_st_info);
+      
       } else if(auto nw_st_info = std::get_if<StError>(&nw_st_info_or_error)){
           //log(en_log_level::info, "[init] rq_key -> error", in, info, nw_st_info);
           return std::make_shared<error>(*nw_st_info);
@@ -370,14 +386,19 @@ return std::make_shared<error>(nw_st_info);
 SState login::input(const InTimer& in) {
 try {
     
-    if(true && impl::guard::is_timeout(info, in)){
+    if(true 
+      && impl::guard::is_timeout(info, in)
+      ){
+      
       
       auto nw_st_info_or_error = impl::trans::to_logout(this->info, in);
+      
       if(auto nw_st_info = std::get_if<StLogout>(&nw_st_info_or_error))
       {
-        //log(en_log_level::info, "[login] timer -> logout", in, info, nw_st_info);
+      //log(en_log_level::info, "[login] timer -> logout", in, info, nw_st_info);
         
         return std::make_shared<logout>(*nw_st_info);
+      
       } else if(auto nw_st_info = std::get_if<StError>(&nw_st_info_or_error)){
           //log(en_log_level::info, "[init] rq_key -> error", in, info, nw_st_info);
           return std::make_shared<error>(*nw_st_info);
@@ -387,12 +408,15 @@ try {
     
     if(true){
       
+      
       auto nw_st_info_or_error = impl::trans::to_login(this->info, in);
+      
       if(auto nw_st_info = std::get_if<StLogin>(&nw_st_info_or_error))
       {
-        //log(en_log_level::info, "[login] timer -> login", in, info, nw_st_info);
+      //log(en_log_level::info, "[login] timer -> login", in, info, nw_st_info);
         
         return std::make_shared<login>(*nw_st_info);
+      
       } else if(auto nw_st_info = std::get_if<StError>(&nw_st_info_or_error)){
           //log(en_log_level::info, "[init] rq_key -> error", in, info, nw_st_info);
           return std::make_shared<error>(*nw_st_info);
@@ -412,13 +436,15 @@ try {
     
     if(true){
       
+      
       auto nw_st_info_or_error = impl::trans::to_testing(this->info, in);
+      
       if(auto nw_st_info = std::get_if<StTesting>(&nw_st_info_or_error))
       {
-        //log(en_log_level::info, "[logout] heartbeat -> testing", in, info, nw_st_info);
+      //log(en_log_level::info, "[logout] heartbeat -> testing", in, info, nw_st_info);
         impl::act::send_logout(this->info, in, *nw_st_info);
-        
         return std::make_shared<testing>(*nw_st_info);
+      
       } else if(auto nw_st_info = std::get_if<StError>(&nw_st_info_or_error)){
           //log(en_log_level::info, "[init] rq_key -> error", in, info, nw_st_info);
           return std::make_shared<error>(*nw_st_info);
@@ -437,13 +463,15 @@ try {
     
     if(true){
       
+      
       auto nw_st_info_or_error = impl::trans::to_testing(this->info, in);
+      
       if(auto nw_st_info = std::get_if<StTesting>(&nw_st_info_or_error))
       {
-        //log(en_log_level::info, "[logout] rq_key -> testing", in, info, nw_st_info);
+      //log(en_log_level::info, "[logout] rq_key -> testing", in, info, nw_st_info);
         impl::act::send_logout(this->info, in, *nw_st_info);
-        
         return std::make_shared<testing>(*nw_st_info);
+      
       } else if(auto nw_st_info = std::get_if<StError>(&nw_st_info_or_error)){
           //log(en_log_level::info, "[init] rq_key -> error", in, info, nw_st_info);
           return std::make_shared<error>(*nw_st_info);
@@ -462,13 +490,15 @@ try {
     
     if(true){
       
+      
       auto nw_st_info_or_error = impl::trans::to_testing(this->info, in);
+      
       if(auto nw_st_info = std::get_if<StTesting>(&nw_st_info_or_error))
       {
-        //log(en_log_level::info, "[logout] rq_login -> testing", in, info, nw_st_info);
+      //log(en_log_level::info, "[logout] rq_login -> testing", in, info, nw_st_info);
         impl::act::send_logout(this->info, in, *nw_st_info);
-        
         return std::make_shared<testing>(*nw_st_info);
+      
       } else if(auto nw_st_info = std::get_if<StError>(&nw_st_info_or_error)){
           //log(en_log_level::info, "[init] rq_key -> error", in, info, nw_st_info);
           return std::make_shared<error>(*nw_st_info);
@@ -487,13 +517,15 @@ try {
     
     if(true){
       
+      
       auto nw_st_info_or_error = impl::trans::to_testing(this->info, in);
+      
       if(auto nw_st_info = std::get_if<StTesting>(&nw_st_info_or_error))
       {
-        //log(en_log_level::info, "[logout] rq_logout -> testing", in, info, nw_st_info);
+      //log(en_log_level::info, "[logout] rq_logout -> testing", in, info, nw_st_info);
         impl::act::send_logout(this->info, in, *nw_st_info);
-        
         return std::make_shared<testing>(*nw_st_info);
+      
       } else if(auto nw_st_info = std::get_if<StError>(&nw_st_info_or_error)){
           //log(en_log_level::info, "[init] rq_key -> error", in, info, nw_st_info);
           return std::make_shared<error>(*nw_st_info);
@@ -512,12 +544,15 @@ try {
     
     if(true){
       
+      
       auto nw_st_info_or_error = impl::trans::to_logout(this->info, in);
+      
       if(auto nw_st_info = std::get_if<StLogout>(&nw_st_info_or_error))
       {
-        //log(en_log_level::info, "[logout] timer -> logout", in, info, nw_st_info);
+      //log(en_log_level::info, "[logout] timer -> logout", in, info, nw_st_info);
         
         return std::make_shared<logout>(*nw_st_info);
+      
       } else if(auto nw_st_info = std::get_if<StError>(&nw_st_info_or_error)){
           //log(en_log_level::info, "[init] rq_key -> error", in, info, nw_st_info);
           return std::make_shared<error>(*nw_st_info);
@@ -528,13 +563,15 @@ try {
     
     if(true){
       
+      
       auto nw_st_info_or_error = impl::trans::to_testing(this->info, in);
+      
       if(auto nw_st_info = std::get_if<StTesting>(&nw_st_info_or_error))
       {
-        //log(en_log_level::info, "[logout] timer -> testing", in, info, nw_st_info);
+      //log(en_log_level::info, "[logout] timer -> testing", in, info, nw_st_info);
         impl::act::send_logout(this->info, in, *nw_st_info);
-        
         return std::make_shared<testing>(*nw_st_info);
+      
       } else if(auto nw_st_info = std::get_if<StError>(&nw_st_info_or_error)){
           //log(en_log_level::info, "[init] rq_key -> error", in, info, nw_st_info);
           return std::make_shared<error>(*nw_st_info);
@@ -553,7 +590,6 @@ SState error::input(const InHeartbeat& in) {
 try {
     
     if(true){
-      
       auto nw_st_info = impl::trans::to_error(this->info, in);
       //log(en_log_level::info, "[error] heartbeat -> error", in, info, nw_st_info);
       
@@ -571,7 +607,6 @@ SState error::input(const InRqKey& in) {
 try {
     
     if(true){
-      
       auto nw_st_info = impl::trans::to_error(this->info, in);
       //log(en_log_level::info, "[error] rq_key -> error", in, info, nw_st_info);
       
@@ -589,7 +624,6 @@ SState error::input(const InRqLogin& in) {
 try {
     
     if(true){
-      
       auto nw_st_info = impl::trans::to_error(this->info, in);
       //log(en_log_level::info, "[error] rq_login -> error", in, info, nw_st_info);
       
@@ -607,7 +641,6 @@ SState error::input(const InRqLogout& in) {
 try {
     
     if(true){
-      
       auto nw_st_info = impl::trans::to_error(this->info, in);
       //log(en_log_level::info, "[error] rq_logout -> error", in, info, nw_st_info);
       
@@ -625,7 +658,6 @@ SState error::input(const InTimer& in) {
 try {
     
     if(true){
-      
       auto nw_st_info = impl::trans::to_error(this->info, in);
       //log(en_log_level::info, "[error] timer -> error", in, info, nw_st_info);
       
@@ -643,14 +675,19 @@ return std::make_shared<error>(nw_st_info);
 SState testing::input(const InHeartbeat& in) {
 try {
     
-    if(true && impl::guard::is_hia(info, in)){
+    if(true 
+      && impl::guard::is_hia(info, in)
+      ){
+      
       
       auto nw_st_info_or_error = impl::trans::to_login(this->info, in);
+      
       if(auto nw_st_info = std::get_if<StLogin>(&nw_st_info_or_error))
       {
-        //log(en_log_level::info, "[testing] heartbeat -> login", in, info, nw_st_info);
+      //log(en_log_level::info, "[testing] heartbeat -> login", in, info, nw_st_info);
         
         return std::make_shared<login>(*nw_st_info);
+      
       } else if(auto nw_st_info = std::get_if<StError>(&nw_st_info_or_error)){
           //log(en_log_level::info, "[init] rq_key -> error", in, info, nw_st_info);
           return std::make_shared<error>(*nw_st_info);
@@ -660,12 +697,15 @@ try {
     
     if(true){
       
+      
       auto nw_st_info_or_error = impl::trans::to_init(this->info, in);
+      
       if(auto nw_st_info = std::get_if<StInit>(&nw_st_info_or_error))
       {
-        //log(en_log_level::info, "[testing] heartbeat -> init", in, info, nw_st_info);
+      //log(en_log_level::info, "[testing] heartbeat -> init", in, info, nw_st_info);
         
         return std::make_shared<init>(*nw_st_info);
+      
       } else if(auto nw_st_info = std::get_if<StError>(&nw_st_info_or_error)){
           //log(en_log_level::info, "[init] rq_key -> error", in, info, nw_st_info);
           return std::make_shared<error>(*nw_st_info);
@@ -674,14 +714,19 @@ try {
     }
     
     
-    if(true && impl::guard::is_hia(info, in)){
+    if(true 
+      && impl::guard::is_hia(info, in)
+      ){
+      
       
       auto nw_st_info_or_error = impl::trans::to_login(this->info, in);
+      
       if(auto nw_st_info = std::get_if<StLogin>(&nw_st_info_or_error))
       {
-        //log(en_log_level::info, "[testing] heartbeat -> login", in, info, nw_st_info);
+      //log(en_log_level::info, "[testing] heartbeat -> login", in, info, nw_st_info);
         
         return std::make_shared<login>(*nw_st_info);
+      
       } else if(auto nw_st_info = std::get_if<StError>(&nw_st_info_or_error)){
           //log(en_log_level::info, "[init] rq_key -> error", in, info, nw_st_info);
           return std::make_shared<error>(*nw_st_info);
@@ -691,12 +736,15 @@ try {
     
     if(true){
       
+      
       auto nw_st_info_or_error = impl::trans::to_init(this->info, in);
+      
       if(auto nw_st_info = std::get_if<StInit>(&nw_st_info_or_error))
       {
-        //log(en_log_level::info, "[testing] heartbeat -> init", in, info, nw_st_info);
+      //log(en_log_level::info, "[testing] heartbeat -> init", in, info, nw_st_info);
         
         return std::make_shared<init>(*nw_st_info);
+      
       } else if(auto nw_st_info = std::get_if<StError>(&nw_st_info_or_error)){
           //log(en_log_level::info, "[init] rq_key -> error", in, info, nw_st_info);
           return std::make_shared<error>(*nw_st_info);
@@ -713,14 +761,19 @@ return std::make_shared<error>(nw_st_info);
 SState testing::input(const InRqKey& in) {
 try {
     
-    if(true && impl::guard::is_ho(info, in)){
+    if(true 
+      && impl::guard::is_ho(info, in)
+      ){
+      
       
       auto nw_st_info_or_error = impl::trans::to_logout(this->info, in);
+      
       if(auto nw_st_info = std::get_if<StLogout>(&nw_st_info_or_error))
       {
-        //log(en_log_level::info, "[testing] rq_key -> logout", in, info, nw_st_info);
+      //log(en_log_level::info, "[testing] rq_key -> logout", in, info, nw_st_info);
         
         return std::make_shared<logout>(*nw_st_info);
+      
       } else if(auto nw_st_info = std::get_if<StError>(&nw_st_info_or_error)){
           //log(en_log_level::info, "[init] rq_key -> error", in, info, nw_st_info);
           return std::make_shared<error>(*nw_st_info);
@@ -729,13 +782,16 @@ try {
     }
     
     if(true){
+      
       
       auto nw_st_info_or_error = impl::trans::to_testing(this->info, in);
+      
       if(auto nw_st_info = std::get_if<StTesting>(&nw_st_info_or_error))
       {
-        //log(en_log_level::info, "[testing] rq_key -> testing", in, info, nw_st_info);
+      //log(en_log_level::info, "[testing] rq_key -> testing", in, info, nw_st_info);
         
         return std::make_shared<testing>(*nw_st_info);
+      
       } else if(auto nw_st_info = std::get_if<StError>(&nw_st_info_or_error)){
           //log(en_log_level::info, "[init] rq_key -> error", in, info, nw_st_info);
           return std::make_shared<error>(*nw_st_info);
@@ -744,14 +800,19 @@ try {
     }
     
     
-    if(true && impl::guard::is_hia(info, in)){
+    if(true 
+      && impl::guard::is_hia(info, in)
+      ){
+      
       
       auto nw_st_info_or_error = impl::trans::to_login(this->info, in);
+      
       if(auto nw_st_info = std::get_if<StLogin>(&nw_st_info_or_error))
       {
-        //log(en_log_level::info, "[testing] rq_key -> login", in, info, nw_st_info);
+      //log(en_log_level::info, "[testing] rq_key -> login", in, info, nw_st_info);
         
         return std::make_shared<login>(*nw_st_info);
+      
       } else if(auto nw_st_info = std::get_if<StError>(&nw_st_info_or_error)){
           //log(en_log_level::info, "[init] rq_key -> error", in, info, nw_st_info);
           return std::make_shared<error>(*nw_st_info);
@@ -761,12 +822,15 @@ try {
     
     if(true){
       
+      
       auto nw_st_info_or_error = impl::trans::to_init(this->info, in);
+      
       if(auto nw_st_info = std::get_if<StInit>(&nw_st_info_or_error))
       {
-        //log(en_log_level::info, "[testing] rq_key -> init", in, info, nw_st_info);
+      //log(en_log_level::info, "[testing] rq_key -> init", in, info, nw_st_info);
         
         return std::make_shared<init>(*nw_st_info);
+      
       } else if(auto nw_st_info = std::get_if<StError>(&nw_st_info_or_error)){
           //log(en_log_level::info, "[init] rq_key -> error", in, info, nw_st_info);
           return std::make_shared<error>(*nw_st_info);
@@ -775,14 +839,19 @@ try {
     }
     
     
-    if(true && impl::guard::is_hia(info, in)){
+    if(true 
+      && impl::guard::is_hia(info, in)
+      ){
+      
       
       auto nw_st_info_or_error = impl::trans::to_login(this->info, in);
+      
       if(auto nw_st_info = std::get_if<StLogin>(&nw_st_info_or_error))
       {
-        //log(en_log_level::info, "[testing] rq_key -> login", in, info, nw_st_info);
+      //log(en_log_level::info, "[testing] rq_key -> login", in, info, nw_st_info);
         
         return std::make_shared<login>(*nw_st_info);
+      
       } else if(auto nw_st_info = std::get_if<StError>(&nw_st_info_or_error)){
           //log(en_log_level::info, "[init] rq_key -> error", in, info, nw_st_info);
           return std::make_shared<error>(*nw_st_info);
@@ -792,12 +861,15 @@ try {
     
     if(true){
       
+      
       auto nw_st_info_or_error = impl::trans::to_init(this->info, in);
+      
       if(auto nw_st_info = std::get_if<StInit>(&nw_st_info_or_error))
       {
-        //log(en_log_level::info, "[testing] rq_key -> init", in, info, nw_st_info);
+      //log(en_log_level::info, "[testing] rq_key -> init", in, info, nw_st_info);
         
         return std::make_shared<init>(*nw_st_info);
+      
       } else if(auto nw_st_info = std::get_if<StError>(&nw_st_info_or_error)){
           //log(en_log_level::info, "[init] rq_key -> error", in, info, nw_st_info);
           return std::make_shared<error>(*nw_st_info);
@@ -814,14 +886,19 @@ return std::make_shared<error>(nw_st_info);
 SState testing::input(const InRqLogin& in) {
 try {
     
-    if(true && impl::guard::is_hia(info, in)){
+    if(true 
+      && impl::guard::is_hia(info, in)
+      ){
+      
       
       auto nw_st_info_or_error = impl::trans::to_login(this->info, in);
+      
       if(auto nw_st_info = std::get_if<StLogin>(&nw_st_info_or_error))
       {
-        //log(en_log_level::info, "[testing] rq_login -> login", in, info, nw_st_info);
+      //log(en_log_level::info, "[testing] rq_login -> login", in, info, nw_st_info);
         
         return std::make_shared<login>(*nw_st_info);
+      
       } else if(auto nw_st_info = std::get_if<StError>(&nw_st_info_or_error)){
           //log(en_log_level::info, "[init] rq_key -> error", in, info, nw_st_info);
           return std::make_shared<error>(*nw_st_info);
@@ -831,12 +908,15 @@ try {
     
     if(true){
       
+      
       auto nw_st_info_or_error = impl::trans::to_init(this->info, in);
+      
       if(auto nw_st_info = std::get_if<StInit>(&nw_st_info_or_error))
       {
-        //log(en_log_level::info, "[testing] rq_login -> init", in, info, nw_st_info);
+      //log(en_log_level::info, "[testing] rq_login -> init", in, info, nw_st_info);
         
         return std::make_shared<init>(*nw_st_info);
+      
       } else if(auto nw_st_info = std::get_if<StError>(&nw_st_info_or_error)){
           //log(en_log_level::info, "[init] rq_key -> error", in, info, nw_st_info);
           return std::make_shared<error>(*nw_st_info);
@@ -845,14 +925,19 @@ try {
     }
     
     
-    if(true && impl::guard::is_hia(info, in)){
+    if(true 
+      && impl::guard::is_hia(info, in)
+      ){
+      
       
       auto nw_st_info_or_error = impl::trans::to_login(this->info, in);
+      
       if(auto nw_st_info = std::get_if<StLogin>(&nw_st_info_or_error))
       {
-        //log(en_log_level::info, "[testing] rq_login -> login", in, info, nw_st_info);
+      //log(en_log_level::info, "[testing] rq_login -> login", in, info, nw_st_info);
         
         return std::make_shared<login>(*nw_st_info);
+      
       } else if(auto nw_st_info = std::get_if<StError>(&nw_st_info_or_error)){
           //log(en_log_level::info, "[init] rq_key -> error", in, info, nw_st_info);
           return std::make_shared<error>(*nw_st_info);
@@ -862,12 +947,15 @@ try {
     
     if(true){
       
+      
       auto nw_st_info_or_error = impl::trans::to_init(this->info, in);
+      
       if(auto nw_st_info = std::get_if<StInit>(&nw_st_info_or_error))
       {
-        //log(en_log_level::info, "[testing] rq_login -> init", in, info, nw_st_info);
+      //log(en_log_level::info, "[testing] rq_login -> init", in, info, nw_st_info);
         
         return std::make_shared<init>(*nw_st_info);
+      
       } else if(auto nw_st_info = std::get_if<StError>(&nw_st_info_or_error)){
           //log(en_log_level::info, "[init] rq_key -> error", in, info, nw_st_info);
           return std::make_shared<error>(*nw_st_info);
@@ -884,14 +972,19 @@ return std::make_shared<error>(nw_st_info);
 SState testing::input(const InRqLogout& in) {
 try {
     
-    if(true && impl::guard::is_hia(info, in)){
+    if(true 
+      && impl::guard::is_hia(info, in)
+      ){
+      
       
       auto nw_st_info_or_error = impl::trans::to_login(this->info, in);
+      
       if(auto nw_st_info = std::get_if<StLogin>(&nw_st_info_or_error))
       {
-        //log(en_log_level::info, "[testing] rq_logout -> login", in, info, nw_st_info);
+      //log(en_log_level::info, "[testing] rq_logout -> login", in, info, nw_st_info);
         
         return std::make_shared<login>(*nw_st_info);
+      
       } else if(auto nw_st_info = std::get_if<StError>(&nw_st_info_or_error)){
           //log(en_log_level::info, "[init] rq_key -> error", in, info, nw_st_info);
           return std::make_shared<error>(*nw_st_info);
@@ -901,12 +994,15 @@ try {
     
     if(true){
       
+      
       auto nw_st_info_or_error = impl::trans::to_init(this->info, in);
+      
       if(auto nw_st_info = std::get_if<StInit>(&nw_st_info_or_error))
       {
-        //log(en_log_level::info, "[testing] rq_logout -> init", in, info, nw_st_info);
+      //log(en_log_level::info, "[testing] rq_logout -> init", in, info, nw_st_info);
         
         return std::make_shared<init>(*nw_st_info);
+      
       } else if(auto nw_st_info = std::get_if<StError>(&nw_st_info_or_error)){
           //log(en_log_level::info, "[init] rq_key -> error", in, info, nw_st_info);
           return std::make_shared<error>(*nw_st_info);
@@ -915,14 +1011,19 @@ try {
     }
     
     
-    if(true && impl::guard::is_hia(info, in)){
+    if(true 
+      && impl::guard::is_hia(info, in)
+      ){
+      
       
       auto nw_st_info_or_error = impl::trans::to_login(this->info, in);
+      
       if(auto nw_st_info = std::get_if<StLogin>(&nw_st_info_or_error))
       {
-        //log(en_log_level::info, "[testing] rq_logout -> login", in, info, nw_st_info);
+      //log(en_log_level::info, "[testing] rq_logout -> login", in, info, nw_st_info);
         
         return std::make_shared<login>(*nw_st_info);
+      
       } else if(auto nw_st_info = std::get_if<StError>(&nw_st_info_or_error)){
           //log(en_log_level::info, "[init] rq_key -> error", in, info, nw_st_info);
           return std::make_shared<error>(*nw_st_info);
@@ -932,12 +1033,15 @@ try {
     
     if(true){
       
+      
       auto nw_st_info_or_error = impl::trans::to_init(this->info, in);
+      
       if(auto nw_st_info = std::get_if<StInit>(&nw_st_info_or_error))
       {
-        //log(en_log_level::info, "[testing] rq_logout -> init", in, info, nw_st_info);
+      //log(en_log_level::info, "[testing] rq_logout -> init", in, info, nw_st_info);
         
         return std::make_shared<init>(*nw_st_info);
+      
       } else if(auto nw_st_info = std::get_if<StError>(&nw_st_info_or_error)){
           //log(en_log_level::info, "[init] rq_key -> error", in, info, nw_st_info);
           return std::make_shared<error>(*nw_st_info);
@@ -954,14 +1058,19 @@ return std::make_shared<error>(nw_st_info);
 SState testing::input(const InTimer& in) {
 try {
     
-    if(true && impl::guard::is_hia(info, in)){
+    if(true 
+      && impl::guard::is_hia(info, in)
+      ){
+      
       
       auto nw_st_info_or_error = impl::trans::to_login(this->info, in);
+      
       if(auto nw_st_info = std::get_if<StLogin>(&nw_st_info_or_error))
       {
-        //log(en_log_level::info, "[testing] timer -> login", in, info, nw_st_info);
+      //log(en_log_level::info, "[testing] timer -> login", in, info, nw_st_info);
         
         return std::make_shared<login>(*nw_st_info);
+      
       } else if(auto nw_st_info = std::get_if<StError>(&nw_st_info_or_error)){
           //log(en_log_level::info, "[init] rq_key -> error", in, info, nw_st_info);
           return std::make_shared<error>(*nw_st_info);
@@ -971,12 +1080,15 @@ try {
     
     if(true){
       
+      
       auto nw_st_info_or_error = impl::trans::to_init(this->info, in);
+      
       if(auto nw_st_info = std::get_if<StInit>(&nw_st_info_or_error))
       {
-        //log(en_log_level::info, "[testing] timer -> init", in, info, nw_st_info);
+      //log(en_log_level::info, "[testing] timer -> init", in, info, nw_st_info);
         
         return std::make_shared<init>(*nw_st_info);
+      
       } else if(auto nw_st_info = std::get_if<StError>(&nw_st_info_or_error)){
           //log(en_log_level::info, "[init] rq_key -> error", in, info, nw_st_info);
           return std::make_shared<error>(*nw_st_info);
@@ -985,14 +1097,19 @@ try {
     }
     
     
-    if(true && impl::guard::is_hia(info, in)){
+    if(true 
+      && impl::guard::is_hia(info, in)
+      ){
+      
       
       auto nw_st_info_or_error = impl::trans::to_login(this->info, in);
+      
       if(auto nw_st_info = std::get_if<StLogin>(&nw_st_info_or_error))
       {
-        //log(en_log_level::info, "[testing] timer -> login", in, info, nw_st_info);
+      //log(en_log_level::info, "[testing] timer -> login", in, info, nw_st_info);
         
         return std::make_shared<login>(*nw_st_info);
+      
       } else if(auto nw_st_info = std::get_if<StError>(&nw_st_info_or_error)){
           //log(en_log_level::info, "[init] rq_key -> error", in, info, nw_st_info);
           return std::make_shared<error>(*nw_st_info);
@@ -1002,12 +1119,15 @@ try {
     
     if(true){
       
+      
       auto nw_st_info_or_error = impl::trans::to_init(this->info, in);
+      
       if(auto nw_st_info = std::get_if<StInit>(&nw_st_info_or_error))
       {
-        //log(en_log_level::info, "[testing] timer -> init", in, info, nw_st_info);
+      //log(en_log_level::info, "[testing] timer -> init", in, info, nw_st_info);
         
         return std::make_shared<init>(*nw_st_info);
+      
       } else if(auto nw_st_info = std::get_if<StError>(&nw_st_info_or_error)){
           //log(en_log_level::info, "[init] rq_key -> error", in, info, nw_st_info);
           return std::make_shared<error>(*nw_st_info);

@@ -37,8 +37,10 @@ cargo install --path . -f
 ## Versions
 
 ### 0.8
+- Added adapters (aka transformers)
 - New cpp generator with no c++ template<> code
 - cpp template with CamelNames for structs
+- "_" special final state
 
 ### 0.7
 
@@ -99,7 +101,7 @@ In addition to communicating with the outside world through `input/output`, it i
 
 These two elements are fundamental in computer systems.
 
-That's why I developed two external DSLs several years ago to simplify working with these concepts (which I still use in production and find very helpful).
+That's why I developed two external DSLs (for data and states) several years ago to simplify working with these concepts (which I still use in production and find very helpful).
 
 In this repository, I have rewritten one of them: a code generator for state machines.
 
@@ -157,298 +159,17 @@ The DSL representation of this definition would be:
 This program also generates the displayed diagram before using the `DSL`.
 
 
-
 ## Elements
 
-### States
+Let's now break down the elements that define a state machine.
 
-A `state`machine... you know
-
-### Initial state
-
-```
-[init]
-```
-
-init, w_login, login, and so on are the states.
-
-Depending on the input and the state (with its values as will be seen later), the system will change to a new state.
-
-### Transition
-```
-    rq_key                  ->  w_login
-```
-
-If we receive an input (in this case _rq_key_), we go to the next state (_w_login_).
-
-## Input
-
-The elements received by the state machine.
-
-```
-    INPUT
-      v
-    rq_key                  ->  w_login
-```
-
-In the example, they are rq_key, rq_login, rq_logout, heartbeat, and timer.
-
-### Guards
-
-Functions that will be called depending on the state and input to decide the way forward.
-
-```
-                    GUARD
-                     v
-    rq_login    &   valid   ->  login       /   send_login
-``` 
-
-You can have more than one guard.
-
-```
-    rq_login    &   valid  &  guard2  ->  login       /   send_login
-```
-
-In the example, we have valid, timeout, and ontime.
-
-```
-    rq_login
-        &   valid   ->  login       /   send_login
-                    ->  logout      /   log_err
-```
-
-It could be written with a negative guard.
-
-```
-    rq_login
-        &   !valid  ->  logout      /   log_err
-                    ->  login       /   send_login
-```
-
-### Final state
-
-After the -> arrow is the state we will change to.
-
-```
-                               FINAL_STATE
-                                   v
-    rq_key                  ->  w_login
-```
-
-### Actions
-
-We can define an action to be performed when executing a transaction.
-
-This comes after the final state and '/'.
-
-```
-                                                ACTION
-                                                  v
-    rq_login                ->  logout      /   log_err
-```
-
-You can have more than one action.
-
-```
-    rq_login                ->  logout      /   log_err  action2
-```
-
-In this example, we have _send_key_, _send_login_, and so on.
-
-
-### Special transition
-
-In all states, it is necessary to consider all inputs.
-
-But it is very common that many transitions are the same (generally error cases).
-
-This is marked with the input _.
-
-Consider the following example status:
-
-```
-[init]
-    rq_key                      ->  w_login     /   send_key
-    timer                       ->  init
-    _                           ->  logout      /   log_err
-```
-
-`_` means any other input.
-
-Therefore, considering all possible inputs in this state, we have:
-
-```
-[init]
-    rq_key                      ->  w_login     /   send_key
-    timer                       ->  init
-    _                           ->  logout      /   log_err
-```
-
-
-## Adapters
-
-_Adapters_ can be placed at the _input_, _guards_, and _transition_ levels.
-
-In the case of _transitions_, they will be placed in the final state.
-
-
-```
-[init]
-    rq_key                      ->  w_login     /   send_key|adapter
-    timer                       ->  init
-    _                           ->  logout      /   log_err
-```
-
-The adapters will help us extract common funcionalities, reducing the number of functions to be filled in, or add context information to make the generated code more readable.
-
-
-## **error** status and implicit transitions
-
-`error` is a special status
-
-You can move to `error` status explicitly.
-
-Any transition no defined, will finis on error status.
-
-You can also put some verifications on transiction funcion, and incase
-of fail, you can move to error (even when is not explicitly writted on `fsm`)
-
-This is so, because checking the params, is so commont that adding guards for it, would generate a lot of sound
-
-
-In our example...
-
-```peg
-[init]
-    rq_key          ->  w_login     /   send_key
-    timer           ->  init
-```
-
-There are no transations for `rq_login` and `rq_logout`. Both are implicit and is
-equivalent to...
-
-```peg
-[init]
-    rq_key          ->  w_login     /   send_key
-    timer           ->  init
-    _               ->  error
-```
-
-### Comments
-
-Comments starts at `//` and continues to the end of line
-
-## Usage
-
-To get help...
-
-```bash
-fsm_gen --help
-```
-
-```txt
-> fsm_gen -h
-
-fsm_gen 0.6.1
-jleahred
-
-    Generate code from a simple fsm file
-    To check the supported templates  --show_templs
-    
-
-USAGE:
-    fsm_gen [FLAGS] [OPTIONS] [fsm_files]...
-
-FLAGS:
-    -d, --dot-graphviz    Generate graphviz dot file
-    -h, --help            Prints help information
-        --help-cpp        Give me some information about generating cpp files
-    -s, --show-templs     Show supported template generators
-    -V, --version         Prints version information
-
-OPTIONS:
-    -T, --threads <n_threads>    Number of threads to use. 0 means one per core  ;-) [default: 0]
-    -t, --templ <templ>          Template to generate code (show available --show-templs) [default: cpp]
-
-ARGS:
-    <fsm_files>...    List of fsm files to be processed
-```
-
-The default template is `c++` (and at the moment the only one)
-
-You can run:
-
-```bash
-fsm_gen login.fsm
-```
-
-And it will generate the `c++`
-
-You can pass a list of `fsm` files
-
-```bash
-fsm_gen login.fsm  test/seller.fsm test/test2/lift.fsm
-```
-
-The code will be generated on same directory of original `.fsm` file
-
-If your shell supports it, you could run...
-
-```bash
-fsm_gen **/*.fsm
-```
-
-## C++ code generation
-
-It will also generate the files _types.h_, _types_adapters.h_, and _types_forward.h_.
-
-The _types_reference.h_ file serves as a reference for everything generated in the types files.
-
-The _types.h_ file is initially created and will not be overwritten in subsequent executions.
-
-This file will be used to customize the "types".
-
-Directories will be created for `actions`, `guards`, and `transitions`.
-
-The header files will be rewritten and will help avoid "dead code" and provide the new functions to be filled in.
-
-
-The adapters will be C++ structs with constructors based on the context.
-
-In these types, we have the opportunity to add direct or processed information.
-
-The adapters will help us extract common factors, reducing the number of functions to be filled in, or add context information to make the generated code more readable.
-
-
----
-
-
-soon more detaills
-
-
-
-
-
-
-
-
-
-
-
------
-
-
-## Basic elements
-
-Diseccionemos ahora los elementos que definen una máquina de estado
-
-Una máquina de estados especifica los estados y las transiciones en función de los inputs recibidos
+A state machine specifies the states and transitions based on the received inputs.
 
 ### State
 
-La máquina siempre estará en un estado, y para cada input recibido y la información de contexto del estado actual, pasaremos a otro estado pudiendo realizar alguna acción.
+The machine is always in a state, and for each received input and the contextual information of the current state, we transition to another state, potentially performing some actions.
 
-Por tanto, en cada estado, habrá una información de contexto específica de cada estado
+Therefore, in each state, there will be specific contextual information associated with that state.
 
 
 ### Transición
@@ -458,9 +179,10 @@ Por tanto, en cada estado, habrá una información de contexto específica de ca
     rq_login            ->  login       /   send_login
 ```
 
-Partiendo del estado _w_login_ (waitting request login), si recibimos la petición de login, pasamos al estado _login_ y enviamos la confirmación de login _send_login_
+Starting from the state w_login (waiting for login request), if we receive the login request, we transition to the state login and send the login confirmation (send_login).
 
-En esta sencilla transición podemos ver varios de los elementos
+In this simple transition, we can see the basic elements:
+
 
 ```txt
 initial estate
@@ -474,21 +196,19 @@ initial estate
 
 
 
-### Estado inicial
+### Initial State
 
-Estado inicial
 
 ```txt
 [init]
 ```
 
-* Entre corchetes
-* Al inicio de la línea
-
+* Enclosed in brackets
+* At the beginning of the line
 
 ### Input
 
-Elemento recibido
+Received element
 
 ```txt
 [w_login]
@@ -499,7 +219,7 @@ Elemento recibido
 ```
 
 
-### Estado final
+### Final State
 
 ```txt
 [w_login]
@@ -509,10 +229,10 @@ Elemento recibido
     rq_login            ->  login       /   send_login
 ```
 
-Dónde quedará la máquina situada para el procesamiento del siguiente _input_
+Where the machine will be positioned for processing the next _input_
 
 
-### Acción
+### Action
 
 ```txt
 [w_login]
@@ -522,9 +242,10 @@ Dónde quedará la máquina situada para el procesamiento del siguiente _input_
     rq_login            ->  login       /   send_login
 ```
 
-Además de cambiar al nuevo estado, qué debemos hacer en cada transición
+In addition to transitioning to the new state, we can specify what action/effect to do on each transition
 
-Se puede definir más de una acción para cada transición separándolas por espacio
+Multiple actions can be define for each transition by separating them with spaces
+
 
 ```txt
 [w_login]
@@ -532,66 +253,49 @@ Se puede definir más de una acción para cada transición separándolas por esp
 ```
 
 
-
-
 ### Guards
 
-El cambio de estado podría requerir hacer una validación con la información del estado actual más el input recibido.
+Guards are used to define different paths based on the state information and input
 
-Para ello están las guardas
+```
+                    GUARD
+                     v
+    rq_login    &   ok   ->  login       /   send_login
+``` 
 
-```txt
-[w_login]
-    rq_login
-        &  ok           ->  login       /   send_login
-            ^           ->  error
-          GUARD
+You can have more than one guard.
+
+```
+                    GUARD      GUARD
+                     v           v
+    rq_login    &   ok   &  system_ready  ->  login       /   send_login
 ```
 
-Se puede tener más de una guarda por transición
+For an input, you can split using several guards to generate different transitions
 
-Se puede poner en forma "negada"
+When last transition doesn't have guard, behave as _else_
 
-```txt
-[w_login]
+```
     rq_login
-        &  ok  & system ready   ->  login       /   send_login
-            ^        ^          ->  error
-          GUARD    GUARD
+        &   valid   ->  login       /   send_login
+                    ->  logout      /   log_err
 ```
 
-```txt
-[w_login]
-    rq_login
-        &  !system_ready        ->  error
-           ^     ^
-          NEGATED GUARD
-        &  ok                   ->  login       /   send_login
-            ^                   ->  error
-          GUARD    
+You can use negation with guards
+
+The previous example could be written with a negative guard.
+
 ```
-
-En la siguiente transición
-
-```txt
-[w_login]
     rq_login
-        &  !system_ready        ->  error
-        &  ok                   ->  login       /   send_login
-                                ->  error
+           NEGATED GUARD
+            v
+        &   !valid  ->  logout      /   log_err
+                    ->  login       /   send_login
 ```
-
-Estamos en el estado esperando petición de login
-
-Si recibimos dicha petición, pero el sistema no está listo, pasamos a estado de error
-En otro caso, si la petición es correcta (ok) pasamos al estado de login
-
-En cualquier otro caso, pasamos al estado de error
-
 
 ### Special input
 
-En la siguiente transición, tenemos un input _extraño_  "_"
+In the following transition, we have a special input "_":
 
 ```txt
 [logout]
@@ -600,8 +304,7 @@ En la siguiente transición, tenemos un input _extraño_  "_"
   SPECIAL INPUT
 ```
 
-El símbolo "_" se utilizará para indicar que se debe generar una transción con las reglas definidas en esta con el input "_" para el resto de inptus no especificados
-
+The symbol "_" will be used to indicate that a transition should be generated with the rules defined in this one for each input for any unspecified.
 
 ### Special final state
 
@@ -614,28 +317,28 @@ El símbolo "_" se utilizará para indicar que se debe generar una transción co
     _                   ->  testing     /   send_logout
 ```
 
-Un estado final con el símbolo "_" indica que no hay cambio de estado
+A final state with the symbol "_" indicates that there is no change in state.
 
-No sólo seguimos en el mismo estado, sino que no cambian los datos de contexto del estado
+Not only do we stay in the same state, but the state's context data remains unchanged.
 
+### error status and implicit transitions
 
-### **error** status and implicit transitions
 
 `error` is a special status
 
-You can move to `error` status explicitly.
+You can move to `error` status explicitly as any other normal status
 
-Any transition no defined, will finish on error status.
+But any transition no defined, will finish on error status.
 
 You can also put some verifications on transiction funcion, and incase
 of fail, you can move to error (even when is not explicitly writted on `fsm`)
 
-This is so, because checking the params, is so commont that adding guards for it, would generate a lot of sound
+This is so, because checking the params, is so commont that adding guards for it, would generate a lot of noise
 
 
 In our example...
 
-```peg
+```txt
 [init]
     rq_key          ->  w_login     /   send_key
     timer           ->  init
@@ -644,7 +347,7 @@ In our example...
 There are no transations for `rq_login` and `rq_logout`. Both are implicit and is
 equivalent to...
 
-```peg
+```txt
 [init]
     rq_key          ->  w_login     /   send_key
     timer           ->  init
@@ -652,25 +355,28 @@ equivalent to...
 ```
 
 
-## Adapters
+### Adapters
 
-_Adapters_ can be placed at the _input_, _guards_, and _transition_ levels.
+aka _transformers_
 
-In the case of _transitions_, they will be placed in the final state.
+Adapters can be placed at the input, guards, and transition levels.
 
+In the case of transitions, they will be placed in the final state.
 
-```
-[init]
-    rq_key                      ->  w_login     /   send_key|adapter
+```txt
+                                                           ADAPTER
+[init]                                                        v
+    rq_key                      ->  w_login     /   send_key|rq
     timer                       ->  init
     _                           ->  logout      /   log_err
-```
 
-The adapters will help us extract common funcionalities, reducing the number of functions to be filled in, or add context information to make the generated code more readable.
+
+```
+The adapters will help us extract common functionalities, reducing the number of functions to be filled manually, or adding context information to make the generated code more readable.
 
 ### Comments
 
-Comments starts at `//` and continues to the end of line
+Comments start with // and continue until the end of the line.
 
 
 
@@ -744,12 +450,26 @@ The _types.h_ file is initially created and will not be overwritten in subsequen
 
 This file will be used to customize the "types".
 
-Directories will be created for `actions`, `guards`, and `transitions`.
+Directories/modules will be created for 
+
+* actions
+* guards
+* transitions
+* adapter
 
 The header files will be rewritten and will help avoid "dead code" and provide the new functions to be filled in.
 
+`transitions`, `guards` and `adapters` should be pure, no effects
 
-The adapters will be C++ structs with constructors based on the context.
+* `transitions` will return the new transition with provider parameters (from status, intput)
+* `guards`: will return true or false with current status and input
+* `adapters` will return a new type using the parameters where the adapter is applied
+* `actions`with initial transition status, the input and the final status, we have the oportunity to do something (in general, produce an _effect_)
+
+When an `adapter` is applied to a `transition`, `guard`, or `action`, the parameter will be the `adatpter` type
+
+
+The `adapters` will be C++ structs with constructors based on the context.
 
 In these types, we have the opportunity to add direct or processed information.
 

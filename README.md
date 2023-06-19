@@ -125,7 +125,7 @@ If it is correct, a login confirmation will be sent.
 
 The DSL representation of this definition would be:
 
-```txt
+```fsm
 // Example of an FSM for managing login
 // on the server side
 
@@ -174,7 +174,7 @@ Therefore, in each state, there will be specific contextual information associat
 
 ### Transición
 
-```txt
+```fsm
 [w_login]
     rq_login            ->  login       /   send_login
 ```
@@ -184,7 +184,7 @@ Starting from the state w_login (waiting for login request), if we receive the l
 In this simple transition, we can see the basic elements:
 
 
-```txt
+```fsm
 initial estate
     v
 [w_login]
@@ -199,7 +199,7 @@ initial estate
 ### Initial State
 
 
-```txt
+```fsm
 [init]
 ```
 
@@ -210,7 +210,7 @@ initial estate
 
 Received element
 
-```txt
+```fsm
 [w_login]
 
       INPUT
@@ -221,7 +221,7 @@ Received element
 
 ### Final State
 
-```txt
+```fsm
 [w_login]
 
                          FINAL STATE         
@@ -234,7 +234,7 @@ Where the machine will be positioned for processing the next _input_
 
 ### Action
 
-```txt
+```fsm
 [w_login]
 
                                              ACTION
@@ -247,7 +247,7 @@ In addition to transitioning to the new state, we can specify what action/effect
 Multiple actions can be define for each transition by separating them with spaces
 
 
-```txt
+```fsm
 [w_login]
     rq_login            ->  login       /   send_login   write_log
 ```
@@ -297,7 +297,7 @@ The previous example could be written with a negative guard.
 
 In the following transition, we have a special input "_":
 
-```txt
+```fsm
 [logout]
     _                   ->  testing     /   send_logout
     ^
@@ -308,7 +308,7 @@ The symbol "_" will be used to indicate that a transition should be generated wi
 
 ### Special final state
 
-```txt
+```fsm
 [logout]
     timer               ->  _
                             ^
@@ -338,7 +338,7 @@ This is so, because checking the params, is so commont that adding guards for it
 
 In our example...
 
-```txt
+```fsm
 [init]
     rq_key          ->  w_login     /   send_key
     timer           ->  init
@@ -347,7 +347,7 @@ In our example...
 There are no transations for `rq_login` and `rq_logout`. Both are implicit and is
 equivalent to...
 
-```txt
+```fsm
 [init]
     rq_key          ->  w_login     /   send_key
     timer           ->  init
@@ -363,7 +363,7 @@ Adapters can be placed at the input, guards, and transition levels.
 
 In the case of transitions, they will be placed in the final state.
 
-```txt
+```fsm
                                                            ADAPTER
 [init]                                                        v
     rq_key                      ->  w_login     /   send_key|rq
@@ -388,7 +388,7 @@ To get help...
 fsm_gen --help
 ```
 
-```txt
+```fsm
 > fsm_gen -h
 
 fsm_gen 0.6.1

@@ -172,14 +172,14 @@ The machine is always in a state, and for each received input and the contextual
 Therefore, in each state, there will be specific contextual information associated with that state.
 
 
-### Transición
+### Transition
 
 ```fsm
 [w_login]
     rq_login            ->  login       /   send_login
 ```
 
-Starting from the state w_login (waiting for login request), if we receive the login request, we transition to the state login and send the login confirmation (send_login).
+Starting from the state w_login, if we receive the login request, we transition to the state login and send the login confirmation (send_login).
 
 In this simple transition, we can see the basic elements:
 
@@ -271,7 +271,7 @@ You can have more than one guard.
     rq_login    &   ok   &  system_ready  ->  login       /   send_login
 ```
 
-For an input, you can split using several guards to generate different transitions
+For an input, you can for using several guards to generate different transitions
 
 When last transition doesn't have guard, behave as _else_
 
@@ -304,7 +304,7 @@ In the following transition, we have a special input "_":
   SPECIAL INPUT
 ```
 
-The symbol "_" will be used to indicate that a transition should be generated with the rules defined in this one for each input for any unspecified.
+The symbol "_" will be used to indicate that a transition should be generated with the rules defined in this one for each unspecified input.
 
 ### Special final state
 
@@ -372,7 +372,20 @@ In the case of transitions, they will be placed in the final state.
 
 
 ```
+
 The adapters will help us extract common functionalities, reducing the number of functions to be filled manually, or adding context information to make the generated code more readable.
+
+```fsm
+                ADAPTER                   ADAPTER             ADAPTER
+[init]             v                         v                   v
+    rq_key    &ok|rq            ->  w_login|rqok    /   send_key|rq
+    timer                       ->  init
+    _                           ->  logout          /   log_err
+
+
+```
+
+
 
 ### Comments
 
@@ -391,34 +404,96 @@ fsm_gen --help
 ```fsm
 > fsm_gen -h
 
-fsm_gen 0.6.1
-jleahred
+
+fsm_gen 0.8.0
 
     Generate code from a simple fsm file
     To check the supported templates  --show_templs
     
 
 USAGE:
-    fsm_gen [FLAGS] [OPTIONS] [fsm_files]...
+    fsm_gen [FLAGS] [OPTIONS] [fsm-files]...
 
 FLAGS:
     -d, --dot-graphviz    Generate graphviz dot file
+    -f, --force           Generate all files regardless of change date. DANGEROUS!!!
     -h, --help            Prints help information
-        --help-cpp        Give me some information about generating cpp files
+        --help-cpp        Give me some information about generating cpp files with no templates to fill
     -s, --show-templs     Show supported template generators
     -V, --version         Prints version information
 
 OPTIONS:
-    -T, --threads <n_threads>    Number of threads to use. 0 means one per core  ;-) [default: 0]
+    -T, --threads <n-threads>    Number of threads to use. 0 means one per core  ;-) [default: 0]
     -t, --templ <templ>          Template to generate code (show available --show-templs) [default: cpp]
 
 ARGS:
-    <fsm_files>...    List of fsm files to be processed
+    <fsm-files>...    List of fsm files to be processed
+
 ```
 
-The default template is `c++` (and at the moment the only one)
+The default template is `cpp` (for c++) (and at the moment the only one)
 
-You can run:
+
+```bash
+fsm_gen --help
+```
+
+```fsm
+> fsm_gen --show-templs
+
+Supported templates:   cpp 
+
+```
+
+
+
+```bash
+fsm_gen --help
+```
+
+
+Help about cpp template...
+
+```fsm
+> fsm_gen --help-cpp
+
+Being "name.fsm" the name of the file with the definition of the machine, next files an directories will be generated
+
+All will be generated on directory...
+
+    fsm_<name>/
+
+
+    Main entry point. Do not modify, it will be rewritting on each execution
+        <name>.h
+        <name>.cpp
+
+    Types
+        <name>_types.h                      (to be filled manually)
+        <name>_types_reference.h            (just as reference)
+        <name>_types_adapters_fordward.h    (forward declaration and reference)
+        <name>_types_adapters.h             (to be filled manually)
+
+    Support functions.
+    You shouldn't mofify headers and you have to fill  .cpp
+
+        impl/log.hpp
+
+        impl/guards.h
+        impl/guards.cpp
+
+        impl/actions.h
+        impl/actions.cpp
+        
+        impl/transitions.h
+        impl/transitions.cpp
+
+
+```
+
+
+
+To generate code...  run
 
 ```bash
 fsm_gen login.fsm
@@ -452,10 +527,11 @@ This file will be used to customize the "types".
 
 Directories/modules will be created for 
 
-* actions
-* guards
-* transitions
-* adapter
+    impl
+        actions
+        guards
+        transitions
+
 
 The header files will be rewritten and will help avoid "dead code" and provide the new functions to be filled in.
 

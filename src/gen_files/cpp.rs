@@ -108,24 +108,36 @@ pub(super) fn generate_files(
 pub(crate) fn print_cpp_help_message() {
     println!(
         r#"
-Being "name.fsm" the name of the file with the definition of the machine, four files will be generated.
+Being "name.fsm" the name of the file with the definition of the machine, next files an directories will be generated
 
-    Main entry point. Do not modify
-        fsm_<name>.h
-        fsm_<name>.cpp
+All will be generated on directory...
+
+    fsm_<name>/
+
+
+    Main entry point. Do not modify, it will be rewritting on each execution
+        <name>.h
+        <name>.cpp
 
     Types
-        fsm/<name>_types.h  (to be filled)
-        fsm/<name>_types_forward.h
+        <name>_types.h                      (to be filled manually)
+        <name>_types_reference.h            (just as reference)
+        <name>_types_adapters_fordward.h    (forward declaration and reference)
+        <name>_types_adapters.h             (to be filled manually)
 
-    Support functions. To be filled
-        fsm/<name>_log.hpp
-        fsm/<name>_guards.h
-        fsm/<name>_guards.cpp
-        fsm/<name>_actions.h
-        fsm/<name>_actions.cpp
-        fsm/<name>_transitions.h
-        fsm/<name>_transitions.cpp
+    Support functions.
+    You shouldn't mofify headers and you have to fill  .cpp
+
+        impl/log.hpp
+
+        impl/guards.h
+        impl/guards.cpp
+
+        impl/actions.h
+        impl/actions.cpp
+        
+        impl/transitions.h
+        impl/transitions.cpp
 
 
 "#

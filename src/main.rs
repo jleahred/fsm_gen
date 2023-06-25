@@ -20,8 +20,8 @@ fn main() {
             "\nSupported templates: {}\n\n",
             cli_params::Templ::get_options_as_string()
         );
-    } else if opt.help_cpp2 {
-        gen_files::cpp2::print_cpp_help_message();
+    } else if opt.help_cpp {
+        gen_files::cpp::print_cpp_help_message();
     } else if opt.fsm_files.is_empty() {
         eprintln!("No files provied!!! If doubt,  --help");
     } else {

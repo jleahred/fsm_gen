@@ -1,4 +1,4 @@
-pub(crate) mod cpp2;
+pub(crate) mod cpp;
 mod dot;
 mod support;
 mod types;
@@ -20,8 +20,8 @@ pub(crate) fn process(path: &PathBuf, config: &Config) -> std::result::Result<()
     };
 
     match config.templ {
-        crate::cli_params::Templ::Cpp2 => {
-            cpp2::generate_files(&context, fn_gen_file_if_missing).map_err(|e| e.to_string())?
+        crate::cli_params::Templ::Cpp => {
+            cpp::generate_files(&context, fn_gen_file_if_missing).map_err(|e| e.to_string())?
         }
     }
 

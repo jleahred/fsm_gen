@@ -70,8 +70,7 @@ try {
     if(true
       {%- for guard in transition.guards %} 
       {% if not guard.adapter_name -%}
-          {% if not guard.positiv -%}!{% endif -%}
-          && impl::guard::is_{{guard.name}}(info, in)
+          && {% if not guard.positiv -%}!{% endif -%}impl::guard::is_{{guard.name}}(info, in)
       {% else -%}
           {% if not guard.positiv -%}!{% endif -%}
           && impl::guard::is_{{guard.name}}(adapt::guard::{{guard.adapter_name | ToCamel}}{info, in})
